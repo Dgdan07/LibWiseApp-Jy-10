@@ -1,0 +1,84 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - LibWise</title>
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+</head>
+<body>
+    @if (User.Identity?.IsAuthenticated == true)
+    {
+        <div class="d-flex" style="min-height: 100vh;">
+            <nav class="bg-dark text-white sidebar">
+                <div class="p-3 border-bottom border-secondary">
+                    <a class="text-white text-decoration-none fw-bold fs-5" asp-area="" asp-controller="Home" asp-action="Index">
+                        <i class="bi bi-book"></i> LibWise
+                    </a>
+                </div>
+                <div class="p-3 small text-secondary">
+                    Logged in as <strong class="text-white">@User.Identity.Name</strong>
+                    <br /><span class="badge bg-info text-dark mt-1">@(User.IsInRole("Admin") ? "Admin" : User.IsInRole("Librarian") ? "Librarian" : "AL")</span>
+                </div>
+                <ul class="nav flex-column px-2">
+                    @if (User.IsInRole("Admin"))
+                    {
+                        <li class="nav-item"><a class="nav-link text-white" asp-area="Admin" asp-controller="Dashboard" asp-action="Index"><i class="bi bi-speedometer2 me-2"></i>Dashboard</a></li>
+                        <li class="nav-item"><a class="nav-link text-white" asp-area="Admin" asp-controller="Users" asp-action="Index"><i class="bi bi-people me-2"></i>Users</a></li>
+                        <li class="nav-item"><a class="nav-link text-white" asp-area="Admin" asp-controller="Books" asp-action="Index"><i class="bi bi-book me-2"></i>Book Catalog</a></li>
+                        <li class="nav-item"><a class="nav-link text-white" asp-area="Admin" asp-controller="Categories" asp-action="Index"><i class="bi bi-tags me-2"></i>Categories</a></li>
+                        <li class="nav-item"><a class="nav-link text-white" asp-area="Admin" asp-controller="Reports" asp-action="Index"><i class="bi bi-file-earmark-bar-graph me-2"></i>Reports</a></li>
+                        <li class="nav-item"><a class="nav-link text-white" asp-area="Admin" asp-controller="AuditLogs" asp-action="Index"><i class="bi bi-journal-text me-2"></i>Audit Logs</a></li>
+                        <li class="nav-item"><a class="nav-link text-white" asp-area="Admin" asp-controller="Config" asp-action="Index"><i class="bi bi-gear me-2"></i>Configuration</a></li>
+                    }
+                    @if (User.IsInRole("Librarian"))
+                    {
+                        <li class="nav-item"><a class="nav-link text-white" asp-area="Librarian" asp-controller="Dashboard" asp-action="Index"><i class="bi bi-speedometer2 me-2"></i>Dashboard</a></li>
+                        <li class="nav-item"><a class="nav-link text-white" asp-area="Librarian" asp-controller="Books" asp-action="Index"><i class="bi bi-book me-2"></i>Books</a></li>
+                        <li class="nav-item"><a class="nav-link text-white" asp-area="Librarian" asp-controller="Borrowers" asp-action="Index"><i class="bi bi-person-badge me-2"></i>Borrowers</a></li>
+                        <li class="nav-item"><a class="nav-link text-white" asp-area="Librarian" asp-controller="Borrowing" asp-action="Index"><i class="bi bi-arrow-right-circle me-2"></i>Borrowing</a></li>
+                        <li class="nav-item"><a class="nav-link text-white" asp-area="Librarian" asp-controller="Returns" asp-action="Index"><i class="bi bi-arrow-left-circle me-2"></i>Returns</a></li>
+                        <li class="nav-item"><a class="nav-link text-white" asp-area="Librarian" asp-controller="Fines" asp-action="Index"><i class="bi bi-cash-coin me-2"></i>Fines</a></li>
+                        <li class="nav-item"><a class="nav-link text-white" asp-area="Librarian" asp-controller="Availability" asp-action="Index"><i class="bi bi-search me-2"></i>Availability</a></li>
+                        <li class="nav-item"><a class="nav-link text-white" asp-area="Librarian" asp-controller="Reports" asp-action="Index"><i class="bi bi-file-earmark-bar-graph me-2"></i>Reports</a></li>
+                    }
+                    @if (User.IsInRole("AssistantLibrarian"))
+                    {
+                        <li class="nav-item"><a class="nav-link text-white" asp-area="AssistantLibrarian" asp-controller="Dashboard" asp-action="Index"><i class="bi bi-speedometer2 me-2"></i>Dashboard</a></li>
+                        <li class="nav-item"><a class="nav-link text-white" asp-area="AssistantLibrarian" asp-controller="Borrowing" asp-action="Index"><i class="bi bi-arrow-right-circle me-2"></i>Borrowing</a></li>
+                        <li class="nav-item"><a class="nav-link text-white" asp-area="AssistantLibrarian" asp-controller="Returns" asp-action="Index"><i class="bi bi-arrow-left-circle me-2"></i>Returns</a></li>
+                        <li class="nav-item"><a class="nav-link text-white" asp-area="AssistantLibrarian" asp-controller="Fines" asp-action="Index"><i class="bi bi-cash-coin me-2"></i>Fine Collection</a></li>
+                        <li class="nav-item"><a class="nav-link text-white" asp-area="AssistantLibrarian" asp-controller="Availability" asp-action="Index"><i class="bi bi-search me-2"></i>Availability</a></li>
+                        <li class="nav-item"><a class="nav-link text-white" asp-area="AssistantLibrarian" asp-controller="BorrowerInfo" asp-action="Index"><i class="bi bi-person me-2"></i>Borrower Info</a></li>
+                    }
+                    <li class="nav-item mt-3 border-top border-secondary pt-2">
+                        <form asp-controller="Account" asp-action="Logout" method="post" class="px-2">
+                            <button type="submit" class="btn btn-outline-light btn-sm w-100">
+                                <i class="bi bi-box-arrow-left me-1"></i>Logout
+                            </button>
+                        </form>
+                    </li>
+                </ul>
+            </nav>
+            <main class="flex-grow-1 p-4 bg-light" style="overflow-y: auto;">
+                @RenderBody()
+            </main>
+        </div>
+    }
+    else
+    {
+        <div class="container mt-5">
+            <main role="main" class="pb-3">
+                @RenderBody()
+            </main>
+        </div>
+    }
+
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="~/js/site.js" asp-append-version="true"></script>
+    @await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>

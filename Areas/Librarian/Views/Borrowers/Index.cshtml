@@ -1,0 +1,76 @@
+@model List<Borrower>
+@{
+    ViewData["Title"] = "Manage Borrowers";
+}
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <h2><i class="bi bi-person-badge me-2"></i>Manage Borrowers</h2>
+    <a asp-action="Create" class="btn btn-primary"><i class="bi bi-plus-circle me-1"></i>Add Borrower</a>
+</div>
+
+@if (TempData["Success"] != null)
+{
+    <div class="alert alert-success alert-dismissible fade show">@TempData["Success"]<button type="button" class="btn-close" data-bs-dismiss="alert"></button></div>
+}
+
+<form method="get" class="mb-3">
+    <div class="input-group">
+        <input type="text" name="search" class="form-control" placeholder="Search by name, barcode, or ID number..." value="@ViewBag.Search" />
+        <button class="btn btn-outline-secondary" type="submit"><i class="bi bi-search"></i></button>
+        @if (!string.IsNullOrEmpty(ViewBag.Search))
+        {
+            <a asp-action="Index" class="btn btn-outline-danger">Clear</a>
+        }
+    </div>
+</form>
+
+<div class="card">
+    <div class="card-body p-0">
+        <table class="table table-striped mb-0">
+            <thead class="table-dark">
+                <tr>
+                    <th>Barcode</th>
+                    <th>Name</th>
+                    <th>Grade</th>
+                    <th>ID Number</th>
+                    <th>Contact</th>
+                    <th>Active</th>
+                    <th class="text-end">Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                @if (Model.Count == 0)
+                {
+                    <tr><td colspan="7" class="text-center text-muted py-4">No borrowers found.</td></tr>
+                }
+                @foreach (var b in Model)
+                {
+                    <tr>
+                        <td><code>@b.Barcode</code></td>
+                        <td>@b.LastName, @b.FirstName</td>
+                        <td>@(b.Grade ?? "-")</td>
+                        <td>@(b.IDNumber ?? "-")</td>
+                        <td>@(b.Email ?? b.Phone ?? "-")</td>
+                        <td>
+                            @if (b.IsActive)
+                            {
+                                <span class="badge bg-success">Yes</span>
+                            }
+                            else
+                            {
+                                <span class="badge bg-secondary">No</span>
+                            }
+                        </td>
+                        <td class="text-end">
+                            <a asp-action="Edit" asp-route-id="@b.Id" class="btn btn-sm btn-outline-primary"><i class="bi bi-pencil"></i></a>
+                            <form asp-action="Delete" asp-route-id="@b.Id" method="post" class="d-inline" onsubmit="return confirm('Delete this borrower?')">
+                                <button type="submit" class="btn btn-sm btn-outline-danger"><i class="bi bi-trash"></i></button>
+                            </form>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<partial name="_Pagination" />

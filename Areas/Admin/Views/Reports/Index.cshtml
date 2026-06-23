@@ -1,0 +1,104 @@
+@{
+    ViewData["Title"] = "Reports";
+}
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <h2><i class="bi bi-file-earmark-bar-graph me-2"></i>System Reports</h2>
+    <a asp-action="ExportCsv" class="btn btn-success"><i class="bi bi-download me-1"></i>Export CSV</a>
+</div>
+<hr />
+<div class="row">
+    <div class="col-md-4 mb-3">
+        <div class="card text-bg-primary">
+            <div class="card-body">
+                <h5 class="card-title">Total Books</h5>
+                <p class="card-text display-6">@ViewBag.TotalBooks</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4 mb-3">
+        <div class="card text-bg-secondary">
+            <div class="card-body">
+                <h5 class="card-title">Total Borrowers</h5>
+                <p class="card-text display-6">@ViewBag.TotalBorrowers</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4 mb-3">
+        <div class="card text-bg-warning">
+            <div class="card-body">
+                <h5 class="card-title">Active Borrowings</h5>
+                <p class="card-text display-6">@ViewBag.ActiveBorrowings</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4 mb-3">
+        <div class="card text-bg-danger">
+            <div class="card-body">
+                <h5 class="card-title">Overdue</h5>
+                <p class="card-text display-6">@ViewBag.OverdueCount</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4 mb-3">
+        <div class="card text-bg-success">
+            <div class="card-body">
+                <h5 class="card-title">Fines Collected</h5>
+                <p class="card-text display-6">PHP @ViewBag.TotalFinesCollected.ToString("F0")</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4 mb-3">
+        <div class="card text-bg-info">
+            <div class="card-body">
+                <h5 class="card-title">Unpaid Fines</h5>
+                <p class="card-text display-6">@ViewBag.UnpaidFinesCount (PHP @ViewBag.UnpaidFinesTotal.ToString("F0"))</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<h4 class="mt-4">Recent Borrowings (Last 7 Days)</h4>
+<div class="card">
+    <div class="card-body p-0">
+        <table class="table table-striped mb-0">
+            <thead class="table-dark">
+                <tr>
+                    <th>Book</th>
+                    <th>Borrower</th>
+                    <th>Date</th>
+                    <th>Due</th>
+                    <th>Status</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var r in ViewBag.RecentBorrowings as List<BorrowingRecord> ?? new())
+                {
+                    <tr>
+                        <td>@r.Book.Title</td>
+                        <td>@r.Borrower.LastName, @r.Borrower.FirstName</td>
+                        <td>@r.BorrowedAt.ToString("MMM dd")</td>
+                        <td>@r.DueDate.ToString("MMM dd")</td>
+                        <td>
+                            @if (r.Status == "Active" && r.DueDate < DateTime.UtcNow)
+                            {
+                                <span class="badge bg-danger">Overdue</span>
+                            }
+                            else if (r.Status == "Active")
+                            {
+                                <span class="badge bg-primary">Active</span>
+                            }
+                            else
+                            {
+                                <span class="badge bg-secondary">Returned</span>
+                            }
+                        </td>
+                    </tr>
+                }
+                @if ((ViewBag.RecentBorrowings as List<BorrowingRecord>)?.Count == 0)
+                {
+                    <tr><td colspan="5" class="text-center text-muted py-3">No borrowing activity in the last 7 days.</td></tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>

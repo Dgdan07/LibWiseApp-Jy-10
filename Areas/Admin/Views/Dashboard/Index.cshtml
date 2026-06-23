@@ -1,0 +1,98 @@
+@{
+    ViewData["Title"] = "Admin Dashboard";
+}
+<h2><i class="bi bi-speedometer2 me-2"></i>Admin Dashboard</h2>
+<p class="text-muted">Full system overview.</p>
+<hr />
+<div class="row">
+    <div class="col-md-3 mb-3">
+        <div class="card text-bg-primary">
+            <div class="card-body">
+                <h5 class="card-title">Total Books</h5>
+                <p class="card-text display-6">@ViewBag.TotalBooks</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3 mb-3">
+        <div class="card text-bg-success">
+            <div class="card-body">
+                <h5 class="card-title">Available</h5>
+                <p class="card-text display-6">@ViewBag.AvailableCopies</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3 mb-3">
+        <div class="card text-bg-warning">
+            <div class="card-body">
+                <h5 class="card-title">Borrowed</h5>
+                <p class="card-text display-6">@ViewBag.ActiveBorrowings</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3 mb-3">
+        <div class="card text-bg-danger">
+            <div class="card-body">
+                <h5 class="card-title">Overdue</h5>
+                <p class="card-text display-6">@ViewBag.OverdueCount</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3 mb-3">
+        <div class="card text-bg-info">
+            <div class="card-body">
+                <h5 class="card-title">System Users</h5>
+                <p class="card-text display-6">@ViewBag.TotalUsers</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3 mb-3">
+        <div class="card text-bg-secondary">
+            <div class="card-body">
+                <h5 class="card-title">Borrowers</h5>
+                <p class="card-text display-6">@ViewBag.TotalBorrowers</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3 mb-3">
+        <div class="card text-bg-success">
+            <div class="card-body">
+                <h5 class="card-title">Collected</h5>
+                <p class="card-text display-6">PHP @ViewBag.TotalFinesCollected.ToString("F0")</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3 mb-3">
+        <div class="card text-bg-danger">
+            <div class="card-body">
+                <h5 class="card-title">Unpaid Fines</h5>
+                <p class="card-text display-6">PHP @ViewBag.UnpaidFinesTotal.ToString("F0")</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="card mb-4">
+    <div class="card-header fw-bold"><i class="bi bi-bar-chart me-1"></i>Activity (Last 7 Days)</div>
+    <div class="card-body">
+        <canvas id="activityChart" height="100"></canvas>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.7/dist/chart.umd.min.js"></script>
+<script>
+    new Chart(document.getElementById('activityChart'), {
+        type: 'bar',
+        data: {
+            labels: @Html.Raw(ViewBag.ChartLabels),
+            datasets: [
+                { label: 'Borrowed', data: @Html.Raw(ViewBag.ChartBorrowed), backgroundColor: 'rgba(255, 193, 7, 0.7)' },
+                { label: 'Returned', data: @Html.Raw(ViewBag.ChartReturned), backgroundColor: 'rgba(25, 135, 84, 0.7)' }
+            ]
+        },
+        options: {
+            responsive: true,
+            scales: { y: { beginAtZero: true, ticks: { stepSize: 1 } } },
+            plugins: { legend: { position: 'top' } }
+        }
+    });
+</script>

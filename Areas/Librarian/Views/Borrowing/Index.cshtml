@@ -1,0 +1,177 @@
+@{
+    ViewData["Title"] = "Borrowing";
+}
+<h2><i class="bi bi-arrow-right-circle me-2"></i>Borrowing</h2>
+<p class="text-muted">Scan borrower barcode or search to process borrowing.</p>
+<hr />
+
+<div class="row">
+    <div class="col-md-6">
+        <div class="card mb-4">
+            <div class="card-header fw-bold">Step 1: Find Borrower</div>
+            <div class="card-body">
+                <div class="mb-2">
+                    <label class="form-label">Scan or type barcode</label>
+                    <input type="text" id="barcodeInput" class="form-control form-control-lg" placeholder="Scan barcode..." autofocus />
+                </div>
+                <div class="mb-2">
+                    <label class="form-label">Or search by name</label>
+                    <input type="text" id="searchBorrower" class="form-control" placeholder="Type name..." />
+                </div>
+                <div id="borrowerResult" class="mt-2"></div>
+                <input type="hidden" id="borrowerId" value="" />
+                <input type="hidden" id="borrowerBarcode" value="" />
+            </div>
+        </div>
+    </div>
+    <div class="col-md-6">
+        <div class="card mb-4">
+            <div class="card-header fw-bold">Step 2: Select Book</div>
+            <div class="card-body">
+                <div class="mb-2">
+                    <label class="form-label">Search book by title, author, or ISBN</label>
+                    <input type="text" id="searchBook" class="form-control" placeholder="Type to search..." disabled />
+                </div>
+                <div id="bookResult" class="mt-2"></div>
+                <input type="hidden" id="bookId" value="" />
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="card">
+    <div class="card-body">
+        <h5 class="card-title">Step 3: Confirm</h5>
+        <div id="confirmInfo" class="text-muted mb-3">Select a borrower and a book to continue.</div>
+        <button id="borrowBtn" class="btn btn-primary btn-lg w-100" disabled>
+            <i class="bi bi-check-circle me-1"></i>Confirm Borrowing
+        </button>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        let borrowerTimeout, bookTimeout;
+
+        $('#barcodeInput').on('input', function() {
+            clearTimeout(borrowerTimeout);
+            const val = this.value.trim();
+            if (val.length > 3) {
+                borrowerTimeout = setTimeout(() => lookupBorrower(val), 400);
+            }
+        });
+
+        $('#searchBorrower').on('input', function() {
+            clearTimeout(borrowerTimeout);
+            const val = this.value.trim();
+            if (val.length > 2) {
+                borrowerTimeout = setTimeout(() => searchBorrower(val), 400);
+            }
+        });
+
+        $('#searchBook').on('input', function() {
+            clearTimeout(bookTimeout);
+            const val = this.value.trim();
+            if (val.length > 2) {
+                bookTimeout = setTimeout(() => searchBooks(val), 400);
+            }
+        });
+
+        function lookupBorrower(barcode) {
+            $.getJSON('@Url.Action("SearchBorrower")', { term: barcode }, function(data) {
+                if (data.length === 1 && data[0].barcode === barcode) {
+                    selectBorrower(data[0]);
+                } else if (data.length > 0) {
+                    let html = '<ul class="list-group">';
+                    data.forEach(b => {
+                        html += `<li class="list-group-item list-group-item-action" onclick="selectBorrower(${JSON.stringify(b).replace(/"/g, "'")})">
+                            <strong>${b.name}</strong> <code>${b.barcode}</code> ${b.grade ? '-' + b.grade : ''}</li>`;
+                    });
+                    html += '</ul>';
+                    $('#borrowerResult').html(html);
+                } else {
+                    $('#borrowerResult').html('<div class="text-danger">Borrower not found.</div>');
+                }
+            });
+        }
+
+        function searchBorrower(term) {
+            $.getJSON('@Url.Action("SearchBorrower")', { term: term }, function(data) {
+                if (data.length === 0) {
+                    $('#borrowerResult').html('<div class="text-muted">No matches.</div>');
+                } else {
+                    let html = '<ul class="list-group">';
+                    data.forEach(b => {
+                        html += `<li class="list-group-item list-group-item-action" onclick="selectBorrower(${JSON.stringify(b).replace(/"/g, "'")})">
+                            <strong>${b.name}</strong> <code>${b.barcode}</code> ${b.grade ? '-' + b.grade : ''}</li>`;
+                    });
+                    html += '</ul>';
+                    $('#borrowerResult').html(html);
+                }
+            });
+        }
+
+        function selectBorrower(b) {
+            $('#borrowerId').val(b.id);
+            $('#borrowerBarcode').val(b.barcode);
+            $('#borrowerResult').html(`<div class="alert alert-success py-2 mb-0">
+                <i class="bi bi-check-circle"></i> <strong>${b.name}</strong> (${b.barcode})</div>`);
+            $('#searchBook').prop('disabled', false).focus();
+        }
+
+        function searchBooks(term) {
+            $.getJSON('@Url.Action("SearchBook")', { term: term }, function(data) {
+                if (data.length === 0) {
+                    $('#bookResult').html('<div class="text-muted">No available books found.</div>');
+                } else {
+                    let html = '<ul class="list-group">';
+                    data.forEach(b => {
+                        html += `<li class="list-group-item list-group-item-action" onclick="selectBook(${JSON.stringify(b).replace(/"/g, "'")})">
+                            <strong>${b.title}</strong> by ${b.author}<br/>
+                            <small class="text-muted">ISBN: ${b.isbn || '-'} | Available: ${b.availableCopies}</small>
+                        </li>`;
+                    });
+                    html += '</ul>';
+                    $('#bookResult').html(html);
+                }
+            });
+        }
+
+        function selectBook(b) {
+            $('#bookId').val(b.id);
+            $('#bookResult').html(`<div class="alert alert-success py-2 mb-0">
+                <i class="bi bi-check-circle"></i> <strong>${b.title}</strong> by ${b.author}</div>`);
+            updateConfirm();
+        }
+
+        function updateConfirm() {
+            const bid = $('#borrowerId').val();
+            const bookId = $('#bookId').val();
+            if (bid && bookId) {
+                $('#borrowBtn').prop('disabled', false);
+                $('#confirmInfo').html('<span class="text-success">Ready to process borrowing.</span>');
+            }
+        }
+
+        $('#borrowBtn').click(function() {
+            const borrowerBarcode = $('#borrowerBarcode').val();
+            const bookId = $('#bookId').val();
+            if (!borrowerBarcode || !bookId) return;
+
+            $(this).prop('disabled', true).html('<span class="spinner-border spinner-border-sm me-1"></span>Processing...');
+
+            $.post('@Url.Action("Process")', { borrowerBarcode: borrowerBarcode, bookId: bookId }, function(res) {
+                if (res.success) {
+                    alert(res.message);
+                    location.reload();
+                } else {
+                    alert('Error: ' + res.message);
+                    $('#borrowBtn').prop('disabled', false).html('<i class="bi bi-check-circle me-1"></i>Confirm Borrowing');
+                }
+            }).fail(function() {
+                alert('Request failed.');
+                $('#borrowBtn').prop('disabled', false).html('<i class="bi bi-check-circle me-1"></i>Confirm Borrowing');
+            });
+        });
+    </script>
+}

@@ -1,0 +1,56 @@
+@{
+    ViewData["Title"] = "Librarian Dashboard";
+}
+<h2><i class="bi bi-speedometer2 me-2"></i>Librarian Dashboard</h2>
+<p class="text-muted">Library operations overview.</p>
+<hr />
+<div class="row">
+    <div class="col-md-4 mb-3">
+        <div class="card text-bg-primary">
+            <div class="card-body">
+                <h5 class="card-title">Total Books</h5>
+                <p class="card-text display-6">@ViewBag.TotalBooks</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4 mb-3">
+        <div class="card text-bg-success">
+            <div class="card-body">
+                <h5 class="card-title">Available Copies</h5>
+                <p class="card-text display-6">@ViewBag.AvailableBooks</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4 mb-3">
+        <div class="card text-bg-warning">
+            <div class="card-body">
+                <h5 class="card-title">Active Borrowings</h5>
+                <p class="card-text display-6">@ViewBag.ActiveBorrowings</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4 mb-3">
+        <div class="card text-bg-danger">
+            <div class="card-body">
+                <h5 class="card-title">Overdue</h5>
+                <p class="card-text display-6">@ViewBag.OverdueCount</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4 mb-3">
+        <div class="card text-bg-info">
+            <div class="card-body">
+                <h5 class="card-title">Unpaid Fines</h5>
+                <p class="card-text display-6">@ViewBag.UnpaidFines</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4 mb-3">
+        <div class="card text-bg-secondary">
+            <div class="card-body">
+                <h5 class="card-title">Fines Collected</h5>
+                <p class="card-text display-6">PHP @ViewBag.TotalFinesCollected.ToString("F0")</p>
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,105 @@
+@{
+    ViewData["Title"] = "Configuration";
+}
+<h2><i class="bi bi-gear me-2"></i>System Configuration</h2>
+<hr />
+
+@if (TempData["Success"] != null)
+{
+    <div class="alert alert-success alert-dismissible fade show">@TempData["Success"]<button type="button" class="btn-close" data-bs-dismiss="alert"></button></div>
+}
+@if (TempData["Error"] != null)
+{
+    <div class="alert alert-danger alert-dismissible fade show">@TempData["Error"]<button type="button" class="btn-close" data-bs-dismiss="alert"></button></div>
+}
+
+<div class="row">
+    <div class="col-md-6">
+        <div class="card mb-4">
+            <div class="card-header fw-bold"><i class="bi bi-cash-coin me-1"></i>Fine Rules</div>
+            <div class="card-body">
+                <table class="table table-sm">
+                    <thead>
+                        <tr><th>Days Allowed</th><th>Daily Rate</th><th>Max Fine</th><th>Active</th><th></th></tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var rule in ViewBag.FineRules as List<FineRule> ?? new())
+                        {
+                            <tr>
+                                <td>@rule.DaysAllowed</td>
+                                <td>PHP @rule.DailyFineRate.ToString("F2")</td>
+                                <td>PHP @rule.MaxFine.ToString("F2")</td>
+                                <td>@(rule.IsActive ? "Yes" : "No")</td>
+                                <td>
+                                    <button class="btn btn-sm btn-outline-primary" data-bs-toggle="collapse" data-bs-target="#editRule@(rule.Id)">Edit</button>
+                                </td>
+                            </tr>
+                            <tr class="collapse" id="editRule@(rule.Id)">
+                                <td colspan="5">
+                                    <form asp-action="SaveFineRule" method="post" class="row g-2">
+                                        <input type="hidden" name="Id" value="@rule.Id" />
+                                        <div class="col-md-3">
+                                            <input type="number" name="DaysAllowed" class="form-control form-control-sm" value="@rule.DaysAllowed" />
+                                        </div>
+                                        <div class="col-md-3">
+                                            <input type="number" step="0.01" name="DailyFineRate" class="form-control form-control-sm" value="@rule.DailyFineRate" />
+                                        </div>
+                                        <div class="col-md-3">
+                                            <input type="number" step="0.01" name="MaxFine" class="form-control form-control-sm" value="@rule.MaxFine" />
+                                        </div>
+                                        <div class="col-md-2">
+                                            <select name="IsActive" class="form-select form-select-sm">
+                                                <option value="true" selected="@(rule.IsActive ? true : false)">Yes</option>
+                                                <option value="false" selected="@(rule.IsActive ? false : true)">No</option>
+                                            </select>
+                                        </div>
+                                        <div class="col-md-1">
+                                            <button type="submit" class="btn btn-sm btn-success">Save</button>
+                                        </div>
+                                    </form>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-6">
+        <div class="card mb-4">
+            <div class="card-header fw-bold"><i class="bi bi-gear me-1"></i>Custom Settings</div>
+            <div class="card-body">
+                <form asp-action="SaveConfig" method="post" class="row g-2 mb-3">
+                    <div class="col-md-5">
+                        <input type="text" name="key" class="form-control form-control-sm" placeholder="Key" required />
+                    </div>
+                    <div class="col-md-5">
+                        <input type="text" name="value" class="form-control form-control-sm" placeholder="Value" />
+                    </div>
+                    <div class="col-md-2">
+                        <button type="submit" class="btn btn-sm btn-primary w-100">Add</button>
+                    </div>
+                </form>
+                <table class="table table-sm">
+                    <thead>
+                        <tr><th>Key</th><th>Value</th><th></th></tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var cfg in ViewBag.SystemConfigs as List<SystemConfig> ?? new())
+                        {
+                            <tr>
+                                <td>@cfg.Key</td>
+                                <td>@cfg.Value</td>
+                                <td>
+                                    <form asp-action="DeleteConfig" asp-route-id="@cfg.Id" method="post" class="d-inline" onsubmit="return confirm('Delete this config?')">
+                                        <button type="submit" class="btn btn-sm btn-outline-danger"><i class="bi bi-trash"></i></button>
+                                    </form>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>

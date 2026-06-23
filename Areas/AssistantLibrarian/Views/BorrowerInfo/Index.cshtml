@@ -1,0 +1,43 @@
+@{
+    ViewData["Title"] = "Borrower Info";
+}
+<h2><i class="bi bi-person me-2"></i>Borrower Information</h2>
+<p class="text-muted">Scan borrower barcode to view limited information.</p>
+<hr />
+
+<div class="card">
+    <div class="card-body">
+        <label class="form-label fw-bold">Borrower Barcode</label>
+        <input type="text" id="barcodeInput" class="form-control form-control-lg" placeholder="Scan barcode..." autofocus />
+        <div id="result" class="mt-3"></div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        let timeout;
+        $('#barcodeInput').on('input', function() {
+            clearTimeout(timeout);
+            const val = this.value.trim();
+            if (val.length > 3) {
+                timeout = setTimeout(() => {
+                    $.post('@Url.Action("Lookup")', { barcode: val }, function(res) {
+                        if (res.success) {
+                            const b = res.borrower;
+                            $('#result').html(`<div class="alert alert-info">
+                                <strong>${b.firstName} ${b.lastName}</strong><br/>
+                                Barcode: <code>${b.barcode}</code><br/>
+                                ${b.grade ? 'Grade: ' + b.grade + '<br/>' : ''}
+                                ${b.idNumber ? 'ID: ' + b.idNumber + '<br/>' : ''}
+                                ${b.email ? 'Email: ' + b.email + '<br/>' : ''}
+                                ${b.phone ? 'Phone: ' + b.phone : ''}
+                            </div>`);
+                        } else {
+                            $('#result').html(`<div class="alert alert-danger">${res.message}</div>`);
+                        }
+                    });
+                }, 400);
+            }
+        });
+    </script>
+}

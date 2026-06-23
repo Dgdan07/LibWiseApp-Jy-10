@@ -1,0 +1,65 @@
+## Goal
+- Build LibWise, a web-based Library ERP system with book management, borrower management, borrowing/returns, fines, availability tracking, and reports.
+
+## Constraints & Preferences
+- Tech stack: ASP.NET Core MVC (C#) on .NET 8, MySQL via XAMPP, Entity Framework Core (Pomelo 8.0.0), Bootstrap 5 frontend, no REST API (templates only).
+- Barcode scanner uses keyboard-wedge mode (inputs into text fields).
+- Three roles: Admin, Librarian, Assistant Librarian (AL). AL logs into their own account to tag each transaction.
+- Database: `libwise` on localhost:3306, user root, no password.
+
+## Progress
+### Done
+- Project scaffolded with `dotnet new mvc`.
+- NuGet packages installed: `Microsoft.AspNetCore.Identity.EntityFrameworkCore` 8.0.0, `Pomelo.EntityFrameworkCore.MySql` 8.0.0, `Microsoft.EntityFrameworkCore.Tools` 8.0.0.
+- Full project structure with Areas (Admin, Librarian, AssistantLibrarian), each with Controllers and Views directories.
+- All 9 model classes created: `ApplicationUser` (extended IdentityUser), `Book`, `Borrower`, `Category`, `BorrowingRecord`, `Fine`, `BookStatusLog`, `AuditLog`, `FineRule`, `SystemConfig`.
+- `AppDbContext` with Identity + all DbSets and relationship configurations, unique indexes on `Borrower.Barcode` and `SystemConfig.Key`.
+- Initial EF migration applied; 17 MySQL tables created (7 Identity + 10 app).
+- Seed: 3 roles (Admin, Librarian, AssistantLibrarian), admin user (`admin@libwise.com` / `Admin123!`), 7 default categories, 1 default fine rule (14 days, PHP 5/day, max PHP 500).
+- Role-based sidebar layout with icons and logout button.
+- Login page with email/password; fixed to look up user by email first then sign in with username.
+- **Admin area**: Dashboard (real stats), Users CRUD (list + create), Categories CRUD, Book Catalog (full list/create/edit/delete with search), Reports (stats + recent borrowings), Audit Logs (searchable log viewer), Config (fine rule editor + custom settings).
+- **Librarian area**: Dashboard (real stats), Books CRUD (list, create, edit, delete with search and category dropdown), Borrowers CRUD (list, create, edit, delete with search), Borrowing (AJAX search + confirm via JSON endpoints), Returns (scan borrower + list active borrowings + return with auto-fine calculation), Availability (card grid with search), Fines (list with status filter + pay action), Reports (overdue books + recent returns).
+- **AL area**: Dashboard (today's activity), Borrowing (barcode + AJAX search), Returns (barcode + return with fines), Fine Collection (barcode + list unpaid + collect), Availability (search card grid), Borrower Info (barcode lookup). All AL actions log the AL's UserId.
+- **AuditLogService** wired into Admin Books/Categories/Users controllers, Librarian Books/Borrowers/Borrowing/Returns/Fines controllers, and all three AL controllers for key actions (Create, Update, Delete, Borrow, Return, PayFine).
+
+### In Progress
+- No active work; all major building blocks are in place.
+
+### Blocked
+- (none)
+
+## Key Decisions
+- Downgraded target framework from net10.0 to net8.0 because Pomelo.EntityFrameworkCore.MySql 9.0.0 is incompatible with EF Core 10.0.9 at design time (`AbstractionsStrings.ArgumentIsEmpty` method missing). net8.0 + Pomelo 8.0.0 is fully compatible.
+- Login uses `FindByEmailAsync` then `PasswordSignInAsync` with username, because the seed user has `UserName = "admin"` while the login form accepts email.
+- Borrowing/returning logic is duplicated between Librarian and AL controllers rather than sharing a service layer, for simplicity at this stage.
+
+## Next Steps
+1. Add **Librarian and AL accounts** via Admin Users page so testers can switch roles (need to manually create them or add seed data).
+2. Add **edit/delete user** functionality to Admin Users page.
+3. Add **validation and error handling** improvements (client-side validation, confirmation dialogs).
+4. Add **pagination** to tables with many rows (Books, Borrowers, Fines, Audit Logs).
+5. Add **Email notifications** for overdue books.
+6. Add **book cover image** upload support.
+7. Add **export to CSV/Excel** for reports.
+8. Add **dashboard charts** using Chart.js.
+
+## Critical Context
+- App runs at `http://localhost:5111`. Default credentials: `admin@libwise.com` / `Admin123!`.
+- MySQL connection string: `Server=localhost;Port=3306;Database=libwise;User=root;Password=;`.
+- AL barcode workflow: scan borrower barcode → system looks up/fetches borrower → AL processes transaction → `BorrowedByUserId` / `ReturnedByUserId` records the AL who handled it.
+- Fine calculation: overdue days × `DailyFineRate` (PHP 5), capped at `MaxFine` (PHP 500). Calculated at return time.
+
+## Relevant Files
+- `Program.cs`: app config, Identity + MySQL + auth policies + seed data + AuditLogService registration.
+- `Data/AppDbContext.cs`: DbContext with Identity and all entity configurations.
+- `Controllers/AccountController.cs`: login with email-to-username lookup.
+- `Services/AuditLogService.cs`: centralized audit logging with IHttpContextAccessor.
+- `Areas/Admin/Controllers/BooksController.cs`: full CRUD with search + audit logging.
+- `Areas/Admin/Controllers/ConfigController.cs`: fine rule editor + custom settings.
+- `Areas/Admin/Controllers/AuditLogsController.cs`: searchable log viewer (last 200).
+- `Areas/Admin/Controllers/ReportsController.cs`: stats + recent borrowings.
+- `Areas/Librarian/Controllers/BooksController.cs`, `BorrowersController.cs`, `BorrowingController.cs`, `ReturnsController.cs`, `FinesController.cs`, `ReportsController.cs`: full librarian workflows + audit logging.
+- `Areas/AssistantLibrarian/Controllers/BorrowingController.cs`, `ReturnsController.cs`, `FinesController.cs`, `AvailabilityController.cs`, `BorrowerInfoController.cs`: AL-specific barcode-driven workflows + audit logging.
+- `Views/Shared/_Layout.cshtml`: role-based sidebar navigation.
+- `LibWiseApp.csproj`: targets net8.0, references Identity 8.0.0 + Pomelo 8.0.0.
