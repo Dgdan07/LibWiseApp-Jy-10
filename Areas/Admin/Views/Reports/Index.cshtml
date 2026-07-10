@@ -13,12 +13,12 @@
     <div class="col-md-3 mb-3">
         <div class="card border-0 shadow-sm dashboard-card" style="border-left: 4px solid #4361ee;">
             <div class="card-body">
-                <div class="d-flex justify-content-between align-items-start">
-                    <div>
-                        <p class="text-muted small mb-0">Total Books</p>
-                        <i class="bi bi-book fs-4" style="color: #4361ee;"></i>
+                <div class="d-flex justify-content-between align-items-center">
+                    <div class="d-flex align-items-center gap-2">
+                        <i class="bi bi-book fs-2" style="color: #4361ee;"></i>
+                        <span class="text-muted small">Total Books</span>
                     </div>
-                    <p class="fs-3 fw-semibold mb-0">@ViewBag.TotalBooks</p>
+                    <p class="fs-3 fw-semibold mb-0 text-end">@ViewBag.TotalBooks</p>
                 </div>
             </div>
         </div>
@@ -26,12 +26,12 @@
     <div class="col-md-3 mb-3">
         <div class="card border-0 shadow-sm dashboard-card" style="border-left: 4px solid #6366f1;">
             <div class="card-body">
-                <div class="d-flex justify-content-between align-items-start">
-                    <div>
-                        <p class="text-muted small mb-0">Total Borrowers</p>
-                        <i class="bi bi-people fs-4" style="color: #6366f1;"></i>
+                <div class="d-flex justify-content-between align-items-center">
+                    <div class="d-flex align-items-center gap-2">
+                        <i class="bi bi-people fs-2" style="color: #6366f1;"></i>
+                        <span class="text-muted small">Total Borrowers</span>
                     </div>
-                    <p class="fs-3 fw-semibold mb-0">@ViewBag.TotalBorrowers</p>
+                    <p class="fs-3 fw-semibold mb-0 text-end">@ViewBag.TotalBorrowers</p>
                 </div>
             </div>
         </div>
@@ -39,12 +39,12 @@
     <div class="col-md-3 mb-3">
         <div class="card border-0 shadow-sm dashboard-card" style="border-left: 4px solid #f59e0b; cursor: pointer;" onclick="showActiveBorrowings()">
             <div class="card-body">
-                <div class="d-flex justify-content-between align-items-start">
-                    <div>
-                        <p class="text-muted small mb-0">Active Borrowings</p>
-                        <i class="bi bi-arrow-right-circle fs-4" style="color: #f59e0b;"></i>
+                <div class="d-flex justify-content-between align-items-center">
+                    <div class="d-flex align-items-center gap-2">
+                        <i class="bi bi-arrow-right-circle fs-2" style="color: #f59e0b;"></i>
+                        <span class="text-muted small">Active Borrowings</span>
                     </div>
-                    <p class="fs-3 fw-semibold mb-0">@ViewBag.ActiveBorrowings</p>
+                    <p class="fs-3 fw-semibold mb-0 text-end">@ViewBag.ActiveBorrowings</p>
                 </div>
             </div>
         </div>
@@ -52,12 +52,12 @@
     <div class="col-md-3 mb-3">
         <div class="card border-0 shadow-sm dashboard-card" style="border-left: 4px solid #ef4444; cursor: pointer;" onclick="showOverdueBorrowings()">
             <div class="card-body">
-                <div class="d-flex justify-content-between align-items-start">
-                    <div>
-                        <p class="text-muted small mb-0">Overdue</p>
-                        <i class="bi bi-exclamation-triangle fs-4" style="color: #ef4444;"></i>
+                <div class="d-flex justify-content-between align-items-center">
+                    <div class="d-flex align-items-center gap-2">
+                        <i class="bi bi-exclamation-triangle fs-2" style="color: #ef4444;"></i>
+                        <span class="text-muted small">Overdue</span>
                     </div>
-                    <p class="fs-3 fw-semibold mb-0">@ViewBag.OverdueCount</p>
+                    <p class="fs-3 fw-semibold mb-0 text-end">@ViewBag.OverdueCount</p>
                 </div>
             </div>
         </div>
@@ -65,12 +65,12 @@
     <div class="col-md-3 mb-3">
         <div class="card border-0 shadow-sm dashboard-card" style="border-left: 4px solid #0891b2; cursor: pointer;" onclick="showUnpaidFines()">
             <div class="card-body">
-                <div class="d-flex justify-content-between align-items-start">
-                    <div>
-                        <p class="text-muted small mb-0">Unpaid Fines</p>
-                        <i class="bi bi-cash-coin fs-4" style="color: #0891b2;"></i>
+                <div class="d-flex justify-content-between align-items-center">
+                    <div class="d-flex align-items-center gap-2">
+                        <i class="bi bi-cash-coin fs-2" style="color: #0891b2;"></i>
+                        <span class="text-muted small">Unpaid Fines</span>
                     </div>
-                    <p class="fs-3 fw-semibold mb-0">@ViewBag.UnpaidFinesCount</p>
+                    <p class="fs-3 fw-semibold mb-0 text-end">@ViewBag.UnpaidFinesCount</p>
                 </div>
             </div>
         </div>
@@ -150,6 +150,103 @@
 </div>
 
 <partial name="_Pagination" />
+
+<h4 class="mt-4">Fines by Borrower</h4>
+<div class="card mb-4">
+    <div class="card-body p-0 table-responsive">
+        <table class="table table-striped mb-0">
+            <thead class="table-dark">
+                <tr><th>Borrower</th><th>Barcode</th><th>Unpaid</th><th>Paid</th><th># Fines</th></tr>
+            </thead>
+            <tbody>
+                @{
+                    var adminFinesByBorrowerList = ViewBag.FinesByBorrower as IEnumerable<dynamic> ?? Enumerable.Empty<dynamic>();
+                }
+                @foreach (var item in adminFinesByBorrowerList)
+                {
+                    <tr>
+                        <td>@item.BorrowerName</td>
+                        <td>@item.Barcode</td>
+                        <td>PHP @item.TotalUnpaid.ToString("N2")</td>
+                        <td>PHP @item.TotalPaid.ToString("N2")</td>
+                        <td>@item.FineCount</td>
+                    </tr>
+                }
+                @if (!adminFinesByBorrowerList.Any())
+                {
+                    <tr><td colspan="5" class="text-center text-muted py-3">No fine records found.</td></tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
+@if ((int)ViewBag.FinesByBorrowerTotalPages > 1)
+{
+    <nav class="mb-4">
+        <ul class="pagination justify-content-center">
+            <li class="page-item @((int)ViewBag.FinesByBorrowerPage <= 1 ? "disabled" : "")">
+                <a class="page-link" asp-action="Index" asp-route-finesByBorrowerPage="@((int)ViewBag.FinesByBorrowerPage - 1)" asp-route-page="@ViewBag.Page" asp-route-from="@ViewBag.FromDate" asp-route-to="@ViewBag.ToDate" asp-route-status="@ViewBag.Status" asp-route-repeatOverduePage="@ViewBag.RepeatOverduePage"><i class="bi bi-chevron-left"></i></a>
+            </li>
+            @for (int i = 1; i <= (int)ViewBag.FinesByBorrowerTotalPages; i++)
+            {
+                <li class="page-item @((int)ViewBag.FinesByBorrowerPage == i ? "active" : "")">
+                    <a class="page-link" asp-action="Index" asp-route-finesByBorrowerPage="@i" asp-route-page="@ViewBag.Page" asp-route-from="@ViewBag.FromDate" asp-route-to="@ViewBag.ToDate" asp-route-status="@ViewBag.Status" asp-route-repeatOverduePage="@ViewBag.RepeatOverduePage">@i</a>
+                </li>
+            }
+            <li class="page-item @((int)ViewBag.FinesByBorrowerPage >= (int)ViewBag.FinesByBorrowerTotalPages ? "disabled" : "")">
+                <a class="page-link" asp-action="Index" asp-route-finesByBorrowerPage="@((int)ViewBag.FinesByBorrowerPage + 1)" asp-route-page="@ViewBag.Page" asp-route-from="@ViewBag.FromDate" asp-route-to="@ViewBag.ToDate" asp-route-status="@ViewBag.Status" asp-route-repeatOverduePage="@ViewBag.RepeatOverduePage"><i class="bi bi-chevron-right"></i></a>
+            </li>
+        </ul>
+    </nav>
+}
+
+<h4 class="mt-4">Repeat Overdue Borrowers</h4>
+<div class="card mb-4">
+    <div class="card-body p-0 table-responsive">
+        <table class="table table-striped mb-0">
+            <thead class="table-dark">
+                <tr><th>Borrower</th><th>Barcode</th><th>Times Overdue</th><th>Currently Overdue</th></tr>
+            </thead>
+            <tbody>
+                @{
+                    var adminRepeatOverdueList = ViewBag.RepeatOverdueBorrowers as IEnumerable<dynamic> ?? Enumerable.Empty<dynamic>();
+                }
+                @foreach (var item in adminRepeatOverdueList)
+                {
+                    <tr>
+                        <td>@item.BorrowerName</td>
+                        <td>@item.Barcode</td>
+                        <td>@item.TotalOverdue</td>
+                        <td>@(item.CurrentlyOverdue ? "Yes" : "No")</td>
+                    </tr>
+                }
+                @if (!adminRepeatOverdueList.Any())
+                {
+                    <tr><td colspan="4" class="text-center text-muted py-3">No overdue records found.</td></tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
+@if ((int)ViewBag.RepeatOverdueTotalPages > 1)
+{
+    <nav class="mb-4">
+        <ul class="pagination justify-content-center">
+            <li class="page-item @((int)ViewBag.RepeatOverduePage <= 1 ? "disabled" : "")">
+                <a class="page-link" asp-action="Index" asp-route-repeatOverduePage="@((int)ViewBag.RepeatOverduePage - 1)" asp-route-page="@ViewBag.Page" asp-route-from="@ViewBag.FromDate" asp-route-to="@ViewBag.ToDate" asp-route-status="@ViewBag.Status" asp-route-finesByBorrowerPage="@ViewBag.FinesByBorrowerPage"><i class="bi bi-chevron-left"></i></a>
+            </li>
+            @for (int i = 1; i <= (int)ViewBag.RepeatOverdueTotalPages; i++)
+            {
+                <li class="page-item @((int)ViewBag.RepeatOverduePage == i ? "active" : "")">
+                    <a class="page-link" asp-action="Index" asp-route-repeatOverduePage="@i" asp-route-page="@ViewBag.Page" asp-route-from="@ViewBag.FromDate" asp-route-to="@ViewBag.ToDate" asp-route-status="@ViewBag.Status" asp-route-finesByBorrowerPage="@ViewBag.FinesByBorrowerPage">@i</a>
+                </li>
+            }
+            <li class="page-item @((int)ViewBag.RepeatOverduePage >= (int)ViewBag.RepeatOverdueTotalPages ? "disabled" : "")">
+                <a class="page-link" asp-action="Index" asp-route-repeatOverduePage="@((int)ViewBag.RepeatOverduePage + 1)" asp-route-page="@ViewBag.Page" asp-route-from="@ViewBag.FromDate" asp-route-to="@ViewBag.ToDate" asp-route-status="@ViewBag.Status" asp-route-finesByBorrowerPage="@ViewBag.FinesByBorrowerPage"><i class="bi bi-chevron-right"></i></a>
+            </li>
+        </ul>
+    </nav>
+}
 
 <!-- Unpaid Fines Modal -->
 <div class="modal fade" id="unpaidFinesModal" tabindex="-1">

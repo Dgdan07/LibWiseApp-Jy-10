@@ -13,7 +13,7 @@ public class BooksController : Controller
 {
     private readonly AppDbContext _db;
     private readonly AuditLogService _auditLog;
-    private const int PageSize = 20;
+    private const int PageSize = 15;
 
     public BooksController(AppDbContext db, AuditLogService auditLog)
     {
@@ -40,54 +40,53 @@ public class BooksController : Controller
         ViewBag.Search = search;
         ViewBag.Page = page;
         ViewBag.TotalPages = (int)Math.Ceiling(total / (double)PageSize);
+        ViewBag.Categories = await _db.Categories.OrderBy(c => c.Name).ToListAsync();
         return View(items);
     }
 
-    public async Task<IActionResult> Create()
+    [HttpGet]
+    public async Task<IActionResult> GetBook(int id)
     {
-        ViewBag.Categories = await _db.Categories.OrderBy(c => c.Name).ToListAsync();
-        return View();
+        var book = await _db.Books.FindAsync(id);
+        if (book == null) return NotFound();
+
+        return Json(new
+        {
+            id = book.Id,
+            isbn = book.ISBN,
+            title = book.Title,
+            author = book.Author,
+            publisher = book.Publisher,
+            categoryId = book.CategoryId,
+            publicationYear = book.PublicationYear,
+            totalCopies = book.TotalCopies,
+            availableCopies = book.AvailableCopies,
+            shelfLocation = book.ShelfLocation,
+            description = book.Description,
+            isActive = book.IsActive,
+            createdAt = book.CreatedAt.ToString("o")
+        });
     }
 
     [HttpPost]
-    public async Task<IActionResult> Create(Book model)
+    public async Task<IActionResult> Create([FromForm] Book model)
     {
-        if (!ModelState.IsValid)
-        {
-            ViewBag.Categories = await _db.Categories.OrderBy(c => c.Name).ToListAsync();
-            return View(model);
-        }
+        if (string.IsNullOrWhiteSpace(model.Title) || string.IsNullOrWhiteSpace(model.Author))
+            return Json(new { success = false, error = "Title and Author are required." });
 
         model.CreatedAt = DateTime.UtcNow;
         _db.Books.Add(model);
         await _db.SaveChangesAsync();
         await _auditLog.LogAsync("Create", "Book", model.Id.ToString(), $"Added book \"{model.Title}\"");
-        TempData["Success"] = $"Book \"{model.Title}\" added.";
-        return RedirectToAction("Index");
-    }
-
-    public async Task<IActionResult> Edit(int id)
-    {
-        var book = await _db.Books.FindAsync(id);
-        if (book == null) return NotFound();
-
-        ViewBag.Categories = await _db.Categories.OrderBy(c => c.Name).ToListAsync();
-        return View(book);
+        return Json(new { success = true, message = $"Book \"{model.Title}\" added." });
     }
 
     [HttpPost]
-    public async Task<IActionResult> Edit(int id, Book model)
+    public async Task<IActionResult> Edit([FromForm] Book model)
     {
-        if (id != model.Id) return NotFound();
-
-        if (!ModelState.IsValid)
-        {
-            ViewBag.Categories = await _db.Categories.OrderBy(c => c.Name).ToListAsync();
-            return View(model);
-        }
-
-        var book = await _db.Books.FindAsync(id);
-        if (book == null) return NotFound();
+        var book = await _db.Books.FindAsync(model.Id);
+        if (book == null)
+            return Json(new { success = false, error = "Book not found." });
 
         book.ISBN = model.ISBN;
         book.Title = model.Title;
@@ -103,20 +102,19 @@ public class BooksController : Controller
 
         await _db.SaveChangesAsync();
         await _auditLog.LogAsync("Update", "Book", book.Id.ToString(), $"Updated book \"{book.Title}\"");
-        TempData["Success"] = $"Book \"{book.Title}\" updated.";
-        return RedirectToAction("Index");
+        return Json(new { success = true, message = $"Book \"{book.Title}\" updated." });
     }
 
     [HttpPost]
     public async Task<IActionResult> Delete(int id)
     {
         var book = await _db.Books.FindAsync(id);
-        if (book == null) return NotFound();
+        if (book == null)
+            return Json(new { success = false, message = "Book not found." });
 
         _db.Books.Remove(book);
         await _db.SaveChangesAsync();
         await _auditLog.LogAsync("Delete", "Book", id.ToString(), $"Deleted book \"{book.Title}\"");
-        TempData["Success"] = $"Book \"{book.Title}\" deleted.";
-        return RedirectToAction("Index");
+        return Json(new { success = true, message = $"Book \"{book.Title}\" deleted." });
     }
 }

@@ -14,6 +14,8 @@ public class ReportsController : Controller
 
     public ReportsController(AppDbContext db) => _db = db;
 
+    private const int PageSize = 15;
+
     public async Task<IActionResult> ExportCsv()
     {
         var now = DateTime.UtcNow;
@@ -36,9 +38,11 @@ public class ReportsController : Controller
         return File(System.Text.Encoding.UTF8.GetBytes(sb.ToString()), "text/csv", $"libwise-report-{now:yyyyMMdd}.csv");
     }
 
-    public async Task<IActionResult> Index(DateTime? from, DateTime? to, string? status, int page = 1)
+    public async Task<IActionResult> Index(DateTime? from, DateTime? to, string? status, int page = 1, int? finesByBorrowerPage = null, int? repeatOverduePage = null)
     {
         var now = DateTime.UtcNow;
+        int fbp = finesByBorrowerPage ?? 1;
+        int rop = repeatOverduePage ?? 1;
 
         ViewBag.TotalBooks = await _db.Books.CountAsync();
         ViewBag.TotalBorrowers = await _db.Borrowers.CountAsync();
@@ -67,16 +71,60 @@ public class ReportsController : Controller
         var total = await borrowingsQuery.CountAsync();
         var items = await borrowingsQuery
             .OrderByDescending(r => r.BorrowedAt)
-            .Skip((page - 1) * 20)
-            .Take(20)
+            .Skip((page - 1) * PageSize)
+            .Take(PageSize)
             .ToListAsync();
 
         ViewBag.RecentBorrowings = items;
         ViewBag.Page = page;
-        ViewBag.TotalPages = (int)Math.Ceiling(total / 20.0);
+        ViewBag.TotalPages = (int)Math.Ceiling(total / (double)PageSize);
         ViewBag.FromDate = from;
         ViewBag.ToDate = to;
         ViewBag.Status = status;
+
+        var finesByBorrowerQuery = _db.Fines
+            .Include(f => f.BorrowingRecord).ThenInclude(r => r.Borrower)
+            .GroupBy(f => new { f.BorrowingRecord.BorrowerId, Name = f.BorrowingRecord.Borrower.LastName + ", " + f.BorrowingRecord.Borrower.FirstName, Barcode = f.BorrowingRecord.Borrower.Barcode })
+            .Select(g => new
+            {
+                BorrowerName = g.Key.Name,
+                Barcode = g.Key.Barcode,
+                TotalUnpaid = g.Where(f => f.Status == "Unpaid").Sum(f => f.Amount),
+                TotalPaid = g.Where(f => f.Status == "Paid").Sum(f => f.Amount),
+                FineCount = g.Count()
+            })
+            .OrderByDescending(x => x.TotalUnpaid);
+
+        var finesByBorrowerTotal = await finesByBorrowerQuery.CountAsync();
+        var finesByBorrowerItems = await finesByBorrowerQuery
+            .Skip((fbp - 1) * PageSize)
+            .Take(PageSize)
+            .ToListAsync();
+        ViewBag.FinesByBorrower = finesByBorrowerItems;
+        ViewBag.FinesByBorrowerPage = fbp;
+        ViewBag.FinesByBorrowerTotalPages = (int)Math.Ceiling(finesByBorrowerTotal / (double)PageSize);
+
+        var repeatOverdueQuery = _db.BorrowingRecords
+            .Include(r => r.Borrower)
+            .Where(r => (r.ReturnedAt.HasValue && r.DueDate < r.ReturnedAt) || (r.Status == "Active" && r.DueDate < now))
+            .GroupBy(r => new { r.BorrowerId, Name = r.Borrower.LastName + ", " + r.Borrower.FirstName, Barcode = r.Borrower.Barcode })
+            .Select(g => new
+            {
+                BorrowerName = g.Key.Name,
+                Barcode = g.Key.Barcode,
+                TotalOverdue = g.Count(),
+                CurrentlyOverdue = g.Any(r => r.Status == "Active" && r.DueDate < now)
+            })
+            .OrderByDescending(x => x.TotalOverdue);
+
+        var repeatOverdueTotal = await repeatOverdueQuery.CountAsync();
+        var repeatOverdueItems = await repeatOverdueQuery
+            .Skip((rop - 1) * PageSize)
+            .Take(PageSize)
+            .ToListAsync();
+        ViewBag.RepeatOverdueBorrowers = repeatOverdueItems;
+        ViewBag.RepeatOverduePage = rop;
+        ViewBag.RepeatOverdueTotalPages = (int)Math.Ceiling(repeatOverdueTotal / (double)PageSize);
 
         return View();
     }

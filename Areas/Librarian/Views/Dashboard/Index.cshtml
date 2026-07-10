@@ -4,16 +4,30 @@
 <h2><i class="bi bi-speedometer2 me-2"></i>Librarian Dashboard</h2>
 <p class="text-muted">Library operations overview.</p>
 <hr />
+
+<div class="d-flex align-items-center gap-2 mb-3">
+    <span class="text-muted small fw-semibold">Filter:</span>
+    <div class="btn-group btn-group-sm" role="group">
+        <a asp-action="Index" asp-route-days="7" class="btn btn-outline-primary @(ViewBag.Days == 7 ? "active" : "")">7 Days</a>
+        <a asp-action="Index" asp-route-days="30" class="btn btn-outline-primary @(ViewBag.Days == 30 ? "active" : "")">30 Days</a>
+        <a asp-action="Index" asp-route-days="90" class="btn btn-outline-primary @(ViewBag.Days == 90 ? "active" : "")">90 Days</a>
+    </div>
+    @if (ViewBag.Days != null)
+    {
+        <a asp-action="Index" class="btn btn-sm btn-outline-danger">Clear</a>
+    }
+</div>
+
 <div class="row">
     <div class="col-md-4 mb-3">
         <div class="card border-0 shadow-sm dashboard-card" style="border-left: 4px solid #4361ee;">
             <div class="card-body">
-                <div class="d-flex justify-content-between align-items-start">
-                    <div class="flex-grow-1">
-                        <p class="text-muted small mb-1">Total Books</p>
-                        <p class="fs-3 fw-semibold mb-0 text-end">@ViewBag.TotalBooks</p>
+                <div class="d-flex justify-content-between align-items-center">
+                    <div class="d-flex align-items-center gap-2">
+                        <i class="bi bi-book fs-2" style="color: #4361ee;"></i>
+                        <span class="text-muted small">Total Books</span>
                     </div>
-                    <i class="bi bi-book fs-3 ms-3" style="color: #4361ee;"></i>
+                    <p class="fs-3 fw-semibold mb-0 text-end">@ViewBag.TotalBooks</p>
                 </div>
             </div>
         </div>
@@ -21,12 +35,12 @@
     <div class="col-md-4 mb-3">
         <div class="card border-0 shadow-sm dashboard-card" style="border-left: 4px solid #10b981;">
             <div class="card-body">
-                <div class="d-flex justify-content-between align-items-start">
-                    <div class="flex-grow-1">
-                        <p class="text-muted small mb-1">Available Copies</p>
-                        <p class="fs-3 fw-semibold mb-0 text-end">@ViewBag.AvailableBooks</p>
+                <div class="d-flex justify-content-between align-items-center">
+                    <div class="d-flex align-items-center gap-2">
+                        <i class="bi bi-check-circle fs-2" style="color: #10b981;"></i>
+                        <span class="text-muted small">Available Copies</span>
                     </div>
-                    <i class="bi bi-check-circle fs-3 ms-3" style="color: #10b981;"></i>
+                    <p class="fs-3 fw-semibold mb-0 text-end">@ViewBag.AvailableBooks</p>
                 </div>
             </div>
         </div>
@@ -34,12 +48,12 @@
     <div class="col-md-4 mb-3">
         <div class="card border-0 shadow-sm dashboard-card" style="border-left: 4px solid #f59e0b;">
             <div class="card-body">
-                <div class="d-flex justify-content-between align-items-start">
-                    <div class="flex-grow-1">
-                        <p class="text-muted small mb-1">Active Borrowings</p>
-                        <p class="fs-3 fw-semibold mb-0 text-end">@ViewBag.ActiveBorrowings</p>
+                <div class="d-flex justify-content-between align-items-center">
+                    <div class="d-flex align-items-center gap-2">
+                        <i class="bi bi-arrow-right-circle fs-2" style="color: #f59e0b;"></i>
+                        <span class="text-muted small">Active Borrowings</span>
                     </div>
-                    <i class="bi bi-arrow-right-circle fs-3 ms-3" style="color: #f59e0b;"></i>
+                    <p class="fs-3 fw-semibold mb-0 text-end">@ViewBag.ActiveBorrowings</p>
                 </div>
             </div>
         </div>
@@ -47,12 +61,12 @@
     <div class="col-md-4 mb-3">
         <div class="card border-0 shadow-sm dashboard-card" style="border-left: 4px solid #ef4444;">
             <div class="card-body">
-                <div class="d-flex justify-content-between align-items-start">
-                    <div class="flex-grow-1">
-                        <p class="text-muted small mb-1">Overdue</p>
-                        <p class="fs-3 fw-semibold mb-0 text-end">@ViewBag.OverdueCount</p>
+                <div class="d-flex justify-content-between align-items-center">
+                    <div class="d-flex align-items-center gap-2">
+                        <i class="bi bi-exclamation-triangle fs-2" style="color: #ef4444;"></i>
+                        <span class="text-muted small">Overdue</span>
                     </div>
-                    <i class="bi bi-exclamation-triangle fs-3 ms-3" style="color: #ef4444;"></i>
+                    <p class="fs-3 fw-semibold mb-0 text-end">@ViewBag.OverdueCount</p>
                 </div>
             </div>
         </div>
@@ -60,27 +74,97 @@
     <div class="col-md-4 mb-3">
         <div class="card border-0 shadow-sm dashboard-card" style="border-left: 4px solid #0891b2;">
             <div class="card-body">
-                <div class="d-flex justify-content-between align-items-start">
-                    <div class="flex-grow-1">
-                        <p class="text-muted small mb-1">Unpaid Fines</p>
-                        <p class="fs-3 fw-semibold mb-0 text-end">@ViewBag.UnpaidFines</p>
+                <div class="d-flex justify-content-between align-items-center">
+                    <div class="d-flex align-items-center gap-2">
+                        <i class="bi bi-cash-coin fs-2" style="color: #0891b2;"></i>
+                        <span class="text-muted small">Unpaid Fines</span>
                     </div>
-                    <i class="bi bi-cash-coin fs-3 ms-3" style="color: #0891b2;"></i>
-                </div>
-            </div>
-        </div>
-    </div>
-    <div class="col-md-4 mb-3">
-        <div class="card border-0 shadow-sm dashboard-card" style="border-left: 4px solid #7c3aed;">
-            <div class="card-body">
-                <div class="d-flex justify-content-between align-items-start">
-                    <div class="flex-grow-1">
-                        <p class="text-muted small mb-1">Fines Collected</p>
-                        <p class="fs-3 fw-semibold mb-0 text-end">₱ @ViewBag.TotalFinesCollected.ToString("N0")</p>
-                    </div>
-                    <i class="bi bi-piggy-bank fs-3 ms-3" style="color: #7c3aed;"></i>
+                    <p class="fs-3 fw-semibold mb-0 text-end">@ViewBag.UnpaidFines</p>
                 </div>
             </div>
         </div>
     </div>
 </div>
+
+<div class="row">
+    <div class="col-12 mb-3">
+        <div class="card border-0 shadow-sm">
+            <div class="card-header bg-white fw-semibold"><i class="bi bi-bar-chart me-2"></i>Top 10 Borrowed Books</div>
+            <div class="card-body">
+                <canvas id="topBooksChart" height="200"></canvas>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-12 mb-3">
+        <div class="card border-0 shadow-sm">
+            <div class="card-header bg-white fw-semibold"><i class="bi bi-clock-history me-2"></i>Recent Activity</div>
+            <div class="card-body p-0 table-responsive">
+                <table class="table table-striped mb-0">
+                    <thead class="table-dark">
+                        <tr>
+                            <th>Action</th>
+                            <th>Type</th>
+                            <th>Details</th>
+                            <th class="text-end">Time</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @{
+                            var activity = ViewBag.RecentActivity as dynamic;
+                            if (activity != null)
+                            {
+                                foreach (var a in activity)
+                                {
+                                    string actionColor = a.Action == "Delete" ? "color: red;" :
+                                                         a.Action == "Create" ? "color: green;" :
+                                                         a.Action == "Return" ? "color: #0891b2;" :
+                                                         "";
+                                    <tr>
+                                        <td><span style="@actionColor fw-semibold">@a.Action</span></td>
+                                        <td>@a.EntityType</td>
+                                        <td>@(a.Details ?? "-")</td>
+                                        <td class="text-end text-nowrap">@(((DateTime)a.Timestamp).ToString("MMM dd, yyyy HH:mm"))</td>
+                                    </tr>
+                                }
+                            }
+                            else
+                            {
+                                <tr><td colspan="4" class="text-center text-muted py-4">No recent activity.</td></tr>
+                            }
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.7/dist/chart.umd.min.js"></script>
+<script>
+    var topBookLabels = @Html.Raw(ViewBag.TopBookLabels);
+    var topBookData = @Html.Raw(ViewBag.TopBookData);
+
+    new Chart(document.getElementById('topBooksChart'), {
+        type: 'bar',
+        data: {
+            labels: topBookLabels,
+            datasets: [{
+                label: 'Times Borrowed',
+                data: topBookData,
+                backgroundColor: '#4361ee',
+                borderRadius: 4
+            }]
+        },
+        options: {
+            responsive: true,
+            plugins: { legend: { display: false } },
+            scales: {
+                y: { beginAtZero: true, ticks: { stepSize: 1 } },
+                x: { ticks: { maxRotation: 45, minRotation: 30 } }
+            }
+        }
+    });
+</script>

@@ -77,4 +77,15 @@ public class BorrowingController : Controller
             .ToListAsync();
         return Json(books);
     }
+
+    [HttpGet]
+    public async Task<IActionResult> GetAvailableBooks()
+    {
+        var books = await _db.Books
+            .Where(b => b.IsActive && b.AvailableCopies > 0)
+            .OrderBy(b => b.Title)
+            .Select(b => new { b.Id, b.Title, b.Author, b.ISBN, b.AvailableCopies })
+            .ToListAsync();
+        return Json(books);
+    }
 }

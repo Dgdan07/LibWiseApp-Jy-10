@@ -8,7 +8,6 @@ public class Borrower
     public int Id { get; set; }
 
     [Required, MaxLength(50)]
-    [Remote("CheckBarcode", "Borrowers", "Librarian", HttpMethod = "POST", ErrorMessage = "This barcode already exists.")]
     public string Barcode { get; set; } = string.Empty;
 
     [Required, MaxLength(100)]

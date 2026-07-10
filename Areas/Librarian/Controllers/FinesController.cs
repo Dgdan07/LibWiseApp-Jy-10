@@ -23,7 +23,7 @@ public class FinesController : Controller
         _auditLog = auditLog;
     }
 
-    private const int PageSize = 20;
+    private const int PageSize = 15;
 
     public async Task<IActionResult> Index(string status, int page = 1)
     {

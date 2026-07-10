@@ -4,3 +4,50 @@
 2026-07-10 07:46:02.858 +08:00 [INF] Content root path: C:\Users\Loise\Downloads\IT15 for opencode\LibWiseApp
 2026-07-10 08:42:07.486 +08:00 [WRN] Failed to determine the https port for redirect.
 2026-07-10 08:57:47.000 +08:00 [INF] Application is shutting down...
+2026-07-10 10:31:32.516 +08:00 [INF] Now listening on: http://localhost:5111
+2026-07-10 10:31:32.549 +08:00 [INF] Application started. Press Ctrl+C to shut down.
+2026-07-10 10:31:32.604 +08:00 [INF] Hosting environment: Development
+2026-07-10 10:31:32.606 +08:00 [INF] Content root path: C:\Users\Admin\Libwise\LibWiseApp-Jy-10
+2026-07-10 10:31:50.503 +08:00 [WRN] Failed to determine the https port for redirect.
+2026-07-10 10:59:55.141 +08:00 [INF] Application is shutting down...
+2026-07-10 11:00:24.940 +08:00 [INF] Now listening on: http://localhost:5111
+2026-07-10 11:00:24.981 +08:00 [INF] Application started. Press Ctrl+C to shut down.
+2026-07-10 11:00:24.987 +08:00 [INF] Hosting environment: Development
+2026-07-10 11:00:24.996 +08:00 [INF] Content root path: C:\Users\Admin\Libwise\LibWiseApp-Jy-10
+2026-07-10 11:00:29.627 +08:00 [WRN] Failed to determine the https port for redirect.
+2026-07-10 11:10:03.801 +08:00 [INF] Application is shutting down...
+2026-07-10 11:10:12.641 +08:00 [INF] Now listening on: http://localhost:5111
+2026-07-10 11:10:12.741 +08:00 [INF] Application started. Press Ctrl+C to shut down.
+2026-07-10 11:10:12.752 +08:00 [INF] Hosting environment: Development
+2026-07-10 11:10:12.766 +08:00 [INF] Content root path: C:\Users\Admin\Libwise\LibWiseApp-Jy-10
+2026-07-10 11:10:14.747 +08:00 [WRN] Failed to determine the https port for redirect.
+2026-07-10 11:17:12.757 +08:00 [INF] Application is shutting down...
+2026-07-10 11:18:49.169 +08:00 [INF] Now listening on: http://localhost:5111
+2026-07-10 11:18:49.199 +08:00 [INF] Application started. Press Ctrl+C to shut down.
+2026-07-10 11:18:49.201 +08:00 [INF] Hosting environment: Development
+2026-07-10 11:18:49.202 +08:00 [INF] Content root path: C:\Users\Admin\Libwise\LibWiseApp-Jy-10
+2026-07-10 11:18:50.999 +08:00 [WRN] Failed to determine the https port for redirect.
+2026-07-10 11:19:55.911 +08:00 [WRN] The query uses a row limiting operator ('Skip'/'Take') without an 'OrderBy' operator. This may lead to unpredictable results. If the 'Distinct' operator is used after 'OrderBy', then make sure to use the 'OrderBy' operator after 'Distinct' as the ordering would otherwise get erased.
+2026-07-10 11:30:58.890 +08:00 [INF] Application is shutting down...
+2026-07-10 11:31:22.824 +08:00 [INF] Now listening on: http://localhost:5111
+2026-07-10 11:31:22.917 +08:00 [INF] Application started. Press Ctrl+C to shut down.
+2026-07-10 11:31:22.921 +08:00 [INF] Hosting environment: Development
+2026-07-10 11:31:22.923 +08:00 [INF] Content root path: C:\Users\Admin\Libwise\LibWiseApp-Jy-10
+2026-07-10 11:31:23.006 +08:00 [WRN] Failed to determine the https port for redirect.
+2026-07-10 11:43:24.643 +08:00 [INF] Application is shutting down...
+2026-07-10 11:43:54.221 +08:00 [INF] Now listening on: http://localhost:5111
+2026-07-10 11:43:54.258 +08:00 [INF] Application started. Press Ctrl+C to shut down.
+2026-07-10 11:43:54.260 +08:00 [INF] Hosting environment: Development
+2026-07-10 11:43:54.261 +08:00 [INF] Content root path: C:\Users\Admin\Libwise\LibWiseApp-Jy-10
+2026-07-10 11:43:54.961 +08:00 [WRN] Failed to determine the https port for redirect.
+2026-07-10 11:58:54.705 +08:00 [INF] Now listening on: http://localhost:5111
+2026-07-10 11:58:54.742 +08:00 [INF] Application started. Press Ctrl+C to shut down.
+2026-07-10 11:58:54.744 +08:00 [INF] Hosting environment: Development
+2026-07-10 11:58:54.745 +08:00 [INF] Content root path: C:\Users\Admin\Libwise\LibWiseApp-Jy-10
+2026-07-10 12:00:21.664 +08:00 [WRN] Failed to determine the https port for redirect.
+2026-07-10 12:02:45.941 +08:00 [WRN] The query uses a row limiting operator ('Skip'/'Take') without an 'OrderBy' operator. This may lead to unpredictable results. If the 'Distinct' operator is used after 'OrderBy', then make sure to use the 'OrderBy' operator after 'Distinct' as the ordering would otherwise get erased.
+2026-07-10 12:16:09.288 +08:00 [INF] Now listening on: http://localhost:5111
+2026-07-10 12:16:09.322 +08:00 [INF] Application started. Press Ctrl+C to shut down.
+2026-07-10 12:16:09.323 +08:00 [INF] Hosting environment: Development
+2026-07-10 12:16:09.324 +08:00 [INF] Content root path: C:\Users\Admin\Libwise\LibWiseApp-Jy-10
+2026-07-10 12:16:11.954 +08:00 [WRN] Failed to determine the https port for redirect.

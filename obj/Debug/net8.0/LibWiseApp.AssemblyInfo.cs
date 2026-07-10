@@ -14,7 +14,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("LibWiseApp")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+c65fec4b5e11223073bfe56c48336feaa8019e4b")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+4b973601371aeaaae4fdcc26b534f20f78c15d38")]
 [assembly: System.Reflection.AssemblyProductAttribute("LibWiseApp")]
 [assembly: System.Reflection.AssemblyTitleAttribute("LibWiseApp")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

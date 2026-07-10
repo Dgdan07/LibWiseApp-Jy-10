@@ -4,7 +4,6 @@ using Microsoft.EntityFrameworkCore;
 using LibWiseApp.Data;
 using LibWiseApp.Models;
 using LibWiseApp.Services;
-using System.Threading.Tasks;
 
 namespace LibWiseApp.Areas.Librarian.Controllers;
 
@@ -21,7 +20,7 @@ public class BorrowersController : Controller
         _auditLog = auditLog;
     }
 
-    private const int PageSize = 20;
+    private const int PageSize = 15;
 
     public async Task<IActionResult> Index(string search, int page = 1)
     {
@@ -46,62 +45,63 @@ public class BorrowersController : Controller
         return View(items);
     }
 
-    [AcceptVerbs("GET", "POST")]
-    public async Task<IActionResult> CheckBarcode(string barcode, int? id)
+    [HttpGet]
+    public async Task<IActionResult> GetBorrower(int id)
     {
-        if (string.IsNullOrWhiteSpace(barcode)) return Json(true);
+        var borrower = await _db.Borrowers.FindAsync(id);
+        if (borrower == null) return NotFound();
 
-        var exists = id.HasValue
-            ? await _db.Borrowers.AnyAsync(b => b.Barcode == barcode && b.Id != id.Value)
-            : await _db.Borrowers.AnyAsync(b => b.Barcode == barcode);
-
-        return Json(!exists);
+        return Json(new
+        {
+            id = borrower.Id,
+            barcode = borrower.Barcode,
+            firstName = borrower.FirstName,
+            lastName = borrower.LastName,
+            email = borrower.Email,
+            phone = borrower.Phone,
+            grade = borrower.Grade,
+            idNumber = borrower.IDNumber,
+            address = borrower.Address,
+            isActive = borrower.IsActive,
+            createdAt = borrower.CreatedAt.ToString("o")
+        });
     }
 
-    public IActionResult Create() => View();
+    private async Task<string> GenerateBarcodeAsync()
+    {
+        var lastBarcode = await _db.Borrowers
+            .Where(b => b.Barcode.StartsWith("BRW-"))
+            .OrderByDescending(b => b.Barcode)
+            .Select(b => b.Barcode)
+            .FirstOrDefaultAsync();
+
+        if (lastBarcode != null && int.TryParse(lastBarcode.Replace("BRW-", ""), out int lastNum))
+            return $"BRW-{(lastNum + 1).ToString("D4")}";
+
+        return "BRW-0001";
+    }
 
     [HttpPost]
-    public async Task<IActionResult> Create(Borrower model)
+    public async Task<IActionResult> Create([FromForm] Borrower model)
     {
-        if (!ModelState.IsValid) return View(model);
+        if (string.IsNullOrWhiteSpace(model.FirstName) || string.IsNullOrWhiteSpace(model.LastName))
+            return Json(new { success = false, error = "First Name and Last Name are required." });
 
-        if (await _db.Borrowers.AnyAsync(b => b.Barcode == model.Barcode))
-        {
-            ModelState.AddModelError("Barcode", "This barcode already exists.");
-            return View(model);
-        }
-
+        model.Barcode = await GenerateBarcodeAsync();
         model.CreatedAt = DateTime.UtcNow;
         _db.Borrowers.Add(model);
         await _db.SaveChangesAsync();
-        await _auditLog.LogAsync("Create", "Borrower", model.Id.ToString(), $"Added borrower \"{model.FirstName} {model.LastName}\"");
-        TempData["Success"] = $"Borrower \"{model.FirstName} {model.LastName}\" added.";
-        return RedirectToAction("Index");
-    }
-
-    public async Task<IActionResult> Edit(int id)
-    {
-        var borrower = await _db.Borrowers.FindAsync(id);
-        if (borrower == null) return NotFound();
-        return View(borrower);
+        await _auditLog.LogAsync("Create", "Borrower", model.Id.ToString(), $"Added borrower \"{model.FirstName} {model.LastName}\" (Barcode: {model.Barcode})");
+        return Json(new { success = true, message = $"Borrower \"{model.FirstName} {model.LastName}\" added. Barcode: {model.Barcode}" });
     }
 
     [HttpPost]
-    public async Task<IActionResult> Edit(int id, Borrower model)
+    public async Task<IActionResult> Edit([FromForm] Borrower model)
     {
-        if (id != model.Id) return NotFound();
-        if (!ModelState.IsValid) return View(model);
+        var borrower = await _db.Borrowers.FindAsync(model.Id);
+        if (borrower == null)
+            return Json(new { success = false, error = "Borrower not found." });
 
-        var borrower = await _db.Borrowers.FindAsync(id);
-        if (borrower == null) return NotFound();
-
-        if (await _db.Borrowers.AnyAsync(b => b.Barcode == model.Barcode && b.Id != id))
-        {
-            ModelState.AddModelError("Barcode", "This barcode already exists.");
-            return View(model);
-        }
-
-        borrower.Barcode = model.Barcode;
         borrower.FirstName = model.FirstName;
         borrower.LastName = model.LastName;
         borrower.Email = model.Email;
@@ -113,20 +113,19 @@ public class BorrowersController : Controller
 
         await _db.SaveChangesAsync();
         await _auditLog.LogAsync("Update", "Borrower", borrower.Id.ToString(), $"Updated borrower \"{borrower.FirstName} {borrower.LastName}\"");
-        TempData["Success"] = $"Borrower updated.";
-        return RedirectToAction("Index");
+        return Json(new { success = true, message = "Borrower updated." });
     }
 
     [HttpPost]
     public async Task<IActionResult> Delete(int id)
     {
         var borrower = await _db.Borrowers.FindAsync(id);
-        if (borrower == null) return NotFound();
+        if (borrower == null)
+            return Json(new { success = false, message = "Borrower not found." });
 
         _db.Borrowers.Remove(borrower);
         await _db.SaveChangesAsync();
         await _auditLog.LogAsync("Delete", "Borrower", id.ToString(), $"Deleted borrower \"{borrower.FirstName} {borrower.LastName}\"");
-        TempData["Success"] = $"Borrower deleted.";
-        return RedirectToAction("Index");
+        return Json(new { success = true, message = "Borrower deleted." });
     }
 }

@@ -8,12 +8,12 @@
     <div class="col-md-3 mb-3">
         <div class="card border-0 shadow-sm dashboard-card" style="border-left: 4px solid #4361ee;">
             <div class="card-body">
-                <div class="d-flex justify-content-between align-items-start">
-                    <div>
-                        <p class="text-muted small mb-0">Total Books</p>
-                        <i class="bi bi-book fs-4" style="color: #4361ee;"></i>
+                <div class="d-flex justify-content-between align-items-center">
+                    <div class="d-flex align-items-center gap-2">
+                        <i class="bi bi-book fs-2" style="color: #4361ee;"></i>
+                        <span class="text-muted small">Total Books</span>
                     </div>
-                    <p class="fs-3 fw-semibold mb-0">@ViewBag.TotalBooks</p>
+                    <p class="fs-3 fw-semibold mb-0 text-end">@ViewBag.TotalBooks</p>
                 </div>
             </div>
         </div>
@@ -21,12 +21,12 @@
     <div class="col-md-3 mb-3">
         <div class="card border-0 shadow-sm dashboard-card" style="border-left: 4px solid #f59e0b;">
             <div class="card-body">
-                <div class="d-flex justify-content-between align-items-start">
-                    <div>
-                        <p class="text-muted small mb-0">Borrowed</p>
-                        <i class="bi bi-arrow-right-circle fs-4" style="color: #f59e0b;"></i>
+                <div class="d-flex justify-content-between align-items-center">
+                    <div class="d-flex align-items-center gap-2">
+                        <i class="bi bi-arrow-right-circle fs-2" style="color: #f59e0b;"></i>
+                        <span class="text-muted small">Borrowed</span>
                     </div>
-                    <p class="fs-3 fw-semibold mb-0">@ViewBag.ActiveBorrowings</p>
+                    <p class="fs-3 fw-semibold mb-0 text-end">@ViewBag.ActiveBorrowings</p>
                 </div>
             </div>
         </div>
@@ -34,12 +34,12 @@
     <div class="col-md-3 mb-3">
         <div class="card border-0 shadow-sm dashboard-card" style="border-left: 4px solid #ef4444;">
             <div class="card-body">
-                <div class="d-flex justify-content-between align-items-start">
-                    <div>
-                        <p class="text-muted small mb-0">Overdue</p>
-                        <i class="bi bi-exclamation-triangle fs-4" style="color: #ef4444;"></i>
+                <div class="d-flex justify-content-between align-items-center">
+                    <div class="d-flex align-items-center gap-2">
+                        <i class="bi bi-exclamation-triangle fs-2" style="color: #ef4444;"></i>
+                        <span class="text-muted small">Overdue</span>
                     </div>
-                    <p class="fs-3 fw-semibold mb-0">@ViewBag.OverdueCount</p>
+                    <p class="fs-3 fw-semibold mb-0 text-end">@ViewBag.OverdueCount</p>
                 </div>
             </div>
         </div>
@@ -47,12 +47,12 @@
     <div class="col-md-3 mb-3">
         <div class="card border-0 shadow-sm dashboard-card" style="border-left: 4px solid #0891b2;">
             <div class="card-body">
-                <div class="d-flex justify-content-between align-items-start">
-                    <div>
-                        <p class="text-muted small mb-0">Unpaid Fines</p>
-                        <i class="bi bi-cash-coin fs-4" style="color: #0891b2;"></i>
+                <div class="d-flex justify-content-between align-items-center">
+                    <div class="d-flex align-items-center gap-2">
+                        <i class="bi bi-cash-coin fs-2" style="color: #0891b2;"></i>
+                        <span class="text-muted small">Unpaid Fines</span>
                     </div>
-                    <p class="fs-3 fw-semibold mb-0">@ViewBag.UnpaidFinesCount</p>
+                    <p class="fs-3 fw-semibold mb-0 text-end">@ViewBag.UnpaidFinesCount</p>
                 </div>
             </div>
         </div>

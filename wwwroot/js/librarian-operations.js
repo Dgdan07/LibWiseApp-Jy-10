@@ -117,6 +117,8 @@ function initBorrowing() {
         const val = this.value.trim();
         if (val.length > 2) {
             bookTimeout = setTimeout(() => searchBooks(val), 400);
+        } else {
+            loadAvailableBooks();
         }
     });
 
@@ -181,31 +183,71 @@ function selectBorrower(b) {
     $('#borrowerBarcode').val(b.barcode);
     $('#borrowerResult').html(`<div class="alert alert-success py-2 mb-0">
         <i class="bi bi-check-circle"></i> <strong>${b.name}</strong> (${b.barcode})</div>`);
-    $('#searchBook').prop('disabled', false).focus();
+    $('#bookLockedNotice').hide();
+    $('#bookSearchSection').show();
+    unlockAvailableBooks();
+}
+
+function unlockAvailableBooks() {
+    $('#booksLockedOverlay').hide();
+    $('#availableBooksList').show();
+    loadAvailableBooks();
+}
+
+function loadAvailableBooks() {
+    $.getJSON('/Librarian/Borrowing/GetAvailableBooks', function(data) {
+        $('#bookCount').text(data.length + ' books');
+        if (data.length === 0) {
+            $('#availableBooksList').html('<div class="text-center text-muted py-4">No available books.</div>');
+        } else {
+            let html = '<ul class="list-group list-group-flush">';
+            data.forEach(b => {
+                html += `<li class="list-group-item list-group-item-action py-2" onclick="selectBook(${JSON.stringify(b).replace(/"/g, "'")})">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <strong>${b.title}</strong><br/>
+                            <small class="text-muted">${b.author} ${b.isbn ? '| ISBN: ' + b.isbn : ''}</small>
+                        </div>
+                        <span class="badge bg-success">${b.availableCopies}</span>
+                    </div>
+                </li>`;
+            });
+            html += '</ul>';
+            $('#availableBooksList').html(html);
+        }
+    });
 }
 
 function searchBooks(term) {
     $.getJSON('/Librarian/Borrowing/SearchBook', { term: term }, function(data) {
         if (data.length === 0) {
-            $('#bookResult').html('<div class="text-muted">No available books found.</div>');
+            $('#availableBooksList').html('<div class="text-center text-muted py-4">No available books found.</div>');
         } else {
-            let html = '<ul class="list-group">';
+            let html = '<ul class="list-group list-group-flush">';
             data.forEach(b => {
-                html += `<li class="list-group-item list-group-item-action" onclick="selectBook(${JSON.stringify(b).replace(/"/g, "'")})">
-                    <strong>${b.title}</strong> by ${b.author}<br/>
-                    <small class="text-muted">ISBN: ${b.isbn || '-'} | Available: ${b.availableCopies}</small>
+                html += `<li class="list-group-item list-group-item-action py-2" onclick="selectBook(${JSON.stringify(b).replace(/"/g, "'")})">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <strong>${b.title}</strong><br/>
+                            <small class="text-muted">${b.author} ${b.isbn ? '| ISBN: ' + b.isbn : ''}</small>
+                        </div>
+                        <span class="badge bg-success">${b.availableCopies}</span>
+                    </div>
                 </li>`;
             });
             html += '</ul>';
-            $('#bookResult').html(html);
+            $('#availableBooksList').html(html);
         }
     });
 }
 
 function selectBook(b) {
+    if (!$('#borrowerId').val()) return;
     $('#bookId').val(b.id);
     $('#bookResult').html(`<div class="alert alert-success py-2 mb-0">
         <i class="bi bi-check-circle"></i> <strong>${b.title}</strong> by ${b.author}</div>`);
+    $('#availableBooksList').html('');
+    $('#searchBook').val('');
     updateConfirm();
 }
 

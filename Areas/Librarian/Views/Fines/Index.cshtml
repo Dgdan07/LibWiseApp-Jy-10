@@ -44,11 +44,11 @@
                         <td>
                             @if (f.Status == "Unpaid")
                             {
-                                <span class="badge bg-danger">Unpaid</span>
+                                <span style="color: #ef4444;">Unpaid</span>
                             }
                             else
                             {
-                                <span class="badge bg-success">Paid</span>
+                                <span style="color: #10b981;">Paid</span>
                             }
                         </td>
                         <td class="text-end">
@@ -78,7 +78,6 @@
             </div>
             <div class="modal-body" id="receiptBody"></div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
                 <button type="button" class="btn btn-primary" onclick="printReceipt()"><i class="bi bi-printer"></i> Print</button>
             </div>
         </div>
