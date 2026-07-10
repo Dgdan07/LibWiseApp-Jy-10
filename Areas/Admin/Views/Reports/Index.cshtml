@@ -6,66 +6,112 @@
     <a asp-action="ExportCsv" class="btn btn-success"><i class="bi bi-download me-1"></i>Export CSV</a>
 </div>
 <hr />
+
+<div id="alertPlaceholder"></div>
+
 <div class="row">
-    <div class="col-md-4 mb-3">
-        <div class="card text-bg-primary">
+    <div class="col-md-3 mb-3">
+        <div class="card border-0 shadow-sm dashboard-card" style="border-left: 4px solid #4361ee;">
             <div class="card-body">
-                <h5 class="card-title">Total Books</h5>
-                <p class="card-text display-6">@ViewBag.TotalBooks</p>
+                <div class="d-flex justify-content-between align-items-start">
+                    <div>
+                        <p class="text-muted small mb-0">Total Books</p>
+                        <i class="bi bi-book fs-4" style="color: #4361ee;"></i>
+                    </div>
+                    <p class="fs-3 fw-semibold mb-0">@ViewBag.TotalBooks</p>
+                </div>
             </div>
         </div>
     </div>
-    <div class="col-md-4 mb-3">
-        <div class="card text-bg-secondary">
+    <div class="col-md-3 mb-3">
+        <div class="card border-0 shadow-sm dashboard-card" style="border-left: 4px solid #6366f1;">
             <div class="card-body">
-                <h5 class="card-title">Total Borrowers</h5>
-                <p class="card-text display-6">@ViewBag.TotalBorrowers</p>
+                <div class="d-flex justify-content-between align-items-start">
+                    <div>
+                        <p class="text-muted small mb-0">Total Borrowers</p>
+                        <i class="bi bi-people fs-4" style="color: #6366f1;"></i>
+                    </div>
+                    <p class="fs-3 fw-semibold mb-0">@ViewBag.TotalBorrowers</p>
+                </div>
             </div>
         </div>
     </div>
-    <div class="col-md-4 mb-3">
-        <div class="card text-bg-warning">
+    <div class="col-md-3 mb-3">
+        <div class="card border-0 shadow-sm dashboard-card" style="border-left: 4px solid #f59e0b; cursor: pointer;" onclick="showActiveBorrowings()">
             <div class="card-body">
-                <h5 class="card-title">Active Borrowings</h5>
-                <p class="card-text display-6">@ViewBag.ActiveBorrowings</p>
+                <div class="d-flex justify-content-between align-items-start">
+                    <div>
+                        <p class="text-muted small mb-0">Active Borrowings</p>
+                        <i class="bi bi-arrow-right-circle fs-4" style="color: #f59e0b;"></i>
+                    </div>
+                    <p class="fs-3 fw-semibold mb-0">@ViewBag.ActiveBorrowings</p>
+                </div>
             </div>
         </div>
     </div>
-    <div class="col-md-4 mb-3">
-        <div class="card text-bg-danger">
+    <div class="col-md-3 mb-3">
+        <div class="card border-0 shadow-sm dashboard-card" style="border-left: 4px solid #ef4444; cursor: pointer;" onclick="showOverdueBorrowings()">
             <div class="card-body">
-                <h5 class="card-title">Overdue</h5>
-                <p class="card-text display-6">@ViewBag.OverdueCount</p>
+                <div class="d-flex justify-content-between align-items-start">
+                    <div>
+                        <p class="text-muted small mb-0">Overdue</p>
+                        <i class="bi bi-exclamation-triangle fs-4" style="color: #ef4444;"></i>
+                    </div>
+                    <p class="fs-3 fw-semibold mb-0">@ViewBag.OverdueCount</p>
+                </div>
             </div>
         </div>
     </div>
-    <div class="col-md-4 mb-3">
-        <div class="card text-bg-success">
+    <div class="col-md-3 mb-3">
+        <div class="card border-0 shadow-sm dashboard-card" style="border-left: 4px solid #0891b2; cursor: pointer;" onclick="showUnpaidFines()">
             <div class="card-body">
-                <h5 class="card-title">Fines Collected</h5>
-                <p class="card-text display-6">PHP @ViewBag.TotalFinesCollected.ToString("F0")</p>
-            </div>
-        </div>
-    </div>
-    <div class="col-md-4 mb-3">
-        <div class="card text-bg-info">
-            <div class="card-body">
-                <h5 class="card-title">Unpaid Fines</h5>
-                <p class="card-text display-6">@ViewBag.UnpaidFinesCount (PHP @ViewBag.UnpaidFinesTotal.ToString("F0"))</p>
+                <div class="d-flex justify-content-between align-items-start">
+                    <div>
+                        <p class="text-muted small mb-0">Unpaid Fines</p>
+                        <i class="bi bi-cash-coin fs-4" style="color: #0891b2;"></i>
+                    </div>
+                    <p class="fs-3 fw-semibold mb-0">@ViewBag.UnpaidFinesCount</p>
+                </div>
             </div>
         </div>
     </div>
 </div>
 
-<h4 class="mt-4">Recent Borrowings (Last 7 Days)</h4>
+<h4 class="mt-4">Borrowing Records</h4>
+<form method="get" class="row g-2 mb-3">
+    <div class="col-auto">
+        <input type="date" name="from" class="form-control form-control-sm" value="@ViewBag.FromDate?.ToString("yyyy-MM-dd")" placeholder="From" />
+    </div>
+    <div class="col-auto">
+        <input type="date" name="to" class="form-control form-control-sm" value="@ViewBag.ToDate?.ToString("yyyy-MM-dd")" placeholder="To" />
+    </div>
+    <div class="col-auto">
+        <select name="status" class="form-select form-select-sm">
+            <option value="">All Status</option>
+            <option value="Active" selected="@(ViewBag.Status == "Active")">Active</option>
+            <option value="Returned" selected="@(ViewBag.Status == "Returned")">Returned</option>
+            <option value="Overdue" selected="@(ViewBag.Status == "Overdue")">Overdue</option>
+        </select>
+    </div>
+    <div class="col-auto">
+        <button type="submit" class="btn btn-sm btn-primary">Filter</button>
+    </div>
+    @if (ViewBag.FromDate != null || ViewBag.ToDate != null || !string.IsNullOrEmpty(ViewBag.Status))
+    {
+        <div class="col-auto">
+            <a asp-action="Index" class="btn btn-sm btn-outline-danger">Clear</a>
+        </div>
+    }
+</form>
+
 <div class="card">
-    <div class="card-body p-0">
+    <div class="card-body p-0 table-responsive">
         <table class="table table-striped mb-0">
             <thead class="table-dark">
                 <tr>
                     <th>Book</th>
                     <th>Borrower</th>
-                    <th>Date</th>
+                    <th>Borrowed</th>
                     <th>Due</th>
                     <th>Status</th>
                 </tr>
@@ -81,24 +127,103 @@
                         <td>
                             @if (r.Status == "Active" && r.DueDate < DateTime.UtcNow)
                             {
-                                <span class="badge bg-danger">Overdue</span>
+                                <span style="color: red;">Overdue</span>
                             }
                             else if (r.Status == "Active")
                             {
-                                <span class="badge bg-primary">Active</span>
+                                <span style="color: #4361ee;">Active</span>
                             }
                             else
                             {
-                                <span class="badge bg-secondary">Returned</span>
+                                <span style="color: gray;">Returned</span>
                             }
                         </td>
                     </tr>
                 }
                 @if ((ViewBag.RecentBorrowings as List<BorrowingRecord>)?.Count == 0)
                 {
-                    <tr><td colspan="5" class="text-center text-muted py-3">No borrowing activity in the last 7 days.</td></tr>
+                    <tr><td colspan="5" class="text-center text-muted py-3">No borrowing records found.</td></tr>
                 }
             </tbody>
         </table>
     </div>
 </div>
+
+<partial name="_Pagination" />
+
+<!-- Unpaid Fines Modal -->
+<div class="modal fade" id="unpaidFinesModal" tabindex="-1">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title"><i class="bi bi-cash-coin me-1"></i>Unpaid Fines</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body p-0 table-responsive">
+                <table class="table table-striped mb-0">
+                    <thead class="table-dark">
+                        <tr><th>Borrower</th><th>Book</th><th>Amount</th><th>Due Date</th><th>Calculated</th></tr>
+                    </thead>
+                    <tbody id="unpaidFinesBody">
+                        <tr><td colspan="5" class="text-center text-muted py-3">Loading...</td></tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Active Borrowings Modal -->
+<div class="modal fade" id="activeBorrowingsModal" tabindex="-1">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title"><i class="bi bi-arrow-right-circle me-1"></i>Active Borrowings</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body p-0 table-responsive">
+                <table class="table table-striped mb-0">
+                    <thead class="table-dark">
+                        <tr><th>Borrower</th><th>Book</th><th>Borrowed</th><th>Due</th></tr>
+                    </thead>
+                    <tbody id="activeBorrowingsBody">
+                        <tr><td colspan="4" class="text-center text-muted py-3">Loading...</td></tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Overdue Borrowings Modal -->
+<div class="modal fade" id="overdueBorrowingsModal" tabindex="-1">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title"><i class="bi bi-exclamation-triangle me-1"></i>Overdue Borrowings</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body p-0 table-responsive">
+                <table class="table table-striped mb-0">
+                    <thead class="table-dark">
+                        <tr><th>Borrower</th><th>Book</th><th>Borrowed</th><th>Due</th><th>Days Overdue</th></tr>
+                    </thead>
+                    <tbody id="overdueBorrowingsBody">
+                        <tr><td colspan="5" class="text-center text-muted py-3">Loading...</td></tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="~/js/admin-reports.js"></script>

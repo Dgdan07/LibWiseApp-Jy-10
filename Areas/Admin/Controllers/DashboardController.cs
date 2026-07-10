@@ -16,14 +16,10 @@ public class DashboardController : Controller
     public async Task<IActionResult> Index()
     {
         ViewBag.TotalBooks = await _db.Books.CountAsync();
-        ViewBag.AvailableCopies = await _db.Books.SumAsync(b => b.AvailableCopies);
         ViewBag.ActiveBorrowings = await _db.BorrowingRecords.CountAsync(r => r.Status == "Active");
         ViewBag.OverdueCount = await _db.BorrowingRecords
             .CountAsync(r => r.Status == "Active" && r.DueDate < DateTime.UtcNow);
-        ViewBag.TotalUsers = await _db.Users.CountAsync();
-        ViewBag.TotalBorrowers = await _db.Borrowers.CountAsync();
-        ViewBag.TotalFinesCollected = await _db.Fines.Where(f => f.Status == "Paid").SumAsync(f => f.Amount);
-        ViewBag.UnpaidFinesTotal = await _db.Fines.Where(f => f.Status == "Unpaid").SumAsync(f => f.Amount);
+        ViewBag.UnpaidFinesCount = await _db.Fines.CountAsync(f => f.Status == "Unpaid");
 
         var now = DateTime.UtcNow;
         var labels = new List<string>();
@@ -41,5 +37,23 @@ public class DashboardController : Controller
         ViewBag.ChartReturned = System.Text.Json.JsonSerializer.Serialize(returnedData);
 
         return View();
+    }
+
+    [HttpGet]
+    public async Task<IActionResult> ChartData(DateTime from, DateTime to)
+    {
+        to = to.Date.AddDays(1);
+        var labels = new List<string>();
+        var borrowedData = new List<int>();
+        var returnedData = new List<int>();
+
+        for (var day = from.Date; day < to; day = day.AddDays(1))
+        {
+            labels.Add(day.ToString("MMM dd"));
+            borrowedData.Add(await _db.BorrowingRecords.CountAsync(r => r.BorrowedAt >= day && r.BorrowedAt < day.AddDays(1)));
+            returnedData.Add(await _db.BorrowingRecords.CountAsync(r => r.ReturnedAt >= day && r.ReturnedAt < day.AddDays(1)));
+        }
+
+        return Json(new { labels, borrowed = borrowedData, returned = returnedData });
     }
 }

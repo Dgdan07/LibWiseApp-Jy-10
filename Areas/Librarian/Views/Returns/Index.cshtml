@@ -12,7 +12,7 @@
             <div class="card-body">
                 <div class="mb-3">
                     <label class="form-label">Borrower Barcode</label>
-                    <input type="text" id="barcodeInput" class="form-control form-control-lg" placeholder="Scan or type barcode..." autofocus />
+                    <input type="text" id="barcodeInput" class="form-control form-control-lg" placeholder="Scan or type barcode..." autofocus autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" />
                 </div>
                 <div id="borrowerInfo" class="text-muted small">Awaiting scan...</div>
             </div>
@@ -31,61 +31,5 @@
 <div id="resultAlert" class="mt-3" style="display:none;"></div>
 
 @section Scripts {
-    <script>
-        let timeout;
-        $('#barcodeInput').on('input', function() {
-            clearTimeout(timeout);
-            const val = this.value.trim();
-            if (val.length > 3) {
-                timeout = setTimeout(() => lookupBorrower(val), 400);
-            }
-        });
-
-        function lookupBorrower(barcode) {
-            $('#borrowerInfo').html('<span class="text-primary"><i class="bi bi-hourglass"></i> Searching...</span>');
-
-            $.post('@Url.Action("Process")', { borrowerBarcode: barcode }, function(res) {
-                if (res.success) {
-                    $('#borrowerInfo').html(`<span class="text-success"><i class="bi bi-person-check"></i> <strong>${res.borrowerName}</strong></span>`);
-
-                    let html = '<ul class="list-group">';
-                    res.books.forEach(b => {
-                        const due = new Date(b.dueDate).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
-                        html += `<li class="list-group-item d-flex justify-content-between align-items-center">
-                            <div><strong>${b.bookTitle}</strong><br/>
-                            <small class="text-muted">Borrowed: ${new Date(b.borrowedAt).toLocaleDateString()} | Due: ${due}</small></div>
-                            <button class="btn btn-success btn-sm" onclick="returnBook(${b.id}, '${b.bookTitle.replace(/'/g, "\\'")}')">
-                                <i class="bi bi-arrow-return-left"></i> Return
-                            </button>
-                        </li>`;
-                    });
-                    html += '</ul>';
-                    $('#booksList').html(html);
-                } else {
-                    $('#borrowerInfo').html(`<span class="text-danger"><i class="bi bi-exclamation-circle"></i> ${res.message}</span>`);
-                    $('#booksList').html('<p class="text-muted mb-0">No active borrowings.</p>');
-                }
-            }).fail(function() {
-                $('#borrowerInfo').html('<span class="text-danger">Request failed.</span>');
-            });
-        }
-
-        function returnBook(recordId, title) {
-            if (!confirm(`Return "${title}"?`)) return;
-
-            $.post('@Url.Action("ReturnBook")', { recordId: recordId }, function(res) {
-                if (res.success) {
-                    $('#resultAlert').html(`<div class="alert alert-success">${res.message}</div>`).show();
-                    $('#barcodeInput').val('').focus();
-                    $('#booksList').html('<p class="text-muted mb-0">Scan a borrower to see their borrowed books.</p>');
-                    $('#borrowerInfo').html('<span class="text-muted small">Awaiting scan...</span>');
-                    setTimeout(() => $('#resultAlert').hide(), 5000);
-                } else {
-                    alert('Error: ' + res.message);
-                }
-            }).fail(function() {
-                alert('Request failed.');
-            });
-        }
-    </script>
+    <script src="~/js/librarian-operations.js"></script>
 }

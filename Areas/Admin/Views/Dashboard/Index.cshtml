@@ -6,73 +6,74 @@
 <hr />
 <div class="row">
     <div class="col-md-3 mb-3">
-        <div class="card text-bg-primary">
+        <div class="card border-0 shadow-sm dashboard-card" style="border-left: 4px solid #4361ee;">
             <div class="card-body">
-                <h5 class="card-title">Total Books</h5>
-                <p class="card-text display-6">@ViewBag.TotalBooks</p>
+                <div class="d-flex justify-content-between align-items-start">
+                    <div>
+                        <p class="text-muted small mb-0">Total Books</p>
+                        <i class="bi bi-book fs-4" style="color: #4361ee;"></i>
+                    </div>
+                    <p class="fs-3 fw-semibold mb-0">@ViewBag.TotalBooks</p>
+                </div>
             </div>
         </div>
     </div>
     <div class="col-md-3 mb-3">
-        <div class="card text-bg-success">
+        <div class="card border-0 shadow-sm dashboard-card" style="border-left: 4px solid #f59e0b;">
             <div class="card-body">
-                <h5 class="card-title">Available</h5>
-                <p class="card-text display-6">@ViewBag.AvailableCopies</p>
+                <div class="d-flex justify-content-between align-items-start">
+                    <div>
+                        <p class="text-muted small mb-0">Borrowed</p>
+                        <i class="bi bi-arrow-right-circle fs-4" style="color: #f59e0b;"></i>
+                    </div>
+                    <p class="fs-3 fw-semibold mb-0">@ViewBag.ActiveBorrowings</p>
+                </div>
             </div>
         </div>
     </div>
     <div class="col-md-3 mb-3">
-        <div class="card text-bg-warning">
+        <div class="card border-0 shadow-sm dashboard-card" style="border-left: 4px solid #ef4444;">
             <div class="card-body">
-                <h5 class="card-title">Borrowed</h5>
-                <p class="card-text display-6">@ViewBag.ActiveBorrowings</p>
+                <div class="d-flex justify-content-between align-items-start">
+                    <div>
+                        <p class="text-muted small mb-0">Overdue</p>
+                        <i class="bi bi-exclamation-triangle fs-4" style="color: #ef4444;"></i>
+                    </div>
+                    <p class="fs-3 fw-semibold mb-0">@ViewBag.OverdueCount</p>
+                </div>
             </div>
         </div>
     </div>
     <div class="col-md-3 mb-3">
-        <div class="card text-bg-danger">
+        <div class="card border-0 shadow-sm dashboard-card" style="border-left: 4px solid #0891b2;">
             <div class="card-body">
-                <h5 class="card-title">Overdue</h5>
-                <p class="card-text display-6">@ViewBag.OverdueCount</p>
-            </div>
-        </div>
-    </div>
-    <div class="col-md-3 mb-3">
-        <div class="card text-bg-info">
-            <div class="card-body">
-                <h5 class="card-title">System Users</h5>
-                <p class="card-text display-6">@ViewBag.TotalUsers</p>
-            </div>
-        </div>
-    </div>
-    <div class="col-md-3 mb-3">
-        <div class="card text-bg-secondary">
-            <div class="card-body">
-                <h5 class="card-title">Borrowers</h5>
-                <p class="card-text display-6">@ViewBag.TotalBorrowers</p>
-            </div>
-        </div>
-    </div>
-    <div class="col-md-3 mb-3">
-        <div class="card text-bg-success">
-            <div class="card-body">
-                <h5 class="card-title">Collected</h5>
-                <p class="card-text display-6">PHP @ViewBag.TotalFinesCollected.ToString("F0")</p>
-            </div>
-        </div>
-    </div>
-    <div class="col-md-3 mb-3">
-        <div class="card text-bg-danger">
-            <div class="card-body">
-                <h5 class="card-title">Unpaid Fines</h5>
-                <p class="card-text display-6">PHP @ViewBag.UnpaidFinesTotal.ToString("F0")</p>
+                <div class="d-flex justify-content-between align-items-start">
+                    <div>
+                        <p class="text-muted small mb-0">Unpaid Fines</p>
+                        <i class="bi bi-cash-coin fs-4" style="color: #0891b2;"></i>
+                    </div>
+                    <p class="fs-3 fw-semibold mb-0">@ViewBag.UnpaidFinesCount</p>
+                </div>
             </div>
         </div>
     </div>
 </div>
 
-<div class="card mb-4">
-    <div class="card-header fw-bold"><i class="bi bi-bar-chart me-1"></i>Activity (Last 7 Days)</div>
+<div class="card border-0 shadow-sm mb-4">
+    <div class="card-header bg-white fw-bold border-bottom d-flex justify-content-between align-items-center flex-wrap gap-2">
+        <span><i class="bi bi-bar-chart me-1"></i>Activity</span>
+        <div class="d-flex align-items-center gap-2">
+            <button class="btn btn-sm btn-outline-primary chart-preset" data-days="7">7 Days</button>
+            <button class="btn btn-sm btn-outline-primary chart-preset" data-days="30">30 Days</button>
+            <button class="btn btn-sm btn-outline-primary chart-preset" data-days="90">90 Days</button>
+            <div class="d-flex align-items-center gap-1">
+                <input type="date" id="chartFrom" class="form-control form-control-sm" style="width:140px" />
+                <span class="text-muted small">to</span>
+                <input type="date" id="chartTo" class="form-control form-control-sm" style="width:140px" />
+                <button id="chartApplyRange" class="btn btn-sm btn-primary">Apply</button>
+            </div>
+        </div>
+    </div>
     <div class="card-body">
         <canvas id="activityChart" height="100"></canvas>
     </div>
@@ -80,19 +81,73 @@
 
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.7/dist/chart.umd.min.js"></script>
 <script>
-    new Chart(document.getElementById('activityChart'), {
-        type: 'bar',
+    let chart = new Chart(document.getElementById('activityChart'), {
+        type: 'line',
         data: {
             labels: @Html.Raw(ViewBag.ChartLabels),
             datasets: [
-                { label: 'Borrowed', data: @Html.Raw(ViewBag.ChartBorrowed), backgroundColor: 'rgba(255, 193, 7, 0.7)' },
-                { label: 'Returned', data: @Html.Raw(ViewBag.ChartReturned), backgroundColor: 'rgba(25, 135, 84, 0.7)' }
+                {
+                    label: 'Borrowed',
+                    data: @Html.Raw(ViewBag.ChartBorrowed),
+                    borderColor: '#4361ee',
+                    backgroundColor: 'rgba(67, 97, 238, 0.1)',
+                    borderWidth: 2,
+                    pointRadius: 4,
+                    pointBackgroundColor: '#4361ee',
+                    pointBorderColor: '#fff',
+                    pointBorderWidth: 2,
+                    tension: 0.3,
+                    fill: true
+                },
+                {
+                    label: 'Returned',
+                    data: @Html.Raw(ViewBag.ChartReturned),
+                    borderColor: '#10b981',
+                    backgroundColor: 'rgba(16, 185, 129, 0.1)',
+                    borderWidth: 2,
+                    pointRadius: 4,
+                    pointBackgroundColor: '#10b981',
+                    pointBorderColor: '#fff',
+                    pointBorderWidth: 2,
+                    tension: 0.3,
+                    fill: true
+                }
             ]
         },
         options: {
             responsive: true,
-            scales: { y: { beginAtZero: true, ticks: { stepSize: 1 } } },
-            plugins: { legend: { position: 'top' } }
+            scales: {
+                y: { beginAtZero: true, ticks: { stepSize: 1 } }
+            },
+            plugins: { legend: { position: 'top' } },
+            interaction: { intersect: false, mode: 'index' }
         }
+    });
+
+    function loadChartData(from, to) {
+        fetch('/Admin/Dashboard/ChartData?from=' + encodeURIComponent(from) + '&to=' + encodeURIComponent(to))
+            .then(r => r.json())
+            .then(data => {
+                chart.data.labels = data.labels;
+                chart.data.datasets[0].data = data.borrowed;
+                chart.data.datasets[1].data = data.returned;
+                chart.update();
+            });
+    }
+
+    document.querySelectorAll('.chart-preset').forEach(btn => {
+        btn.addEventListener('click', function () {
+            let days = parseInt(this.dataset.days);
+            let to = new Date();
+            let from = new Date();
+            from.setDate(from.getDate() - days);
+            loadChartData(from.toISOString().split('T')[0], to.toISOString().split('T')[0]);
+        });
+    });
+
+    document.getElementById('chartApplyRange').addEventListener('click', function () {
+        let from = document.getElementById('chartFrom').value;
+        let to = document.getElementById('chartTo').value;
+        if (from && to) loadChartData(from, to);
     });
 </script>

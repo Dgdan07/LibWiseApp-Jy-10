@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using LibWiseApp.Data;
+using LibWiseApp.Models;
 
 namespace LibWiseApp.Areas.Admin.Controllers;
 
@@ -35,7 +36,7 @@ public class ReportsController : Controller
         return File(System.Text.Encoding.UTF8.GetBytes(sb.ToString()), "text/csv", $"libwise-report-{now:yyyyMMdd}.csv");
     }
 
-    public async Task<IActionResult> Index()
+    public async Task<IActionResult> Index(DateTime? from, DateTime? to, string? status, int page = 1)
     {
         var now = DateTime.UtcNow;
 
@@ -43,19 +44,107 @@ public class ReportsController : Controller
         ViewBag.TotalBorrowers = await _db.Borrowers.CountAsync();
         ViewBag.ActiveBorrowings = await _db.BorrowingRecords.CountAsync(r => r.Status == "Active");
         ViewBag.OverdueCount = await _db.BorrowingRecords.CountAsync(r => r.Status == "Active" && r.DueDate < now);
-        ViewBag.TotalFinesCollected = await _db.Fines.Where(f => f.Status == "Paid").SumAsync(f => f.Amount);
         ViewBag.UnpaidFinesCount = await _db.Fines.CountAsync(f => f.Status == "Unpaid");
-        ViewBag.UnpaidFinesTotal = await _db.Fines.Where(f => f.Status == "Unpaid").SumAsync(f => f.Amount);
 
-        var recentBorrowings = await _db.BorrowingRecords
+        var borrowingsQuery = _db.BorrowingRecords
             .Include(r => r.Book)
             .Include(r => r.Borrower)
-            .Where(r => r.BorrowedAt >= now.AddDays(-7))
+            .AsQueryable();
+
+        if (from.HasValue)
+            borrowingsQuery = borrowingsQuery.Where(r => r.BorrowedAt >= from.Value.Date);
+        if (to.HasValue)
+            borrowingsQuery = borrowingsQuery.Where(r => r.BorrowedAt < to.Value.Date.AddDays(1));
+
+        if (!string.IsNullOrWhiteSpace(status))
+        {
+            if (status == "Overdue")
+                borrowingsQuery = borrowingsQuery.Where(r => r.Status == "Active" && r.DueDate < now);
+            else
+                borrowingsQuery = borrowingsQuery.Where(r => r.Status == status);
+        }
+
+        var total = await borrowingsQuery.CountAsync();
+        var items = await borrowingsQuery
             .OrderByDescending(r => r.BorrowedAt)
-            .Take(10)
+            .Skip((page - 1) * 20)
+            .Take(20)
             .ToListAsync();
-        ViewBag.RecentBorrowings = recentBorrowings;
+
+        ViewBag.RecentBorrowings = items;
+        ViewBag.Page = page;
+        ViewBag.TotalPages = (int)Math.Ceiling(total / 20.0);
+        ViewBag.FromDate = from;
+        ViewBag.ToDate = to;
+        ViewBag.Status = status;
 
         return View();
+    }
+
+    [HttpGet]
+    public async Task<IActionResult> GetUnpaidFines()
+    {
+        var fines = await _db.Fines
+            .Where(f => f.Status == "Unpaid")
+            .Include(f => f.BorrowingRecord)
+                .ThenInclude(r => r.Book)
+            .Include(f => f.BorrowingRecord)
+                .ThenInclude(r => r.Borrower)
+            .OrderByDescending(f => f.CalculatedAt)
+            .ToListAsync();
+
+        var data = fines.Select(f => new
+        {
+            borrower = $"{f.BorrowingRecord.Borrower.LastName}, {f.BorrowingRecord.Borrower.FirstName}",
+            book = f.BorrowingRecord.Book.Title,
+            amount = f.Amount.ToString("F2"),
+            dueDate = f.BorrowingRecord.DueDate.ToString("MMM dd, yyyy"),
+            calculatedAt = f.CalculatedAt.ToString("MMM dd, yyyy")
+        });
+
+        return Json(data);
+    }
+
+    [HttpGet]
+    public async Task<IActionResult> GetActiveBorrowings()
+    {
+        var records = await _db.BorrowingRecords
+            .Where(r => r.Status == "Active")
+            .Include(r => r.Book)
+            .Include(r => r.Borrower)
+            .OrderByDescending(r => r.BorrowedAt)
+            .ToListAsync();
+
+        var data = records.Select(r => new
+        {
+            borrower = $"{r.Borrower.LastName}, {r.Borrower.FirstName}",
+            book = r.Book.Title,
+            borrowedAt = r.BorrowedAt.ToString("MMM dd, yyyy"),
+            dueDate = r.DueDate.ToString("MMM dd, yyyy")
+        });
+
+        return Json(data);
+    }
+
+    [HttpGet]
+    public async Task<IActionResult> GetOverdueBorrowings()
+    {
+        var records = await _db.BorrowingRecords
+            .Where(r => r.Status == "Active" && r.DueDate < DateTime.UtcNow)
+            .Include(r => r.Book)
+            .Include(r => r.Borrower)
+            .OrderBy(r => r.DueDate)
+            .ToListAsync();
+
+        var data = records.Select(r => new
+        {
+            borrower = $"{r.Borrower.LastName}, {r.Borrower.FirstName}",
+            book = r.Book.Title,
+            borrowedAt = r.BorrowedAt.ToString("MMM dd, yyyy"),
+            dueDate = r.DueDate.ToString("MMM dd, yyyy"),
+            daysOverdue = (DateTime.UtcNow - r.DueDate).Days
+        });
+
+        return Json(data);
     }
 }

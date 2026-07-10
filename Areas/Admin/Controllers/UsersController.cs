@@ -24,11 +24,15 @@ public class UsersController : Controller
         _auditLog = auditLog;
     }
 
-    public async Task<IActionResult> Index()
-    {
-        var users = await _userManager.Users.ToListAsync();
-        var userViewModels = new List<RegisterViewModel>();
+    private const int PageSize = 20;
 
+    public async Task<IActionResult> Index(int page = 1)
+    {
+        var query = _userManager.Users.OrderBy(u => u.UserName);
+        var total = await query.CountAsync();
+        var users = await query.Skip((page - 1) * PageSize).Take(PageSize).ToListAsync();
+
+        var userViewModels = new List<RegisterViewModel>();
         foreach (var user in users)
         {
             var roles = await _userManager.GetRolesAsync(user);
@@ -43,15 +47,46 @@ public class UsersController : Controller
             });
         }
 
+        ViewBag.Page = page;
+        ViewBag.TotalPages = (int)Math.Ceiling(total / (double)PageSize);
         return View(userViewModels);
     }
 
-    public IActionResult Create() => View();
+    [HttpGet]
+    public async Task<IActionResult> GetUser(string id)
+    {
+        var user = await _userManager.FindByIdAsync(id);
+        if (user == null) return NotFound();
+
+        var roles = await _userManager.GetRolesAsync(user);
+        return Json(new
+        {
+            id = user.Id,
+            firstName = user.FirstName,
+            lastName = user.LastName,
+            email = user.Email ?? "",
+            userName = user.UserName ?? "",
+            role = roles.FirstOrDefault() ?? "AssistantLibrarian"
+        });
+    }
 
     [HttpPost]
-    public async Task<IActionResult> Create(RegisterViewModel model)
+    public async Task<IActionResult> Create([FromForm] RegisterViewModel model)
     {
-        if (!ModelState.IsValid) return View(model);
+        if (!ModelState.IsValid)
+        {
+            var errors = string.Join(" ", ModelState.Values
+                .SelectMany(v => v.Errors)
+                .Select(e => e.ErrorMessage));
+            return Json(new { success = false, error = errors });
+        }
+
+        if (model.Role == "Admin")
+        {
+            var existingAdmins = await _userManager.GetUsersInRoleAsync("Admin");
+            if (existingAdmins.Any())
+                return Json(new { success = false, error = "An admin account already exists. Only one admin is allowed." });
+        }
 
         var user = new ApplicationUser
         {
@@ -59,7 +94,6 @@ public class UsersController : Controller
             Email = model.Email,
             FirstName = model.FirstName,
             LastName = model.LastName,
-            Role = model.Role,
             EmailConfirmed = true
         };
 
@@ -68,88 +102,63 @@ public class UsersController : Controller
         {
             await _userManager.AddToRoleAsync(user, model.Role);
             await _auditLog.LogAsync("Create", "User", user.Id, $"Created user \"{model.UserName}\" with role {model.Role}");
-            TempData["Success"] = "User created successfully.";
-            return RedirectToAction("Index");
+            return Json(new { success = true, message = "User created successfully." });
         }
 
-        foreach (var error in result.Errors)
-            ModelState.AddModelError(string.Empty, error.Description);
-
-        return View(model);
-    }
-
-    public async Task<IActionResult> Edit(string id)
-    {
-        var user = await _userManager.FindByIdAsync(id);
-        if (user == null) return NotFound();
-
-        var roles = await _userManager.GetRolesAsync(user);
-        var model = new RegisterViewModel
-        {
-            Id = user.Id,
-            FirstName = user.FirstName,
-            LastName = user.LastName,
-            Email = user.Email ?? "",
-            UserName = user.UserName ?? "",
-            Role = roles.FirstOrDefault() ?? "AssistantLibrarian"
-        };
-        return View(model);
+        return Json(new { success = false, error = string.Join(" ", result.Errors.Select(e => e.Description)) });
     }
 
     [HttpPost]
-    public async Task<IActionResult> Edit(string id, RegisterViewModel model)
+    public async Task<IActionResult> Edit([FromForm] RegisterViewModel model)
     {
-        if (id != model.Id) return NotFound();
+        if (string.IsNullOrWhiteSpace(model.Id))
+            return Json(new { success = false, error = "User ID is required." });
 
-        var user = await _userManager.FindByIdAsync(id);
-        if (user == null) return NotFound();
+        var user = await _userManager.FindByIdAsync(model.Id);
+        if (user == null)
+            return Json(new { success = false, error = "User not found." });
+
+        if (model.Role == "Admin")
+        {
+            var existingAdmins = await _userManager.GetUsersInRoleAsync("Admin");
+            if (existingAdmins.Any(a => a.Id != user.Id))
+                return Json(new { success = false, error = "An admin account already exists. Only one admin is allowed." });
+        }
 
         user.FirstName = model.FirstName;
         user.LastName = model.LastName;
         user.Email = model.Email;
         user.UserName = model.UserName;
-        user.Role = model.Role;
 
         var result = await _userManager.UpdateAsync(user);
         if (!result.Succeeded)
-        {
-            foreach (var error in result.Errors)
-                ModelState.AddModelError(string.Empty, error.Description);
-            return View(model);
-        }
+            return Json(new { success = false, error = string.Join(" ", result.Errors.Select(e => e.Description)) });
 
         var currentRoles = await _userManager.GetRolesAsync(user);
         await _userManager.RemoveFromRolesAsync(user, currentRoles);
         await _userManager.AddToRoleAsync(user, model.Role);
 
         await _auditLog.LogAsync("Update", "User", user.Id, $"Updated user \"{model.UserName}\" to role {model.Role}");
-        TempData["Success"] = "User updated.";
-        return RedirectToAction("Index");
+        return Json(new { success = true, message = "User updated successfully." });
     }
 
     [HttpPost]
     public async Task<IActionResult> Delete(string id)
     {
         var user = await _userManager.FindByIdAsync(id);
-        if (user == null) return NotFound();
+        if (user == null)
+            return Json(new { success = false, message = "User not found." });
 
         if (user.UserName == "admin")
-        {
-            TempData["Error"] = "Cannot delete the admin account.";
-            return RedirectToAction("Index");
-        }
+            return Json(new { success = false, message = "Cannot delete the admin account." });
 
         var result = await _userManager.DeleteAsync(user);
         if (result.Succeeded)
         {
             await _auditLog.LogAsync("Delete", "User", id, $"Deleted user \"{user.UserName}\"");
-            TempData["Success"] = "User deleted.";
-        }
-        else
-        {
-            TempData["Error"] = "Failed to delete user.";
+            return Json(new { success = true, message = "User deleted." });
         }
 
-        return RedirectToAction("Index");
+        return Json(new { success = false, message = "Failed to delete user." });
     }
 }

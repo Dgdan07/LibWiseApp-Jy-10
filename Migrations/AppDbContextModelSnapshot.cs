@@ -75,10 +75,6 @@ namespace LibWiseApp.Migrations
                     b.Property<bool>("PhoneNumberConfirmed")
                         .HasColumnType("tinyint(1)");
 
-                    b.Property<string>("Role")
-                        .IsRequired()
-                        .HasColumnType("longtext");
-
                     b.Property<string>("SecurityStamp")
                         .HasColumnType("longtext");
 
@@ -138,7 +134,7 @@ namespace LibWiseApp.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("AuditLogs");
+                    b.ToTable("AuditLogs", (string)null);
                 });
 
             modelBuilder.Entity("LibWiseApp.Models.Book", b =>
@@ -194,7 +190,7 @@ namespace LibWiseApp.Migrations
 
                     b.HasIndex("CategoryId");
 
-                    b.ToTable("Books");
+                    b.ToTable("Books", (string)null);
                 });
 
             modelBuilder.Entity("LibWiseApp.Models.BookStatusLog", b =>
@@ -227,7 +223,7 @@ namespace LibWiseApp.Migrations
 
                     b.HasIndex("ChangedByUserId");
 
-                    b.ToTable("BookStatusLogs");
+                    b.ToTable("BookStatusLogs", (string)null);
                 });
 
             modelBuilder.Entity("LibWiseApp.Models.Borrower", b =>
@@ -285,7 +281,7 @@ namespace LibWiseApp.Migrations
                     b.HasIndex("Barcode")
                         .IsUnique();
 
-                    b.ToTable("Borrowers");
+                    b.ToTable("Borrowers", (string)null);
                 });
 
             modelBuilder.Entity("LibWiseApp.Models.BorrowingRecord", b =>
@@ -330,6 +326,9 @@ namespace LibWiseApp.Migrations
                         .HasMaxLength(20)
                         .HasColumnType("varchar(20)");
 
+                    b.Property<bool>("WasExtended")
+                        .HasColumnType("tinyint(1)");
+
                     b.HasKey("Id");
 
                     b.HasIndex("BookId");
@@ -340,7 +339,7 @@ namespace LibWiseApp.Migrations
 
                     b.HasIndex("ReturnedByUserId");
 
-                    b.ToTable("BorrowingRecords");
+                    b.ToTable("BorrowingRecords", (string)null);
                 });
 
             modelBuilder.Entity("LibWiseApp.Models.Category", b =>
@@ -360,7 +359,7 @@ namespace LibWiseApp.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Categories");
+                    b.ToTable("Categories", (string)null);
                 });
 
             modelBuilder.Entity("LibWiseApp.Models.Fine", b =>
@@ -399,7 +398,7 @@ namespace LibWiseApp.Migrations
 
                     b.HasIndex("PaidByUserId");
 
-                    b.ToTable("Fines");
+                    b.ToTable("Fines", (string)null);
                 });
 
             modelBuilder.Entity("LibWiseApp.Models.FineRule", b =>
@@ -422,7 +421,7 @@ namespace LibWiseApp.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("FineRules");
+                    b.ToTable("FineRules", (string)null);
                 });
 
             modelBuilder.Entity("LibWiseApp.Models.SystemConfig", b =>
@@ -445,7 +444,7 @@ namespace LibWiseApp.Migrations
                     b.HasIndex("Key")
                         .IsUnique();
 
-                    b.ToTable("SystemConfigs");
+                    b.ToTable("SystemConfigs", (string)null);
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>

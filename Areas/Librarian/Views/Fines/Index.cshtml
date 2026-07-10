@@ -5,9 +5,9 @@
 <h2><i class="bi bi-cash-coin me-2"></i>Fines Management</h2>
 <hr />
 
-@if (TempData["Success"] != null)
+@if (TempData["Receipt"] != null)
 {
-    <div class="alert alert-success alert-dismissible fade show">@TempData["Success"]<button type="button" class="btn-close" data-bs-dismiss="alert"></button></div>
+    <div id="receiptData" data-message="@TempData["Success"]" data-receipt="@TempData["Receipt"]" style="display:none;"></div>
 }
 
 <ul class="nav nav-tabs mb-3">
@@ -17,7 +17,7 @@
 </ul>
 
 <div class="card">
-    <div class="card-body p-0">
+    <div class="card-body p-0 table-responsive">
         <table class="table table-striped mb-0">
             <thead class="table-dark">
                 <tr>
@@ -65,3 +65,47 @@
         </table>
     </div>
 </div>
+
+<partial name="_Pagination" />
+
+<!-- Receipt Modal -->
+<div class="modal fade" id="receiptModal" tabindex="-1">
+    <div class="modal-dialog modal-sm">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title"><i class="bi bi-receipt me-1"></i>Payment Receipt</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body" id="receiptBody"></div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary" onclick="printReceipt()"><i class="bi bi-printer"></i> Print</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        $(function() {
+            var data = document.getElementById('receiptData');
+            if (data) {
+                showToast(data.dataset.message, 'success');
+                var r = data.dataset.receipt;
+                if (r) {
+                    setTimeout(function() {
+                        var parts = r.split(' | ');
+                        var html = '<div class="text-center mb-3"><i class="bi bi-check-circle-fill text-success fs-1"></i></div><table class="table table-sm table-borderless">';
+                        parts.forEach(function(p) {
+                            var kv = p.split(': ');
+                            html += '<tr><td class="text-muted">' + kv[0] + '</td><td class="text-end fw-semibold">' + (kv[1] || '') + '</td></tr>';
+                        });
+                        html += '</table>';
+                        document.getElementById('receiptBody').innerHTML = html;
+                        new bootstrap.Modal(document.getElementById('receiptModal')).show();
+                    }, 500);
+                }
+            }
+        });
+    </script>
+}

@@ -6,26 +6,41 @@
 <hr />
 <div class="row">
     <div class="col-md-4 mb-3">
-        <div class="card text-bg-primary">
+        <div class="card border-0 shadow-sm dashboard-card" style="border-left: 4px solid #4361ee;">
             <div class="card-body">
-                <h5 class="card-title">Today's Borrowings</h5>
-                <p class="card-text display-6">@ViewBag.TodayBorrowings</p>
+                <div class="d-flex justify-content-between align-items-start">
+                    <div class="flex-grow-1">
+                        <p class="text-muted small mb-1">Today's Borrowings</p>
+                        <p class="fs-3 fw-semibold mb-0 text-end">@ViewBag.TodayBorrowings</p>
+                    </div>
+                    <i class="bi bi-arrow-right-circle fs-3 ms-3" style="color: #4361ee;"></i>
+                </div>
             </div>
         </div>
     </div>
     <div class="col-md-4 mb-3">
-        <div class="card text-bg-success">
+        <div class="card border-0 shadow-sm dashboard-card" style="border-left: 4px solid #10b981;">
             <div class="card-body">
-                <h5 class="card-title">Today's Returns</h5>
-                <p class="card-text display-6">@ViewBag.TodayReturns</p>
+                <div class="d-flex justify-content-between align-items-start">
+                    <div class="flex-grow-1">
+                        <p class="text-muted small mb-1">Today's Returns</p>
+                        <p class="fs-3 fw-semibold mb-0 text-end">@ViewBag.TodayReturns</p>
+                    </div>
+                    <i class="bi bi-arrow-left-circle fs-3 ms-3" style="color: #10b981;"></i>
+                </div>
             </div>
         </div>
     </div>
     <div class="col-md-4 mb-3">
-        <div class="card text-bg-warning">
+        <div class="card border-0 shadow-sm dashboard-card" style="border-left: 4px solid #0891b2;">
             <div class="card-body">
-                <h5 class="card-title">Fines Collected</h5>
-                <p class="card-text display-6">PHP @ViewBag.TodayFinesCollected.ToString("F2")</p>
+                <div class="d-flex justify-content-between align-items-start">
+                    <div class="flex-grow-1">
+                        <p class="text-muted small mb-1">Fines Collected</p>
+                        <p class="fs-3 fw-semibold mb-0 text-end">₱ @ViewBag.TodayFinesCollected.ToString("N2")</p>
+                    </div>
+                    <i class="bi bi-cash-coin fs-3 ms-3" style="color: #0891b2;"></i>
+                </div>
             </div>
         </div>
     </div>

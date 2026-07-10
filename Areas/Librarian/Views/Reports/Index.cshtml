@@ -8,7 +8,7 @@
 <hr />
 <div class="row">
     <div class="col-md-3 mb-3">
-        <div class="card text-bg-warning">
+        <div class="card text-bg-warning" style="cursor: pointer;" onclick="showActiveBorrowings()">
             <div class="card-body">
                 <h5 class="card-title">Active Borrowings</h5>
                 <p class="card-text display-6">@ViewBag.ActiveBorrowings</p>
@@ -16,7 +16,7 @@
         </div>
     </div>
     <div class="col-md-3 mb-3">
-        <div class="card text-bg-danger">
+        <div class="card text-bg-danger" style="cursor: pointer;" onclick="showOverdueBorrowings()">
             <div class="card-body">
                 <h5 class="card-title">Overdue</h5>
                 <p class="card-text display-6">@ViewBag.OverdueCount</p>
@@ -35,7 +35,7 @@
         <div class="card text-bg-info">
             <div class="card-body">
                 <h5 class="card-title">Unpaid Fines</h5>
-                <p class="card-text display-6">PHP @ViewBag.UnpaidFinesTotal.ToString("F0")</p>
+                <p class="card-text display-6">@ViewBag.UnpaidFinesCount</p>
             </div>
         </div>
     </div>
@@ -43,7 +43,7 @@
 
 <h4 class="mt-4">Overdue Books</h4>
 <div class="card mb-4">
-    <div class="card-body p-0">
+    <div class="card-body p-0 table-responsive">
         <table class="table table-striped mb-0">
             <thead class="table-dark">
                 <tr><th>Book</th><th>Borrower</th><th>Due Date</th><th>Days Overdue</th></tr>
@@ -69,7 +69,7 @@
 
 <h4>Recent Returns (7 Days)</h4>
 <div class="card">
-    <div class="card-body p-0">
+    <div class="card-body p-0 table-responsive">
         <table class="table table-striped mb-0">
             <thead class="table-dark">
                 <tr><th>Book</th><th>Borrower</th><th>Returned</th><th>Status</th></tr>
@@ -92,3 +92,83 @@
         </table>
     </div>
 </div>
+
+<!-- Active Borrowings Modal -->
+<div class="modal fade" id="activeBorrowingsModal" tabindex="-1">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title"><i class="bi bi-arrow-right-circle me-1"></i>Active Borrowings</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body p-0 table-responsive">
+                <table class="table table-striped mb-0">
+                    <thead class="table-dark">
+                        <tr><th>Borrower</th><th>Book</th><th>Borrowed</th><th>Due</th></tr>
+                    </thead>
+                    <tbody id="activeBorrowingsBody">
+                        <tr><td colspan="4" class="text-center text-muted py-3">Loading...</td></tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Overdue Borrowings Modal -->
+<div class="modal fade" id="overdueBorrowingsModal" tabindex="-1">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title"><i class="bi bi-exclamation-triangle me-1"></i>Overdue Borrowings</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body p-0 table-responsive">
+                <table class="table table-striped mb-0">
+                    <thead class="table-dark">
+                        <tr><th>Borrower</th><th>Book</th><th>Borrowed</th><th>Due</th><th>Days Overdue</th></tr>
+                    </thead>
+                    <tbody id="overdueBorrowingsBody">
+                        <tr><td colspan="5" class="text-center text-muted py-3">Loading...</td></tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    function showActiveBorrowings() {
+        fetch('/Librarian/Reports/GetActiveBorrowings')
+            .then(r => r.json())
+            .then(data => {
+                let tbody = document.getElementById('activeBorrowingsBody');
+                if (data.length === 0) {
+                    tbody.innerHTML = '<tr><td colspan="4" class="text-center text-muted py-3">No active borrowings.</td></tr>';
+                } else {
+                    tbody.innerHTML = data.map(r => '<tr><td>' + r.borrower + '</td><td>' + r.book + '</td><td>' + r.borrowedAt + '</td><td>' + r.dueDate + '</td></tr>').join('');
+                }
+                new bootstrap.Modal(document.getElementById('activeBorrowingsModal')).show();
+            });
+    }
+
+    function showOverdueBorrowings() {
+        fetch('/Librarian/Reports/GetOverdueBorrowings')
+            .then(r => r.json())
+            .then(data => {
+                let tbody = document.getElementById('overdueBorrowingsBody');
+                if (data.length === 0) {
+                    tbody.innerHTML = '<tr><td colspan="5" class="text-center text-muted py-3">No overdue borrowings.</td></tr>';
+                } else {
+                    tbody.innerHTML = data.map(r => '<tr><td>' + r.borrower + '</td><td>' + r.book + '</td><td>' + r.borrowedAt + '</td><td>' + r.dueDate + '</td><td>' + r.daysOverdue + '</td></tr>').join('');
+                }
+                new bootstrap.Modal(document.getElementById('overdueBorrowingsModal')).show();
+            });
+    }
+</script>

@@ -4,6 +4,7 @@ using Microsoft.EntityFrameworkCore;
 using LibWiseApp.Data;
 using LibWiseApp.Models;
 using LibWiseApp.Services;
+using System.Threading.Tasks;
 
 namespace LibWiseApp.Areas.Librarian.Controllers;
 
@@ -43,6 +44,18 @@ public class BorrowersController : Controller
         ViewBag.Page = page;
         ViewBag.TotalPages = (int)Math.Ceiling(total / (double)PageSize);
         return View(items);
+    }
+
+    [AcceptVerbs("GET", "POST")]
+    public async Task<IActionResult> CheckBarcode(string barcode, int? id)
+    {
+        if (string.IsNullOrWhiteSpace(barcode)) return Json(true);
+
+        var exists = id.HasValue
+            ? await _db.Borrowers.AnyAsync(b => b.Barcode == barcode && b.Id != id.Value)
+            : await _db.Borrowers.AnyAsync(b => b.Barcode == barcode);
+
+        return Json(!exists);
     }
 
     public IActionResult Create() => View();

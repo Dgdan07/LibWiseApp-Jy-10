@@ -15,12 +15,14 @@ public class BorrowingController : Controller
     private readonly AppDbContext _db;
     private readonly UserManager<ApplicationUser> _userManager;
     private readonly AuditLogService _auditLog;
+    private readonly BorrowingService _borrowingService;
 
-    public BorrowingController(AppDbContext db, UserManager<ApplicationUser> userManager, AuditLogService auditLog)
+    public BorrowingController(AppDbContext db, UserManager<ApplicationUser> userManager, AuditLogService auditLog, BorrowingService borrowingService)
     {
         _db = db;
         _userManager = userManager;
         _auditLog = auditLog;
+        _borrowingService = borrowingService;
     }
 
     public IActionResult Index() => View();
@@ -28,46 +30,22 @@ public class BorrowingController : Controller
     [HttpPost]
     public async Task<IActionResult> Process(string borrowerBarcode, int bookId)
     {
-        var borrower = await _db.Borrowers.FirstOrDefaultAsync(b => b.Barcode == borrowerBarcode && b.IsActive);
-        if (borrower == null)
-            return Json(new { success = false, message = "Borrower not found." });
+        var (success, message, record) = await _borrowingService.BorrowBookAsync(
+            borrowerBarcode, bookId, _userManager.GetUserId(User)!);
 
-        var book = await _db.Books.FindAsync(bookId);
-        if (book == null)
-            return Json(new { success = false, message = "Book not found." });
+        if (!success)
+            return Json(new { success = false, message });
 
-        if (book.AvailableCopies <= 0)
-            return Json(new { success = false, message = "No available copies." });
+        return Json(new { success = true, message = $"\"{record!.Book.Title}\" borrowed. Due: {record.DueDate:MMM dd, yyyy}" });
+    }
 
-        var fineRule = await _db.FineRules.FirstOrDefaultAsync(r => r.IsActive);
-        var dueDate = DateTime.UtcNow.AddDays(fineRule?.DaysAllowed ?? 14);
+    [HttpPost]
+    public async Task<IActionResult> Extend(int recordId)
+    {
+        var (success, message) = await _borrowingService.ExtendBorrowingAsync(
+            recordId, _userManager.GetUserId(User)!);
 
-        var record = new BorrowingRecord
-        {
-            BookId = book.Id,
-            BorrowerId = borrower.Id,
-            BorrowerBarcode = borrowerBarcode,
-            BorrowedByUserId = _userManager.GetUserId(User)!,
-            BorrowedAt = DateTime.UtcNow,
-            DueDate = dueDate,
-            Status = "Active"
-        };
-
-        book.AvailableCopies--;
-
-        _db.BorrowingRecords.Add(record);
-        _db.BookStatusLogs.Add(new BookStatusLog
-        {
-            BookId = book.Id,
-            Status = "Borrowed",
-            ChangedByUserId = _userManager.GetUserId(User),
-            Remarks = $"Borrowed by {borrower.FirstName} {borrower.LastName} (AL)"
-        });
-
-        await _db.SaveChangesAsync();
-        await _auditLog.LogAsync("Borrow", "BorrowingRecord", "", $"Book \"{book.Title}\" (ID:{book.Id}) borrowed (AL) by borrower barcode:{borrowerBarcode}");
-
-        return Json(new { success = true, message = $"\"{book.Title}\" borrowed. Due: {dueDate:MMM dd, yyyy}" });
+        return Json(new { success, message });
     }
 
     [HttpGet]

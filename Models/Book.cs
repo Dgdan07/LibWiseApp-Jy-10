@@ -24,10 +24,13 @@ public class Book
     [ForeignKey(nameof(CategoryId))]
     public Category? Category { get; set; }
 
+    [Required, Range(1000, 2100)]
     public int PublicationYear { get; set; }
 
+    [Required, Range(1, int.MaxValue, ErrorMessage = "Total copies must be at least 1.")]
     public int TotalCopies { get; set; } = 1;
 
+    [Required, Range(0, int.MaxValue)]
     public int AvailableCopies { get; set; } = 1;
 
     [MaxLength(100)]

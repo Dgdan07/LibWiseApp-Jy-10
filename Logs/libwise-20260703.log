@@ -1,0 +1,414 @@
+2026-07-03 11:27:49.408 +08:00 [FTL] LibWiseApp terminated unexpectedly
+Microsoft.Extensions.Hosting.HostAbortedException: The host was aborted.
+   at Microsoft.Extensions.Hosting.HostFactoryResolver.HostingListener.ThrowHostAborted()
+   at Microsoft.Extensions.Hosting.HostFactoryResolver.HostingListener.OnNext(KeyValuePair`2 value)
+   at System.Diagnostics.DiagnosticListener.Write(String name, Object value)
+   at System.Diagnostics.DiagnosticSource.Write[T](String name, T value)
+   at Microsoft.Extensions.Hosting.HostBuilder.ResolveHost(IServiceProvider serviceProvider, DiagnosticListener diagnosticListener)
+   at Microsoft.Extensions.Hosting.HostApplicationBuilder.Build()
+   at Microsoft.AspNetCore.Builder.WebApplicationBuilder.Build()
+   at Program.<Main>$(String[] args) in C:\Users\Loise\Downloads\IT15 for opencode\LibWiseApp\Program.cs:line 55
+2026-07-03 11:37:18.759 +08:00 [FTL] LibWiseApp terminated unexpectedly
+Microsoft.Extensions.Hosting.HostAbortedException: The host was aborted.
+   at Microsoft.Extensions.Hosting.HostFactoryResolver.HostingListener.ThrowHostAborted()
+   at Microsoft.Extensions.Hosting.HostFactoryResolver.HostingListener.OnNext(KeyValuePair`2 value)
+   at System.Diagnostics.DiagnosticListener.Write(String name, Object value)
+   at System.Diagnostics.DiagnosticSource.Write[T](String name, T value)
+   at Microsoft.Extensions.Hosting.HostBuilder.ResolveHost(IServiceProvider serviceProvider, DiagnosticListener diagnosticListener)
+   at Microsoft.Extensions.Hosting.HostApplicationBuilder.Build()
+   at Microsoft.AspNetCore.Builder.WebApplicationBuilder.Build()
+   at Program.<Main>$(String[] args) in C:\Users\Loise\Downloads\IT15 for opencode\LibWiseApp\Program.cs:line 56
+2026-07-03 19:55:02.814 +08:00 [ERR] Failed executing DbCommand (6ms) [Parameters=[@p0='?' (Size = 200), @p1='?' (Size = 50), @p2='?' (DbType = DateTime), @p3='?' (Size = 4000), @p4='?' (Size = 150), @p5='?' (Size = 100), @p6='?' (Size = 50), @p7='?' (Size = 50), @p8='?' (DbType = Boolean), @p9='?' (Size = 100), @p10='?' (Size = 20), @p11='?' (Size = 200), @p12='?' (Size = 50), @p13='?' (DbType = DateTime), @p14='?' (Size = 4000), @p15='?' (Size = 150), @p16='?' (Size = 100), @p17='?' (Size = 50), @p18='?' (Size = 50), @p19='?' (DbType = Boolean), @p20='?' (Size = 100), @p21='?' (Size = 20), @p22='?' (Size = 200), @p23='?' (Size = 50), @p24='?' (DbType = DateTime), @p25='?' (Size = 4000), @p26='?' (Size = 150), @p27='?' (Size = 100), @p28='?' (Size = 50), @p29='?' (Size = 50), @p30='?' (DbType = Boolean), @p31='?' (Size = 100), @p32='?' (Size = 20), @p33='?' (Size = 200), @p34='?' (Size = 50), @p35='?' (DbType = DateTime), @p36='?' (Size = 4000), @p37='?' (Size = 150), @p38='?' (Size = 100), @p39='?' (Size = 50), @p40='?' (Size = 50), @p41='?' (DbType = Boolean), @p42='?' (Size = 100), @p43='?' (Size = 20), @p44='?' (Size = 200), @p45='?' (Size = 50), @p46='?' (DbType = DateTime), @p47='?' (Size = 4000), @p48='?' (Size = 150), @p49='?' (Size = 100), @p50='?' (Size = 50), @p51='?' (Size = 50), @p52='?' (DbType = Boolean), @p53='?' (Size = 100), @p54='?' (Size = 20), @p55='?' (Size = 200), @p56='?' (Size = 50), @p57='?' (DbType = DateTime), @p58='?' (Size = 4000), @p59='?' (Size = 150), @p60='?' (Size = 100), @p61='?' (Size = 50), @p62='?' (Size = 50), @p63='?' (DbType = Boolean), @p64='?' (Size = 100), @p65='?' (Size = 20), @p66='?' (Size = 200), @p67='?' (Size = 50), @p68='?' (DbType = DateTime), @p69='?' (Size = 4000), @p70='?' (Size = 150), @p71='?' (Size = 100), @p72='?' (Size = 50), @p73='?' (Size = 50), @p74='?' (DbType = Boolean), @p75='?' (Size = 100), @p76='?' (Size = 20), @p77='?' (Size = 200), @p78='?' (Size = 50), @p79='?' (DbType = DateTime), @p80='?' (Size = 4000), @p81='?' (Size = 150), @p82='?' (Size = 100), @p83='?' (Size = 50), @p84='?' (Size = 50), @p85='?' (DbType = Boolean), @p86='?' (Size = 100), @p87='?' (Size = 20), @p88='?' (Size = 200), @p89='?' (Size = 50), @p90='?' (DbType = DateTime), @p91='?' (Size = 4000), @p92='?' (Size = 150), @p93='?' (Size = 100), @p94='?' (Size = 50), @p95='?' (Size = 50), @p96='?' (DbType = Boolean), @p97='?' (Size = 100), @p98='?' (Size = 20), @p99='?' (Size = 200), @p100='?' (Size = 50), @p101='?' (DbType = DateTime), @p102='?' (Size = 4000), @p103='?' (Size = 150), @p104='?' (Size = 100), @p105='?' (Size = 50), @p106='?' (Size = 50), @p107='?' (DbType = Boolean), @p108='?' (Size = 100), @p109='?' (Size = 20), @p110='?' (Size = 200), @p111='?' (Size = 50), @p112='?' (DbType = DateTime), @p113='?' (Size = 4000), @p114='?' (Size = 150), @p115='?' (Size = 100), @p116='?' (Size = 50), @p117='?' (Size = 50), @p118='?' (DbType = Boolean), @p119='?' (Size = 100), @p120='?' (Size = 20), @p121='?' (Size = 200), @p122='?' (Size = 50), @p123='?' (DbType = DateTime), @p124='?' (Size = 4000), @p125='?' (Size = 150), @p126='?' (Size = 100), @p127='?' (Size = 50), @p128='?' (Size = 50), @p129='?' (DbType = Boolean), @p130='?' (Size = 100), @p131='?' (Size = 20), @p132='?' (Size = 200), @p133='?' (Size = 50), @p134='?' (DbType = DateTime), @p135='?' (Size = 4000), @p136='?' (Size = 150), @p137='?' (Size = 100), @p138='?' (Size = 50), @p139='?' (Size = 50), @p140='?' (DbType = Boolean), @p141='?' (Size = 100), @p142='?' (Size = 20), @p143='?' (Size = 200), @p144='?' (Size = 50), @p145='?' (DbType = DateTime), @p146='?' (Size = 4000), @p147='?' (Size = 150), @p148='?' (Size = 100), @p149='?' (Size = 50), @p150='?' (Size = 50), @p151='?' (DbType = Boolean), @p152='?' (Size = 100), @p153='?' (Size = 20), @p154='?' (Size = 200), @p155='?' (Size = 50), @p156='?' (DbType = DateTime), @p157='?' (Size = 4000), @p158='?' (Size = 150), @p159='?' (Size = 100), @p160='?' (Size = 50), @p161='?' (Size = 50), @p162='?' (DbType = Boolean), @p163='?' (Size = 100), @p164='?' (Size = 20), @p165='?' (Size = 200), @p166='?' (Size = 50), @p167='?' (DbType = DateTime), @p168='?' (Size = 4000), @p169='?' (Size = 150), @p170='?' (Size = 100), @p171='?' (Size = 50), @p172='?' (Size = 50), @p173='?' (DbType = Boolean), @p174='?' (Size = 100), @p175='?' (Size = 20), @p176='?' (Size = 200), @p177='?' (Size = 50), @p178='?' (DbType = DateTime), @p179='?' (Size = 4000), @p180='?' (Size = 150), @p181='?' (Size = 100), @p182='?' (Size = 50), @p183='?' (Size = 50), @p184='?' (DbType = Boolean), @p185='?' (Size = 100), @p186='?' (Size = 20), @p187='?' (Size = 200), @p188='?' (Size = 50), @p189='?' (DbType = DateTime), @p190='?' (Size = 4000), @p191='?' (Size = 150), @p192='?' (Size = 100), @p193='?' (Size = 50), @p194='?' (Size = 50), @p195='?' (DbType = Boolean), @p196='?' (Size = 100), @p197='?' (Size = 20), @p198='?' (Size = 200), @p199='?' (Size = 50), @p200='?' (DbType = DateTime), @p201='?' (Size = 4000), @p202='?' (Size = 150), @p203='?' (Size = 100), @p204='?' (Size = 50), @p205='?' (Size = 50), @p206='?' (DbType = Boolean), @p207='?' (Size = 100), @p208='?' (Size = 20), @p209='?' (Size = 200), @p210='?' (Size = 50), @p211='?' (DbType = DateTime), @p212='?' (Size = 4000), @p213='?' (Size = 150), @p214='?' (Size = 100), @p215='?' (Size = 50), @p216='?' (Size = 50), @p217='?' (DbType = Boolean), @p218='?' (Size = 100), @p219='?' (Size = 20)], CommandType='"Text"', CommandTimeout='30']
+INSERT INTO `Borrowers` (`Address`, `Barcode`, `CreatedAt`, `CreatedByUserId`, `Email`, `FirstName`, `Grade`, `IDNumber`, `IsActive`, `LastName`, `Phone`)
+VALUES (@p0, @p1, @p2, @p3, @p4, @p5, @p6, @p7, @p8, @p9, @p10);
+SELECT `Id`
+FROM `Borrowers`
+WHERE ROW_COUNT() = 1 AND `Id` = LAST_INSERT_ID();
+
+INSERT INTO `Borrowers` (`Address`, `Barcode`, `CreatedAt`, `CreatedByUserId`, `Email`, `FirstName`, `Grade`, `IDNumber`, `IsActive`, `LastName`, `Phone`)
+VALUES (@p11, @p12, @p13, @p14, @p15, @p16, @p17, @p18, @p19, @p20, @p21);
+SELECT `Id`
+FROM `Borrowers`
+WHERE ROW_COUNT() = 1 AND `Id` = LAST_INSERT_ID();
+
+INSERT INTO `Borrowers` (`Address`, `Barcode`, `CreatedAt`, `CreatedByUserId`, `Email`, `FirstName`, `Grade`, `IDNumber`, `IsActive`, `LastName`, `Phone`)
+VALUES (@p22, @p23, @p24, @p25, @p26, @p27, @p28, @p29, @p30, @p31, @p32);
+SELECT `Id`
+FROM `Borrowers`
+WHERE ROW_COUNT() = 1 AND `Id` = LAST_INSERT_ID();
+
+INSERT INTO `Borrowers` (`Address`, `Barcode`, `CreatedAt`, `CreatedByUserId`, `Email`, `FirstName`, `Grade`, `IDNumber`, `IsActive`, `LastName`, `Phone`)
+VALUES (@p33, @p34, @p35, @p36, @p37, @p38, @p39, @p40, @p41, @p42, @p43);
+SELECT `Id`
+FROM `Borrowers`
+WHERE ROW_COUNT() = 1 AND `Id` = LAST_INSERT_ID();
+
+INSERT INTO `Borrowers` (`Address`, `Barcode`, `CreatedAt`, `CreatedByUserId`, `Email`, `FirstName`, `Grade`, `IDNumber`, `IsActive`, `LastName`, `Phone`)
+VALUES (@p44, @p45, @p46, @p47, @p48, @p49, @p50, @p51, @p52, @p53, @p54);
+SELECT `Id`
+FROM `Borrowers`
+WHERE ROW_COUNT() = 1 AND `Id` = LAST_INSERT_ID();
+
+INSERT INTO `Borrowers` (`Address`, `Barcode`, `CreatedAt`, `CreatedByUserId`, `Email`, `FirstName`, `Grade`, `IDNumber`, `IsActive`, `LastName`, `Phone`)
+VALUES (@p55, @p56, @p57, @p58, @p59, @p60, @p61, @p62, @p63, @p64, @p65);
+SELECT `Id`
+FROM `Borrowers`
+WHERE ROW_COUNT() = 1 AND `Id` = LAST_INSERT_ID();
+
+INSERT INTO `Borrowers` (`Address`, `Barcode`, `CreatedAt`, `CreatedByUserId`, `Email`, `FirstName`, `Grade`, `IDNumber`, `IsActive`, `LastName`, `Phone`)
+VALUES (@p66, @p67, @p68, @p69, @p70, @p71, @p72, @p73, @p74, @p75, @p76);
+SELECT `Id`
+FROM `Borrowers`
+WHERE ROW_COUNT() = 1 AND `Id` = LAST_INSERT_ID();
+
+INSERT INTO `Borrowers` (`Address`, `Barcode`, `CreatedAt`, `CreatedByUserId`, `Email`, `FirstName`, `Grade`, `IDNumber`, `IsActive`, `LastName`, `Phone`)
+VALUES (@p77, @p78, @p79, @p80, @p81, @p82, @p83, @p84, @p85, @p86, @p87);
+SELECT `Id`
+FROM `Borrowers`
+WHERE ROW_COUNT() = 1 AND `Id` = LAST_INSERT_ID();
+
+INSERT INTO `Borrowers` (`Address`, `Barcode`, `CreatedAt`, `CreatedByUserId`, `Email`, `FirstName`, `Grade`, `IDNumber`, `IsActive`, `LastName`, `Phone`)
+VALUES (@p88, @p89, @p90, @p91, @p92, @p93, @p94, @p95, @p96, @p97, @p98);
+SELECT `Id`
+FROM `Borrowers`
+WHERE ROW_COUNT() = 1 AND `Id` = LAST_INSERT_ID();
+
+INSERT INTO `Borrowers` (`Address`, `Barcode`, `CreatedAt`, `CreatedByUserId`, `Email`, `FirstName`, `Grade`, `IDNumber`, `IsActive`, `LastName`, `Phone`)
+VALUES (@p99, @p100, @p101, @p102, @p103, @p104, @p105, @p106, @p107, @p108, @p109);
+SELECT `Id`
+FROM `Borrowers`
+WHERE ROW_COUNT() = 1 AND `Id` = LAST_INSERT_ID();
+
+INSERT INTO `Borrowers` (`Address`, `Barcode`, `CreatedAt`, `CreatedByUserId`, `Email`, `FirstName`, `Grade`, `IDNumber`, `IsActive`, `LastName`, `Phone`)
+VALUES (@p110, @p111, @p112, @p113, @p114, @p115, @p116, @p117, @p118, @p119, @p120);
+SELECT `Id`
+FROM `Borrowers`
+WHERE ROW_COUNT() = 1 AND `Id` = LAST_INSERT_ID();
+
+INSERT INTO `Borrowers` (`Address`, `Barcode`, `CreatedAt`, `CreatedByUserId`, `Email`, `FirstName`, `Grade`, `IDNumber`, `IsActive`, `LastName`, `Phone`)
+VALUES (@p121, @p122, @p123, @p124, @p125, @p126, @p127, @p128, @p129, @p130, @p131);
+SELECT `Id`
+FROM `Borrowers`
+WHERE ROW_COUNT() = 1 AND `Id` = LAST_INSERT_ID();
+
+INSERT INTO `Borrowers` (`Address`, `Barcode`, `CreatedAt`, `CreatedByUserId`, `Email`, `FirstName`, `Grade`, `IDNumber`, `IsActive`, `LastName`, `Phone`)
+VALUES (@p132, @p133, @p134, @p135, @p136, @p137, @p138, @p139, @p140, @p141, @p142);
+SELECT `Id`
+FROM `Borrowers`
+WHERE ROW_COUNT() = 1 AND `Id` = LAST_INSERT_ID();
+
+INSERT INTO `Borrowers` (`Address`, `Barcode`, `CreatedAt`, `CreatedByUserId`, `Email`, `FirstName`, `Grade`, `IDNumber`, `IsActive`, `LastName`, `Phone`)
+VALUES (@p143, @p144, @p145, @p146, @p147, @p148, @p149, @p150, @p151, @p152, @p153);
+SELECT `Id`
+FROM `Borrowers`
+WHERE ROW_COUNT() = 1 AND `Id` = LAST_INSERT_ID();
+
+INSERT INTO `Borrowers` (`Address`, `Barcode`, `CreatedAt`, `CreatedByUserId`, `Email`, `FirstName`, `Grade`, `IDNumber`, `IsActive`, `LastName`, `Phone`)
+VALUES (@p154, @p155, @p156, @p157, @p158, @p159, @p160, @p161, @p162, @p163, @p164);
+SELECT `Id`
+FROM `Borrowers`
+WHERE ROW_COUNT() = 1 AND `Id` = LAST_INSERT_ID();
+
+INSERT INTO `Borrowers` (`Address`, `Barcode`, `CreatedAt`, `CreatedByUserId`, `Email`, `FirstName`, `Grade`, `IDNumber`, `IsActive`, `LastName`, `Phone`)
+VALUES (@p165, @p166, @p167, @p168, @p169, @p170, @p171, @p172, @p173, @p174, @p175);
+SELECT `Id`
+FROM `Borrowers`
+WHERE ROW_COUNT() = 1 AND `Id` = LAST_INSERT_ID();
+
+INSERT INTO `Borrowers` (`Address`, `Barcode`, `CreatedAt`, `CreatedByUserId`, `Email`, `FirstName`, `Grade`, `IDNumber`, `IsActive`, `LastName`, `Phone`)
+VALUES (@p176, @p177, @p178, @p179, @p180, @p181, @p182, @p183, @p184, @p185, @p186);
+SELECT `Id`
+FROM `Borrowers`
+WHERE ROW_COUNT() = 1 AND `Id` = LAST_INSERT_ID();
+
+INSERT INTO `Borrowers` (`Address`, `Barcode`, `CreatedAt`, `CreatedByUserId`, `Email`, `FirstName`, `Grade`, `IDNumber`, `IsActive`, `LastName`, `Phone`)
+VALUES (@p187, @p188, @p189, @p190, @p191, @p192, @p193, @p194, @p195, @p196, @p197);
+SELECT `Id`
+FROM `Borrowers`
+WHERE ROW_COUNT() = 1 AND `Id` = LAST_INSERT_ID();
+
+INSERT INTO `Borrowers` (`Address`, `Barcode`, `CreatedAt`, `CreatedByUserId`, `Email`, `FirstName`, `Grade`, `IDNumber`, `IsActive`, `LastName`, `Phone`)
+VALUES (@p198, @p199, @p200, @p201, @p202, @p203, @p204, @p205, @p206, @p207, @p208);
+SELECT `Id`
+FROM `Borrowers`
+WHERE ROW_COUNT() = 1 AND `Id` = LAST_INSERT_ID();
+
+INSERT INTO `Borrowers` (`Address`, `Barcode`, `CreatedAt`, `CreatedByUserId`, `Email`, `FirstName`, `Grade`, `IDNumber`, `IsActive`, `LastName`, `Phone`)
+VALUES (@p209, @p210, @p211, @p212, @p213, @p214, @p215, @p216, @p217, @p218, @p219);
+SELECT `Id`
+FROM `Borrowers`
+WHERE ROW_COUNT() = 1 AND `Id` = LAST_INSERT_ID();
+2026-07-03 19:55:02.882 +08:00 [ERR] An exception occurred in the database while saving changes for context type 'LibWiseApp.Data.AppDbContext'.
+Microsoft.EntityFrameworkCore.DbUpdateException: An error occurred while saving the entity changes. See the inner exception for details.
+ ---> MySqlConnector.MySqlException (0x80004005): Duplicate entry 'BRW-001' for key 'IX_Borrowers_Barcode'
+   at MySqlConnector.Core.ServerSession.ReceiveReplyAsync(IOBehavior ioBehavior, CancellationToken cancellationToken) in /_/src/MySqlConnector/Core/ServerSession.cs:line 894
+   at MySqlConnector.Core.ResultSet.ReadResultSetHeaderAsync(IOBehavior ioBehavior) in /_/src/MySqlConnector/Core/ResultSet.cs:line 37
+   at MySqlConnector.MySqlDataReader.ActivateResultSet(CancellationToken cancellationToken) in /_/src/MySqlConnector/MySqlDataReader.cs:line 130
+   at MySqlConnector.MySqlDataReader.InitAsync(CommandListPosition commandListPosition, ICommandPayloadCreator payloadCreator, IDictionary`2 cachedProcedures, IMySqlCommand command, CommandBehavior behavior, Activity activity, IOBehavior ioBehavior, CancellationToken cancellationToken) in /_/src/MySqlConnector/MySqlDataReader.cs:line 483
+   at MySqlConnector.Core.CommandExecutor.ExecuteReaderAsync(CommandListPosition commandListPosition, ICommandPayloadCreator payloadCreator, CommandBehavior behavior, Activity activity, IOBehavior ioBehavior, CancellationToken cancellationToken) in /_/src/MySqlConnector/Core/CommandExecutor.cs:line 56
+   at MySqlConnector.MySqlCommand.ExecuteReaderAsync(CommandBehavior behavior, IOBehavior ioBehavior, CancellationToken cancellationToken) in /_/src/MySqlConnector/MySqlCommand.cs:line 357
+   at MySqlConnector.MySqlCommand.ExecuteDbDataReaderAsync(CommandBehavior behavior, CancellationToken cancellationToken) in /_/src/MySqlConnector/MySqlCommand.cs:line 350
+   at Microsoft.EntityFrameworkCore.Storage.RelationalCommand.ExecuteReaderAsync(RelationalCommandParameterObject parameterObject, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Storage.RelationalCommand.ExecuteReaderAsync(RelationalCommandParameterObject parameterObject, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Update.ReaderModificationCommandBatch.ExecuteAsync(IRelationalConnection connection, CancellationToken cancellationToken)
+   --- End of inner exception stack trace ---
+   at Microsoft.EntityFrameworkCore.Update.ReaderModificationCommandBatch.ExecuteAsync(IRelationalConnection connection, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Update.Internal.BatchExecutor.ExecuteAsync(IEnumerable`1 commandBatches, IRelationalConnection connection, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Update.Internal.BatchExecutor.ExecuteAsync(IEnumerable`1 commandBatches, IRelationalConnection connection, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Update.Internal.BatchExecutor.ExecuteAsync(IEnumerable`1 commandBatches, IRelationalConnection connection, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.ChangeTracking.Internal.StateManager.SaveChangesAsync(IList`1 entriesToSave, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.ChangeTracking.Internal.StateManager.SaveChangesAsync(StateManager stateManager, Boolean acceptAllChangesOnSuccess, CancellationToken cancellationToken)
+   at Pomelo.EntityFrameworkCore.MySql.Storage.Internal.MySqlExecutionStrategy.ExecuteAsync[TState,TResult](TState state, Func`4 operation, Func`4 verifySucceeded, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.DbContext.SaveChangesAsync(Boolean acceptAllChangesOnSuccess, CancellationToken cancellationToken)
+Microsoft.EntityFrameworkCore.DbUpdateException: An error occurred while saving the entity changes. See the inner exception for details.
+ ---> MySqlConnector.MySqlException (0x80004005): Duplicate entry 'BRW-001' for key 'IX_Borrowers_Barcode'
+   at MySqlConnector.Core.ServerSession.ReceiveReplyAsync(IOBehavior ioBehavior, CancellationToken cancellationToken) in /_/src/MySqlConnector/Core/ServerSession.cs:line 894
+   at MySqlConnector.Core.ResultSet.ReadResultSetHeaderAsync(IOBehavior ioBehavior) in /_/src/MySqlConnector/Core/ResultSet.cs:line 37
+   at MySqlConnector.MySqlDataReader.ActivateResultSet(CancellationToken cancellationToken) in /_/src/MySqlConnector/MySqlDataReader.cs:line 130
+   at MySqlConnector.MySqlDataReader.InitAsync(CommandListPosition commandListPosition, ICommandPayloadCreator payloadCreator, IDictionary`2 cachedProcedures, IMySqlCommand command, CommandBehavior behavior, Activity activity, IOBehavior ioBehavior, CancellationToken cancellationToken) in /_/src/MySqlConnector/MySqlDataReader.cs:line 483
+   at MySqlConnector.Core.CommandExecutor.ExecuteReaderAsync(CommandListPosition commandListPosition, ICommandPayloadCreator payloadCreator, CommandBehavior behavior, Activity activity, IOBehavior ioBehavior, CancellationToken cancellationToken) in /_/src/MySqlConnector/Core/CommandExecutor.cs:line 56
+   at MySqlConnector.MySqlCommand.ExecuteReaderAsync(CommandBehavior behavior, IOBehavior ioBehavior, CancellationToken cancellationToken) in /_/src/MySqlConnector/MySqlCommand.cs:line 357
+   at MySqlConnector.MySqlCommand.ExecuteDbDataReaderAsync(CommandBehavior behavior, CancellationToken cancellationToken) in /_/src/MySqlConnector/MySqlCommand.cs:line 350
+   at Microsoft.EntityFrameworkCore.Storage.RelationalCommand.ExecuteReaderAsync(RelationalCommandParameterObject parameterObject, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Storage.RelationalCommand.ExecuteReaderAsync(RelationalCommandParameterObject parameterObject, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Update.ReaderModificationCommandBatch.ExecuteAsync(IRelationalConnection connection, CancellationToken cancellationToken)
+   --- End of inner exception stack trace ---
+   at Microsoft.EntityFrameworkCore.Update.ReaderModificationCommandBatch.ExecuteAsync(IRelationalConnection connection, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Update.Internal.BatchExecutor.ExecuteAsync(IEnumerable`1 commandBatches, IRelationalConnection connection, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Update.Internal.BatchExecutor.ExecuteAsync(IEnumerable`1 commandBatches, IRelationalConnection connection, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Update.Internal.BatchExecutor.ExecuteAsync(IEnumerable`1 commandBatches, IRelationalConnection connection, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.ChangeTracking.Internal.StateManager.SaveChangesAsync(IList`1 entriesToSave, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.ChangeTracking.Internal.StateManager.SaveChangesAsync(StateManager stateManager, Boolean acceptAllChangesOnSuccess, CancellationToken cancellationToken)
+   at Pomelo.EntityFrameworkCore.MySql.Storage.Internal.MySqlExecutionStrategy.ExecuteAsync[TState,TResult](TState state, Func`4 operation, Func`4 verifySucceeded, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.DbContext.SaveChangesAsync(Boolean acceptAllChangesOnSuccess, CancellationToken cancellationToken)
+2026-07-03 19:55:02.898 +08:00 [FTL] LibWiseApp terminated unexpectedly
+Microsoft.EntityFrameworkCore.DbUpdateException: An error occurred while saving the entity changes. See the inner exception for details.
+ ---> MySqlConnector.MySqlException (0x80004005): Duplicate entry 'BRW-001' for key 'IX_Borrowers_Barcode'
+   at MySqlConnector.Core.ServerSession.ReceiveReplyAsync(IOBehavior ioBehavior, CancellationToken cancellationToken) in /_/src/MySqlConnector/Core/ServerSession.cs:line 894
+   at MySqlConnector.Core.ResultSet.ReadResultSetHeaderAsync(IOBehavior ioBehavior) in /_/src/MySqlConnector/Core/ResultSet.cs:line 37
+   at MySqlConnector.MySqlDataReader.ActivateResultSet(CancellationToken cancellationToken) in /_/src/MySqlConnector/MySqlDataReader.cs:line 130
+   at MySqlConnector.MySqlDataReader.InitAsync(CommandListPosition commandListPosition, ICommandPayloadCreator payloadCreator, IDictionary`2 cachedProcedures, IMySqlCommand command, CommandBehavior behavior, Activity activity, IOBehavior ioBehavior, CancellationToken cancellationToken) in /_/src/MySqlConnector/MySqlDataReader.cs:line 483
+   at MySqlConnector.Core.CommandExecutor.ExecuteReaderAsync(CommandListPosition commandListPosition, ICommandPayloadCreator payloadCreator, CommandBehavior behavior, Activity activity, IOBehavior ioBehavior, CancellationToken cancellationToken) in /_/src/MySqlConnector/Core/CommandExecutor.cs:line 56
+   at MySqlConnector.MySqlCommand.ExecuteReaderAsync(CommandBehavior behavior, IOBehavior ioBehavior, CancellationToken cancellationToken) in /_/src/MySqlConnector/MySqlCommand.cs:line 357
+   at MySqlConnector.MySqlCommand.ExecuteDbDataReaderAsync(CommandBehavior behavior, CancellationToken cancellationToken) in /_/src/MySqlConnector/MySqlCommand.cs:line 350
+   at Microsoft.EntityFrameworkCore.Storage.RelationalCommand.ExecuteReaderAsync(RelationalCommandParameterObject parameterObject, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Storage.RelationalCommand.ExecuteReaderAsync(RelationalCommandParameterObject parameterObject, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Update.ReaderModificationCommandBatch.ExecuteAsync(IRelationalConnection connection, CancellationToken cancellationToken)
+   --- End of inner exception stack trace ---
+   at Microsoft.EntityFrameworkCore.Update.ReaderModificationCommandBatch.ExecuteAsync(IRelationalConnection connection, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Update.Internal.BatchExecutor.ExecuteAsync(IEnumerable`1 commandBatches, IRelationalConnection connection, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Update.Internal.BatchExecutor.ExecuteAsync(IEnumerable`1 commandBatches, IRelationalConnection connection, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Update.Internal.BatchExecutor.ExecuteAsync(IEnumerable`1 commandBatches, IRelationalConnection connection, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.ChangeTracking.Internal.StateManager.SaveChangesAsync(IList`1 entriesToSave, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.ChangeTracking.Internal.StateManager.SaveChangesAsync(StateManager stateManager, Boolean acceptAllChangesOnSuccess, CancellationToken cancellationToken)
+   at Pomelo.EntityFrameworkCore.MySql.Storage.Internal.MySqlExecutionStrategy.ExecuteAsync[TState,TResult](TState state, Func`4 operation, Func`4 verifySucceeded, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.DbContext.SaveChangesAsync(Boolean acceptAllChangesOnSuccess, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.DbContext.SaveChangesAsync(Boolean acceptAllChangesOnSuccess, CancellationToken cancellationToken)
+   at LibWiseApp.Data.DatabaseSeeder.InitializeAsync(AppDbContext db) in C:\Users\Loise\Downloads\IT15 for opencode\LibWiseApp\Data\DatabaseSeeder.cs:line 100
+   at Program.<Main>$(String[] args) in C:\Users\Loise\Downloads\IT15 for opencode\LibWiseApp\Program.cs:line 158
+2026-07-03 19:57:56.261 +08:00 [INF] Now listening on: http://localhost:5111
+2026-07-03 19:57:56.282 +08:00 [INF] Application started. Press Ctrl+C to shut down.
+2026-07-03 19:57:56.282 +08:00 [INF] Hosting environment: Development
+2026-07-03 19:57:56.282 +08:00 [INF] Content root path: C:\Users\Loise\Downloads\IT15 for opencode\LibWiseApp
+2026-07-03 19:58:12.067 +08:00 [INF] Now listening on: http://localhost:5111
+2026-07-03 19:58:12.086 +08:00 [INF] Application started. Press Ctrl+C to shut down.
+2026-07-03 19:58:12.087 +08:00 [INF] Hosting environment: Development
+2026-07-03 19:58:12.087 +08:00 [INF] Content root path: C:\Users\Loise\Downloads\IT15 for opencode\LibWiseApp
+2026-07-03 19:58:34.826 +08:00 [FTL] LibWiseApp terminated unexpectedly
+Microsoft.Extensions.Hosting.HostAbortedException: The host was aborted.
+   at Microsoft.Extensions.Hosting.HostFactoryResolver.HostingListener.ThrowHostAborted()
+   at Microsoft.Extensions.Hosting.HostFactoryResolver.HostingListener.OnNext(KeyValuePair`2 value)
+   at System.Diagnostics.DiagnosticListener.Write(String name, Object value)
+   at System.Diagnostics.DiagnosticSource.Write[T](String name, T value)
+   at Microsoft.Extensions.Hosting.HostBuilder.ResolveHost(IServiceProvider serviceProvider, DiagnosticListener diagnosticListener)
+   at Microsoft.Extensions.Hosting.HostApplicationBuilder.Build()
+   at Microsoft.AspNetCore.Builder.WebApplicationBuilder.Build()
+   at Program.<Main>$(String[] args) in C:\Users\Loise\Downloads\IT15 for opencode\LibWiseApp\Program.cs:line 56
+2026-07-03 19:59:50.913 +08:00 [INF] Now listening on: http://localhost:5111
+2026-07-03 19:59:50.937 +08:00 [INF] Application started. Press Ctrl+C to shut down.
+2026-07-03 19:59:50.938 +08:00 [INF] Hosting environment: Development
+2026-07-03 19:59:50.938 +08:00 [INF] Content root path: C:\Users\Loise\Downloads\IT15 for opencode\LibWiseApp
+2026-07-03 19:59:56.305 +08:00 [WRN] Failed to determine the https port for redirect.
+2026-07-03 20:00:48.939 +08:00 [INF] Now listening on: http://localhost:5111
+2026-07-03 20:00:48.969 +08:00 [INF] Application started. Press Ctrl+C to shut down.
+2026-07-03 20:00:48.970 +08:00 [INF] Hosting environment: Development
+2026-07-03 20:00:48.970 +08:00 [INF] Content root path: C:\Users\Loise\Downloads\IT15 for opencode\LibWiseApp
+2026-07-03 20:00:56.379 +08:00 [WRN] Failed to determine the https port for redirect.
+2026-07-03 20:01:08.024 +08:00 [INF] Now listening on: http://localhost:5111
+2026-07-03 20:01:08.050 +08:00 [INF] Application started. Press Ctrl+C to shut down.
+2026-07-03 20:01:08.052 +08:00 [INF] Hosting environment: Development
+2026-07-03 20:01:08.052 +08:00 [INF] Content root path: C:\Users\Loise\Downloads\IT15 for opencode\LibWiseApp
+2026-07-03 20:01:15.423 +08:00 [WRN] Failed to determine the https port for redirect.
+2026-07-03 20:01:39.278 +08:00 [FTL] LibWiseApp terminated unexpectedly
+Microsoft.Extensions.Hosting.HostAbortedException: The host was aborted.
+   at Microsoft.Extensions.Hosting.HostFactoryResolver.HostingListener.ThrowHostAborted()
+   at Microsoft.Extensions.Hosting.HostFactoryResolver.HostingListener.OnNext(KeyValuePair`2 value)
+   at System.Diagnostics.DiagnosticListener.Write(String name, Object value)
+   at System.Diagnostics.DiagnosticSource.Write[T](String name, T value)
+   at Microsoft.Extensions.Hosting.HostBuilder.ResolveHost(IServiceProvider serviceProvider, DiagnosticListener diagnosticListener)
+   at Microsoft.Extensions.Hosting.HostApplicationBuilder.Build()
+   at Microsoft.AspNetCore.Builder.WebApplicationBuilder.Build()
+   at Program.<Main>$(String[] args) in C:\Users\Loise\Downloads\IT15 for opencode\LibWiseApp\Program.cs:line 56
+2026-07-03 20:02:24.195 +08:00 [FTL] LibWiseApp terminated unexpectedly
+Microsoft.Extensions.Hosting.HostAbortedException: The host was aborted.
+   at Microsoft.Extensions.Hosting.HostFactoryResolver.HostingListener.ThrowHostAborted()
+   at Microsoft.Extensions.Hosting.HostFactoryResolver.HostingListener.OnNext(KeyValuePair`2 value)
+   at System.Diagnostics.DiagnosticListener.Write(String name, Object value)
+   at System.Diagnostics.DiagnosticSource.Write[T](String name, T value)
+   at Microsoft.Extensions.Hosting.HostBuilder.ResolveHost(IServiceProvider serviceProvider, DiagnosticListener diagnosticListener)
+   at Microsoft.Extensions.Hosting.HostApplicationBuilder.Build()
+   at Microsoft.AspNetCore.Builder.WebApplicationBuilder.Build()
+   at Program.<Main>$(String[] args) in C:\Users\Loise\Downloads\IT15 for opencode\LibWiseApp\Program.cs:line 56
+2026-07-03 20:02:56.572 +08:00 [INF] Now listening on: http://localhost:5111
+2026-07-03 20:02:56.594 +08:00 [INF] Application started. Press Ctrl+C to shut down.
+2026-07-03 20:02:56.594 +08:00 [INF] Hosting environment: Development
+2026-07-03 20:02:56.595 +08:00 [INF] Content root path: C:\Users\Loise\Downloads\IT15 for opencode\LibWiseApp
+2026-07-03 20:03:00.019 +08:00 [WRN] Failed to determine the https port for redirect.
+2026-07-03 20:18:01.333 +08:00 [INF] Now listening on: http://localhost:5111
+2026-07-03 20:18:01.360 +08:00 [INF] Application started. Press Ctrl+C to shut down.
+2026-07-03 20:18:01.362 +08:00 [INF] Hosting environment: Development
+2026-07-03 20:18:01.363 +08:00 [INF] Content root path: C:\Users\Loise\Downloads\IT15 for opencode\LibWiseApp
+2026-07-03 20:18:20.111 +08:00 [WRN] Failed to determine the https port for redirect.
+2026-07-03 20:19:19.896 +08:00 [ERR] Failed executing DbCommand (4ms) [Parameters=[@__p_1='?' (DbType = Int32), @__p_0='?' (DbType = Int32)], CommandType='"Text"', CommandTimeout='30']
+SELECT `t`.`Id`, `t`.`BookId`, `t`.`BorrowedAt`, `t`.`BorrowedByUserId`, `t`.`BorrowerBarcode`, `t`.`BorrowerId`, `t`.`DueDate`, `t`.`Remarks`, `t`.`ReturnedAt`, `t`.`ReturnedByUserId`, `t`.`Status`, `t`.`WasExtended`, `b0`.`Id`, `b0`.`Author`, `b0`.`AvailableCopies`, `b0`.`CategoryId`, `b0`.`CreatedAt`, `b0`.`Description`, `b0`.`ISBN`, `b0`.`IsActive`, `b0`.`PublicationYear`, `b0`.`Publisher`, `b0`.`ShelfLocation`, `b0`.`Title`, `b0`.`TotalCopies`, `b1`.`Id`, `b1`.`Address`, `b1`.`Barcode`, `b1`.`CreatedAt`, `b1`.`CreatedByUserId`, `b1`.`Email`, `b1`.`FirstName`, `b1`.`Grade`, `b1`.`IDNumber`, `b1`.`IsActive`, `b1`.`LastName`, `b1`.`Phone`
+FROM (
+    SELECT `b`.`Id`, `b`.`BookId`, `b`.`BorrowedAt`, `b`.`BorrowedByUserId`, `b`.`BorrowerBarcode`, `b`.`BorrowerId`, `b`.`DueDate`, `b`.`Remarks`, `b`.`ReturnedAt`, `b`.`ReturnedByUserId`, `b`.`Status`, `b`.`WasExtended`
+    FROM `BorrowingRecords` AS `b`
+    ORDER BY `b`.`BorrowedAt` DESC
+    LIMIT @__p_1 OFFSET @__p_0
+) AS `t`
+INNER JOIN `Books` AS `b0` ON `t`.`BookId` = `b0`.`Id`
+INNER JOIN `Borrowers` AS `b1` ON `t`.`BorrowerId` = `b1`.`Id`
+ORDER BY `t`.`BorrowedAt` DESC
+2026-07-03 20:19:19.936 +08:00 [ERR] An exception occurred while iterating over the results of a query for context type 'LibWiseApp.Data.AppDbContext'.
+MySqlConnector.MySqlException (0x80004005): Unknown column 'b.WasExtended' in 'field list'
+   at MySqlConnector.Core.ServerSession.ReceiveReplyAsync(IOBehavior ioBehavior, CancellationToken cancellationToken) in /_/src/MySqlConnector/Core/ServerSession.cs:line 894
+   at MySqlConnector.Core.ResultSet.ReadResultSetHeaderAsync(IOBehavior ioBehavior) in /_/src/MySqlConnector/Core/ResultSet.cs:line 37
+   at MySqlConnector.MySqlDataReader.ActivateResultSet(CancellationToken cancellationToken) in /_/src/MySqlConnector/MySqlDataReader.cs:line 130
+   at MySqlConnector.MySqlDataReader.InitAsync(CommandListPosition commandListPosition, ICommandPayloadCreator payloadCreator, IDictionary`2 cachedProcedures, IMySqlCommand command, CommandBehavior behavior, Activity activity, IOBehavior ioBehavior, CancellationToken cancellationToken) in /_/src/MySqlConnector/MySqlDataReader.cs:line 483
+   at MySqlConnector.Core.CommandExecutor.ExecuteReaderAsync(CommandListPosition commandListPosition, ICommandPayloadCreator payloadCreator, CommandBehavior behavior, Activity activity, IOBehavior ioBehavior, CancellationToken cancellationToken) in /_/src/MySqlConnector/Core/CommandExecutor.cs:line 56
+   at MySqlConnector.MySqlCommand.ExecuteReaderAsync(CommandBehavior behavior, IOBehavior ioBehavior, CancellationToken cancellationToken) in /_/src/MySqlConnector/MySqlCommand.cs:line 357
+   at MySqlConnector.MySqlCommand.ExecuteDbDataReaderAsync(CommandBehavior behavior, CancellationToken cancellationToken) in /_/src/MySqlConnector/MySqlCommand.cs:line 350
+   at Microsoft.EntityFrameworkCore.Storage.RelationalCommand.ExecuteReaderAsync(RelationalCommandParameterObject parameterObject, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Storage.RelationalCommand.ExecuteReaderAsync(RelationalCommandParameterObject parameterObject, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Query.Internal.SingleQueryingEnumerable`1.AsyncEnumerator.InitializeReaderAsync(AsyncEnumerator enumerator, CancellationToken cancellationToken)
+   at Pomelo.EntityFrameworkCore.MySql.Storage.Internal.MySqlExecutionStrategy.ExecuteAsync[TState,TResult](TState state, Func`4 operation, Func`4 verifySucceeded, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Query.Internal.SingleQueryingEnumerable`1.AsyncEnumerator.MoveNextAsync()
+MySqlConnector.MySqlException (0x80004005): Unknown column 'b.WasExtended' in 'field list'
+   at MySqlConnector.Core.ServerSession.ReceiveReplyAsync(IOBehavior ioBehavior, CancellationToken cancellationToken) in /_/src/MySqlConnector/Core/ServerSession.cs:line 894
+   at MySqlConnector.Core.ResultSet.ReadResultSetHeaderAsync(IOBehavior ioBehavior) in /_/src/MySqlConnector/Core/ResultSet.cs:line 37
+   at MySqlConnector.MySqlDataReader.ActivateResultSet(CancellationToken cancellationToken) in /_/src/MySqlConnector/MySqlDataReader.cs:line 130
+   at MySqlConnector.MySqlDataReader.InitAsync(CommandListPosition commandListPosition, ICommandPayloadCreator payloadCreator, IDictionary`2 cachedProcedures, IMySqlCommand command, CommandBehavior behavior, Activity activity, IOBehavior ioBehavior, CancellationToken cancellationToken) in /_/src/MySqlConnector/MySqlDataReader.cs:line 483
+   at MySqlConnector.Core.CommandExecutor.ExecuteReaderAsync(CommandListPosition commandListPosition, ICommandPayloadCreator payloadCreator, CommandBehavior behavior, Activity activity, IOBehavior ioBehavior, CancellationToken cancellationToken) in /_/src/MySqlConnector/Core/CommandExecutor.cs:line 56
+   at MySqlConnector.MySqlCommand.ExecuteReaderAsync(CommandBehavior behavior, IOBehavior ioBehavior, CancellationToken cancellationToken) in /_/src/MySqlConnector/MySqlCommand.cs:line 357
+   at MySqlConnector.MySqlCommand.ExecuteDbDataReaderAsync(CommandBehavior behavior, CancellationToken cancellationToken) in /_/src/MySqlConnector/MySqlCommand.cs:line 350
+   at Microsoft.EntityFrameworkCore.Storage.RelationalCommand.ExecuteReaderAsync(RelationalCommandParameterObject parameterObject, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Storage.RelationalCommand.ExecuteReaderAsync(RelationalCommandParameterObject parameterObject, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Query.Internal.SingleQueryingEnumerable`1.AsyncEnumerator.InitializeReaderAsync(AsyncEnumerator enumerator, CancellationToken cancellationToken)
+   at Pomelo.EntityFrameworkCore.MySql.Storage.Internal.MySqlExecutionStrategy.ExecuteAsync[TState,TResult](TState state, Func`4 operation, Func`4 verifySucceeded, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Query.Internal.SingleQueryingEnumerable`1.AsyncEnumerator.MoveNextAsync()
+2026-07-03 20:19:19.947 +08:00 [ERR] Unhandled exception occurred. Path: /Admin/Reports, Method: GET
+MySqlConnector.MySqlException (0x80004005): Unknown column 'b.WasExtended' in 'field list'
+   at MySqlConnector.Core.ServerSession.ReceiveReplyAsync(IOBehavior ioBehavior, CancellationToken cancellationToken) in /_/src/MySqlConnector/Core/ServerSession.cs:line 894
+   at MySqlConnector.Core.ResultSet.ReadResultSetHeaderAsync(IOBehavior ioBehavior) in /_/src/MySqlConnector/Core/ResultSet.cs:line 37
+   at MySqlConnector.MySqlDataReader.ActivateResultSet(CancellationToken cancellationToken) in /_/src/MySqlConnector/MySqlDataReader.cs:line 130
+   at MySqlConnector.MySqlDataReader.InitAsync(CommandListPosition commandListPosition, ICommandPayloadCreator payloadCreator, IDictionary`2 cachedProcedures, IMySqlCommand command, CommandBehavior behavior, Activity activity, IOBehavior ioBehavior, CancellationToken cancellationToken) in /_/src/MySqlConnector/MySqlDataReader.cs:line 483
+   at MySqlConnector.Core.CommandExecutor.ExecuteReaderAsync(CommandListPosition commandListPosition, ICommandPayloadCreator payloadCreator, CommandBehavior behavior, Activity activity, IOBehavior ioBehavior, CancellationToken cancellationToken) in /_/src/MySqlConnector/Core/CommandExecutor.cs:line 56
+   at MySqlConnector.MySqlCommand.ExecuteReaderAsync(CommandBehavior behavior, IOBehavior ioBehavior, CancellationToken cancellationToken) in /_/src/MySqlConnector/MySqlCommand.cs:line 357
+   at MySqlConnector.MySqlCommand.ExecuteDbDataReaderAsync(CommandBehavior behavior, CancellationToken cancellationToken) in /_/src/MySqlConnector/MySqlCommand.cs:line 350
+   at Microsoft.EntityFrameworkCore.Storage.RelationalCommand.ExecuteReaderAsync(RelationalCommandParameterObject parameterObject, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Storage.RelationalCommand.ExecuteReaderAsync(RelationalCommandParameterObject parameterObject, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Query.Internal.SingleQueryingEnumerable`1.AsyncEnumerator.InitializeReaderAsync(AsyncEnumerator enumerator, CancellationToken cancellationToken)
+   at Pomelo.EntityFrameworkCore.MySql.Storage.Internal.MySqlExecutionStrategy.ExecuteAsync[TState,TResult](TState state, Func`4 operation, Func`4 verifySucceeded, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Query.Internal.SingleQueryingEnumerable`1.AsyncEnumerator.MoveNextAsync()
+   at Microsoft.EntityFrameworkCore.EntityFrameworkQueryableExtensions.ToListAsync[TSource](IQueryable`1 source, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.EntityFrameworkQueryableExtensions.ToListAsync[TSource](IQueryable`1 source, CancellationToken cancellationToken)
+   at LibWiseApp.Areas.Admin.Controllers.ReportsController.Index(Nullable`1 from, Nullable`1 to, String status, Int32 page) in C:\Users\Loise\Downloads\IT15 for opencode\LibWiseApp\Areas\Admin\Controllers\ReportsController.cs:line 68
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ActionMethodExecutor.TaskOfIActionResultExecutor.Execute(ActionContext actionContext, IActionResultTypeMapper mapper, ObjectMethodExecutor executor, Object controller, Object[] arguments)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.<InvokeActionMethodAsync>g__Awaited|12_0(ControllerActionInvoker invoker, ValueTask`1 actionResultValueTask)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.<InvokeNextActionFilterAsync>g__Awaited|10_0(ControllerActionInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.Rethrow(ActionExecutedContextSealed context)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.Next(State& next, Scope& scope, Object& state, Boolean& isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.<InvokeInnerFilterAsync>g__Awaited|13_0(ControllerActionInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeNextResourceFilter>g__Awaited|25_0(ResourceInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.Rethrow(ResourceExecutedContextSealed context)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.Next(State& next, Scope& scope, Object& state, Boolean& isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeFilterPipelineAsync>g__Awaited|20_0(ResourceInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeAsync>g__Awaited|17_0(ResourceInvoker invoker, Task task, IDisposable scope)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeAsync>g__Awaited|17_0(ResourceInvoker invoker, Task task, IDisposable scope)
+   at Microsoft.AspNetCore.Diagnostics.StatusCodePagesMiddleware.Invoke(HttpContext context)
+   at Microsoft.AspNetCore.Authorization.AuthorizationMiddleware.Invoke(HttpContext context)
+   at Microsoft.AspNetCore.Authentication.AuthenticationMiddleware.Invoke(HttpContext context)
+   at LibWiseApp.Middleware.ExceptionMiddleware.InvokeAsync(HttpContext context) in C:\Users\Loise\Downloads\IT15 for opencode\LibWiseApp\Middleware\ExceptionMiddleware.cs:line 24
+2026-07-03 20:19:23.946 +08:00 [ERR] Failed executing DbCommand (1ms) [Parameters=[@__p_1='?' (DbType = Int32), @__p_0='?' (DbType = Int32)], CommandType='"Text"', CommandTimeout='30']
+SELECT `t`.`Id`, `t`.`BookId`, `t`.`BorrowedAt`, `t`.`BorrowedByUserId`, `t`.`BorrowerBarcode`, `t`.`BorrowerId`, `t`.`DueDate`, `t`.`Remarks`, `t`.`ReturnedAt`, `t`.`ReturnedByUserId`, `t`.`Status`, `t`.`WasExtended`, `b0`.`Id`, `b0`.`Author`, `b0`.`AvailableCopies`, `b0`.`CategoryId`, `b0`.`CreatedAt`, `b0`.`Description`, `b0`.`ISBN`, `b0`.`IsActive`, `b0`.`PublicationYear`, `b0`.`Publisher`, `b0`.`ShelfLocation`, `b0`.`Title`, `b0`.`TotalCopies`, `b1`.`Id`, `b1`.`Address`, `b1`.`Barcode`, `b1`.`CreatedAt`, `b1`.`CreatedByUserId`, `b1`.`Email`, `b1`.`FirstName`, `b1`.`Grade`, `b1`.`IDNumber`, `b1`.`IsActive`, `b1`.`LastName`, `b1`.`Phone`
+FROM (
+    SELECT `b`.`Id`, `b`.`BookId`, `b`.`BorrowedAt`, `b`.`BorrowedByUserId`, `b`.`BorrowerBarcode`, `b`.`BorrowerId`, `b`.`DueDate`, `b`.`Remarks`, `b`.`ReturnedAt`, `b`.`ReturnedByUserId`, `b`.`Status`, `b`.`WasExtended`
+    FROM `BorrowingRecords` AS `b`
+    ORDER BY `b`.`BorrowedAt` DESC
+    LIMIT @__p_1 OFFSET @__p_0
+) AS `t`
+INNER JOIN `Books` AS `b0` ON `t`.`BookId` = `b0`.`Id`
+INNER JOIN `Borrowers` AS `b1` ON `t`.`BorrowerId` = `b1`.`Id`
+ORDER BY `t`.`BorrowedAt` DESC
+2026-07-03 20:19:23.952 +08:00 [ERR] An exception occurred while iterating over the results of a query for context type 'LibWiseApp.Data.AppDbContext'.
+MySqlConnector.MySqlException (0x80004005): Unknown column 'b.WasExtended' in 'field list'
+   at MySqlConnector.Core.ServerSession.ReceiveReplyAsync(IOBehavior ioBehavior, CancellationToken cancellationToken) in /_/src/MySqlConnector/Core/ServerSession.cs:line 894
+   at MySqlConnector.Core.ResultSet.ReadResultSetHeaderAsync(IOBehavior ioBehavior) in /_/src/MySqlConnector/Core/ResultSet.cs:line 37
+   at MySqlConnector.MySqlDataReader.ActivateResultSet(CancellationToken cancellationToken) in /_/src/MySqlConnector/MySqlDataReader.cs:line 130
+   at MySqlConnector.MySqlDataReader.InitAsync(CommandListPosition commandListPosition, ICommandPayloadCreator payloadCreator, IDictionary`2 cachedProcedures, IMySqlCommand command, CommandBehavior behavior, Activity activity, IOBehavior ioBehavior, CancellationToken cancellationToken) in /_/src/MySqlConnector/MySqlDataReader.cs:line 483
+   at MySqlConnector.Core.CommandExecutor.ExecuteReaderAsync(CommandListPosition commandListPosition, ICommandPayloadCreator payloadCreator, CommandBehavior behavior, Activity activity, IOBehavior ioBehavior, CancellationToken cancellationToken) in /_/src/MySqlConnector/Core/CommandExecutor.cs:line 56
+   at MySqlConnector.MySqlCommand.ExecuteReaderAsync(CommandBehavior behavior, IOBehavior ioBehavior, CancellationToken cancellationToken) in /_/src/MySqlConnector/MySqlCommand.cs:line 357
+   at MySqlConnector.MySqlCommand.ExecuteDbDataReaderAsync(CommandBehavior behavior, CancellationToken cancellationToken) in /_/src/MySqlConnector/MySqlCommand.cs:line 350
+   at Microsoft.EntityFrameworkCore.Storage.RelationalCommand.ExecuteReaderAsync(RelationalCommandParameterObject parameterObject, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Storage.RelationalCommand.ExecuteReaderAsync(RelationalCommandParameterObject parameterObject, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Query.Internal.SingleQueryingEnumerable`1.AsyncEnumerator.InitializeReaderAsync(AsyncEnumerator enumerator, CancellationToken cancellationToken)
+   at Pomelo.EntityFrameworkCore.MySql.Storage.Internal.MySqlExecutionStrategy.ExecuteAsync[TState,TResult](TState state, Func`4 operation, Func`4 verifySucceeded, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Query.Internal.SingleQueryingEnumerable`1.AsyncEnumerator.MoveNextAsync()
+MySqlConnector.MySqlException (0x80004005): Unknown column 'b.WasExtended' in 'field list'
+   at MySqlConnector.Core.ServerSession.ReceiveReplyAsync(IOBehavior ioBehavior, CancellationToken cancellationToken) in /_/src/MySqlConnector/Core/ServerSession.cs:line 894
+   at MySqlConnector.Core.ResultSet.ReadResultSetHeaderAsync(IOBehavior ioBehavior) in /_/src/MySqlConnector/Core/ResultSet.cs:line 37
+   at MySqlConnector.MySqlDataReader.ActivateResultSet(CancellationToken cancellationToken) in /_/src/MySqlConnector/MySqlDataReader.cs:line 130
+   at MySqlConnector.MySqlDataReader.InitAsync(CommandListPosition commandListPosition, ICommandPayloadCreator payloadCreator, IDictionary`2 cachedProcedures, IMySqlCommand command, CommandBehavior behavior, Activity activity, IOBehavior ioBehavior, CancellationToken cancellationToken) in /_/src/MySqlConnector/MySqlDataReader.cs:line 483
+   at MySqlConnector.Core.CommandExecutor.ExecuteReaderAsync(CommandListPosition commandListPosition, ICommandPayloadCreator payloadCreator, CommandBehavior behavior, Activity activity, IOBehavior ioBehavior, CancellationToken cancellationToken) in /_/src/MySqlConnector/Core/CommandExecutor.cs:line 56
+   at MySqlConnector.MySqlCommand.ExecuteReaderAsync(CommandBehavior behavior, IOBehavior ioBehavior, CancellationToken cancellationToken) in /_/src/MySqlConnector/MySqlCommand.cs:line 357
+   at MySqlConnector.MySqlCommand.ExecuteDbDataReaderAsync(CommandBehavior behavior, CancellationToken cancellationToken) in /_/src/MySqlConnector/MySqlCommand.cs:line 350
+   at Microsoft.EntityFrameworkCore.Storage.RelationalCommand.ExecuteReaderAsync(RelationalCommandParameterObject parameterObject, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Storage.RelationalCommand.ExecuteReaderAsync(RelationalCommandParameterObject parameterObject, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Query.Internal.SingleQueryingEnumerable`1.AsyncEnumerator.InitializeReaderAsync(AsyncEnumerator enumerator, CancellationToken cancellationToken)
+   at Pomelo.EntityFrameworkCore.MySql.Storage.Internal.MySqlExecutionStrategy.ExecuteAsync[TState,TResult](TState state, Func`4 operation, Func`4 verifySucceeded, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Query.Internal.SingleQueryingEnumerable`1.AsyncEnumerator.MoveNextAsync()
+2026-07-03 20:19:23.962 +08:00 [ERR] Unhandled exception occurred. Path: /Admin/Reports, Method: GET
+MySqlConnector.MySqlException (0x80004005): Unknown column 'b.WasExtended' in 'field list'
+   at MySqlConnector.Core.ServerSession.ReceiveReplyAsync(IOBehavior ioBehavior, CancellationToken cancellationToken) in /_/src/MySqlConnector/Core/ServerSession.cs:line 894
+   at MySqlConnector.Core.ResultSet.ReadResultSetHeaderAsync(IOBehavior ioBehavior) in /_/src/MySqlConnector/Core/ResultSet.cs:line 37
+   at MySqlConnector.MySqlDataReader.ActivateResultSet(CancellationToken cancellationToken) in /_/src/MySqlConnector/MySqlDataReader.cs:line 130
+   at MySqlConnector.MySqlDataReader.InitAsync(CommandListPosition commandListPosition, ICommandPayloadCreator payloadCreator, IDictionary`2 cachedProcedures, IMySqlCommand command, CommandBehavior behavior, Activity activity, IOBehavior ioBehavior, CancellationToken cancellationToken) in /_/src/MySqlConnector/MySqlDataReader.cs:line 483
+   at MySqlConnector.Core.CommandExecutor.ExecuteReaderAsync(CommandListPosition commandListPosition, ICommandPayloadCreator payloadCreator, CommandBehavior behavior, Activity activity, IOBehavior ioBehavior, CancellationToken cancellationToken) in /_/src/MySqlConnector/Core/CommandExecutor.cs:line 56
+   at MySqlConnector.MySqlCommand.ExecuteReaderAsync(CommandBehavior behavior, IOBehavior ioBehavior, CancellationToken cancellationToken) in /_/src/MySqlConnector/MySqlCommand.cs:line 357
+   at MySqlConnector.MySqlCommand.ExecuteDbDataReaderAsync(CommandBehavior behavior, CancellationToken cancellationToken) in /_/src/MySqlConnector/MySqlCommand.cs:line 350
+   at Microsoft.EntityFrameworkCore.Storage.RelationalCommand.ExecuteReaderAsync(RelationalCommandParameterObject parameterObject, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Storage.RelationalCommand.ExecuteReaderAsync(RelationalCommandParameterObject parameterObject, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Query.Internal.SingleQueryingEnumerable`1.AsyncEnumerator.InitializeReaderAsync(AsyncEnumerator enumerator, CancellationToken cancellationToken)
+   at Pomelo.EntityFrameworkCore.MySql.Storage.Internal.MySqlExecutionStrategy.ExecuteAsync[TState,TResult](TState state, Func`4 operation, Func`4 verifySucceeded, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Query.Internal.SingleQueryingEnumerable`1.AsyncEnumerator.MoveNextAsync()
+   at Microsoft.EntityFrameworkCore.EntityFrameworkQueryableExtensions.ToListAsync[TSource](IQueryable`1 source, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.EntityFrameworkQueryableExtensions.ToListAsync[TSource](IQueryable`1 source, CancellationToken cancellationToken)
+   at LibWiseApp.Areas.Admin.Controllers.ReportsController.Index(Nullable`1 from, Nullable`1 to, String status, Int32 page) in C:\Users\Loise\Downloads\IT15 for opencode\LibWiseApp\Areas\Admin\Controllers\ReportsController.cs:line 68
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ActionMethodExecutor.TaskOfIActionResultExecutor.Execute(ActionContext actionContext, IActionResultTypeMapper mapper, ObjectMethodExecutor executor, Object controller, Object[] arguments)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.<InvokeActionMethodAsync>g__Awaited|12_0(ControllerActionInvoker invoker, ValueTask`1 actionResultValueTask)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.<InvokeNextActionFilterAsync>g__Awaited|10_0(ControllerActionInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.Rethrow(ActionExecutedContextSealed context)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.Next(State& next, Scope& scope, Object& state, Boolean& isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.<InvokeInnerFilterAsync>g__Awaited|13_0(ControllerActionInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeNextResourceFilter>g__Awaited|25_0(ResourceInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.Rethrow(ResourceExecutedContextSealed context)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.Next(State& next, Scope& scope, Object& state, Boolean& isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeFilterPipelineAsync>g__Awaited|20_0(ResourceInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeAsync>g__Awaited|17_0(ResourceInvoker invoker, Task task, IDisposable scope)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeAsync>g__Awaited|17_0(ResourceInvoker invoker, Task task, IDisposable scope)
+   at Microsoft.AspNetCore.Diagnostics.StatusCodePagesMiddleware.Invoke(HttpContext context)
+   at Microsoft.AspNetCore.Authorization.AuthorizationMiddleware.Invoke(HttpContext context)
+   at Microsoft.AspNetCore.Authentication.AuthenticationMiddleware.Invoke(HttpContext context)
+   at LibWiseApp.Middleware.ExceptionMiddleware.InvokeAsync(HttpContext context) in C:\Users\Loise\Downloads\IT15 for opencode\LibWiseApp\Middleware\ExceptionMiddleware.cs:line 24
+2026-07-03 20:20:07.338 +08:00 [INF] Application is shutting down...

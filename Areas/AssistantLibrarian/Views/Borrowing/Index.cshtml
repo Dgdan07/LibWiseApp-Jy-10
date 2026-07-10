@@ -11,7 +11,7 @@
             <div class="card-header fw-bold">Step 1: Borrower</div>
             <div class="card-body">
                 <label class="form-label">Scan borrower barcode</label>
-                <input type="text" id="barcodeInput" class="form-control form-control-lg" placeholder="Scan barcode..." autofocus />
+                <input type="text" id="barcodeInput" class="form-control form-control-lg" placeholder="Scan barcode..." autofocus autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" />
                 <div id="borrowerResult" class="mt-2"></div>
                 <input type="hidden" id="borrowerId" />
                 <input type="hidden" id="borrowerBarcode" />
@@ -36,65 +36,5 @@
 </button>
 
 @section Scripts {
-    <script>
-        let timeout, bookTimeout;
-
-        $('#barcodeInput').on('input', function() {
-            clearTimeout(timeout);
-            const val = this.value.trim();
-            if (val.length > 3) {
-                timeout = setTimeout(() => {
-                    $.getJSON('@Url.Action("SearchBorrower")', { term: val }, function(data) {
-                        if (data.length === 1 && data[0].barcode === val) {
-                            selectBorrower(data[0]);
-                        } else if (data.length > 0) {
-                            let html = '<ul class="list-group">';
-                            data.forEach(b => { html += `<li class="list-group-item list-group-item-action" onclick="selectBorrower(${JSON.stringify(b).replace(/"/g, "'")})"><strong>${b.name}</strong> <code>${b.barcode}</code></li>`; });
-                            $('#borrowerResult').html(html + '</ul>');
-                        } else {
-                            $('#borrowerResult').html('<div class="text-danger">Not found.</div>');
-                        }
-                    });
-                }, 400);
-            }
-        });
-
-        function selectBorrower(b) {
-            $('#borrowerId').val(b.id);
-            $('#borrowerBarcode').val(b.barcode);
-            $('#borrowerResult').html(`<div class="alert alert-success py-2 mb-0"><i class="bi bi-check-circle"></i> <strong>${b.name}</strong></div>`);
-            $('#searchBook').prop('disabled', false).focus();
-        }
-
-        $('#searchBook').on('input', function() {
-            clearTimeout(bookTimeout);
-            const val = this.value.trim();
-            if (val.length > 2) {
-                bookTimeout = setTimeout(() => {
-                    $.getJSON('@Url.Action("SearchBook")', { term: val }, function(data) {
-                        if (data.length === 0) { $('#bookResult').html('<div class="text-muted">No matches.</div>'); return; }
-                        let html = '<ul class="list-group">';
-                        data.forEach(b => { html += `<li class="list-group-item list-group-item-action" onclick="selectBook(${JSON.stringify(b).replace(/"/g, "'")})"><strong>${b.title}</strong> by ${b.author}<br/><small>Available: ${b.availableCopies}</small></li>`; });
-                        $('#bookResult').html(html + '</ul>');
-                    });
-                }, 400);
-            }
-        });
-
-        function selectBook(b) {
-            $('#bookId').val(b.id);
-            $('#bookResult').html(`<div class="alert alert-success py-2 mb-0"><i class="bi bi-check-circle"></i> <strong>${b.title}</strong></div>`);
-            $('#borrowBtn').prop('disabled', false);
-        }
-
-        $('#borrowBtn').click(function() {
-            const bc = $('#borrowerBarcode').val(), bk = $('#bookId').val();
-            if (!bc || !bk) return;
-            $(this).prop('disabled', true).html('Processing...');
-            $.post('@Url.Action("Process")', { borrowerBarcode: bc, bookId: bk }, function(res) {
-                if (res.success) { alert(res.message); location.reload(); }
-                else { alert('Error: ' + res.message); $('#borrowBtn').prop('disabled', false).html('<i class="bi bi-check-circle me-1"></i>Confirm Borrowing'); }
-            }).fail(function() { alert('Failed.'); location.reload(); });
-        });
-    </script>
+    <script src="~/js/assistant-operations.js"></script>
 }

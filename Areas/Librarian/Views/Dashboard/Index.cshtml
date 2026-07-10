@@ -6,50 +6,80 @@
 <hr />
 <div class="row">
     <div class="col-md-4 mb-3">
-        <div class="card text-bg-primary">
+        <div class="card border-0 shadow-sm dashboard-card" style="border-left: 4px solid #4361ee;">
             <div class="card-body">
-                <h5 class="card-title">Total Books</h5>
-                <p class="card-text display-6">@ViewBag.TotalBooks</p>
+                <div class="d-flex justify-content-between align-items-start">
+                    <div class="flex-grow-1">
+                        <p class="text-muted small mb-1">Total Books</p>
+                        <p class="fs-3 fw-semibold mb-0 text-end">@ViewBag.TotalBooks</p>
+                    </div>
+                    <i class="bi bi-book fs-3 ms-3" style="color: #4361ee;"></i>
+                </div>
             </div>
         </div>
     </div>
     <div class="col-md-4 mb-3">
-        <div class="card text-bg-success">
+        <div class="card border-0 shadow-sm dashboard-card" style="border-left: 4px solid #10b981;">
             <div class="card-body">
-                <h5 class="card-title">Available Copies</h5>
-                <p class="card-text display-6">@ViewBag.AvailableBooks</p>
+                <div class="d-flex justify-content-between align-items-start">
+                    <div class="flex-grow-1">
+                        <p class="text-muted small mb-1">Available Copies</p>
+                        <p class="fs-3 fw-semibold mb-0 text-end">@ViewBag.AvailableBooks</p>
+                    </div>
+                    <i class="bi bi-check-circle fs-3 ms-3" style="color: #10b981;"></i>
+                </div>
             </div>
         </div>
     </div>
     <div class="col-md-4 mb-3">
-        <div class="card text-bg-warning">
+        <div class="card border-0 shadow-sm dashboard-card" style="border-left: 4px solid #f59e0b;">
             <div class="card-body">
-                <h5 class="card-title">Active Borrowings</h5>
-                <p class="card-text display-6">@ViewBag.ActiveBorrowings</p>
+                <div class="d-flex justify-content-between align-items-start">
+                    <div class="flex-grow-1">
+                        <p class="text-muted small mb-1">Active Borrowings</p>
+                        <p class="fs-3 fw-semibold mb-0 text-end">@ViewBag.ActiveBorrowings</p>
+                    </div>
+                    <i class="bi bi-arrow-right-circle fs-3 ms-3" style="color: #f59e0b;"></i>
+                </div>
             </div>
         </div>
     </div>
     <div class="col-md-4 mb-3">
-        <div class="card text-bg-danger">
+        <div class="card border-0 shadow-sm dashboard-card" style="border-left: 4px solid #ef4444;">
             <div class="card-body">
-                <h5 class="card-title">Overdue</h5>
-                <p class="card-text display-6">@ViewBag.OverdueCount</p>
+                <div class="d-flex justify-content-between align-items-start">
+                    <div class="flex-grow-1">
+                        <p class="text-muted small mb-1">Overdue</p>
+                        <p class="fs-3 fw-semibold mb-0 text-end">@ViewBag.OverdueCount</p>
+                    </div>
+                    <i class="bi bi-exclamation-triangle fs-3 ms-3" style="color: #ef4444;"></i>
+                </div>
             </div>
         </div>
     </div>
     <div class="col-md-4 mb-3">
-        <div class="card text-bg-info">
+        <div class="card border-0 shadow-sm dashboard-card" style="border-left: 4px solid #0891b2;">
             <div class="card-body">
-                <h5 class="card-title">Unpaid Fines</h5>
-                <p class="card-text display-6">@ViewBag.UnpaidFines</p>
+                <div class="d-flex justify-content-between align-items-start">
+                    <div class="flex-grow-1">
+                        <p class="text-muted small mb-1">Unpaid Fines</p>
+                        <p class="fs-3 fw-semibold mb-0 text-end">@ViewBag.UnpaidFines</p>
+                    </div>
+                    <i class="bi bi-cash-coin fs-3 ms-3" style="color: #0891b2;"></i>
+                </div>
             </div>
         </div>
     </div>
     <div class="col-md-4 mb-3">
-        <div class="card text-bg-secondary">
+        <div class="card border-0 shadow-sm dashboard-card" style="border-left: 4px solid #7c3aed;">
             <div class="card-body">
-                <h5 class="card-title">Fines Collected</h5>
-                <p class="card-text display-6">PHP @ViewBag.TotalFinesCollected.ToString("F0")</p>
+                <div class="d-flex justify-content-between align-items-start">
+                    <div class="flex-grow-1">
+                        <p class="text-muted small mb-1">Fines Collected</p>
+                        <p class="fs-3 fw-semibold mb-0 text-end">₱ @ViewBag.TotalFinesCollected.ToString("N0")</p>
+                    </div>
+                    <i class="bi bi-piggy-bank fs-3 ms-3" style="color: #7c3aed;"></i>
+                </div>
             </div>
         </div>
     </div>

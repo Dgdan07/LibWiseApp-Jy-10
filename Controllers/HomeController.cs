@@ -8,4 +8,20 @@ public class HomeController : Controller
     {
         return RedirectToAction("Login", "Account");
     }
+
+    public IActionResult Error()
+    {
+        return View("Error");
+    }
+
+    public new IActionResult StatusCode(int statusCode)
+    {
+        if (statusCode == 404)
+            return View("NotFound");
+
+        if (statusCode == 403)
+            return View("Forbidden");
+
+        return View("Error");
+    }
 }

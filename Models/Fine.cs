@@ -12,6 +12,7 @@ public class Fine
     [ForeignKey(nameof(BorrowingRecordId))]
     public BorrowingRecord BorrowingRecord { get; set; } = null!;
 
+    [Required, Range(0, 999999.99)]
     [Column(TypeName = "decimal(18,2)")]
     public decimal Amount { get; set; }
 

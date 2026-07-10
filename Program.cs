@@ -1,22 +1,36 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Serilog;
 using LibWiseApp.Data;
+using LibWiseApp.Middleware;
 using LibWiseApp.Models;
+
+Log.Logger = new LoggerConfiguration()
+    .WriteTo.Console()
+    .CreateBootstrapLogger();
+
+try
+{
+    Log.Information("Starting LibWiseApp");
 
 var builder = WebApplication.CreateBuilder(args);
 
-builder.Services.AddControllersWithViews();
+builder.Host.UseSerilog((context, services, configuration) =>
+    configuration.ReadFrom.Configuration(context.Configuration));
 
-var connectionString = builder.Configuration.GetConnectionString("DefaultConnection") ?? "Server=localhost;Port=3306;Database=libwise;User=root;Password=;";
+builder.Services.AddControllersWithViews(options =>
+    options.SuppressImplicitRequiredAttributeForNonNullableReferenceTypes = true);
+
+var connectionString = builder.Configuration.GetConnectionString("DefaultConnection") ?? throw new InvalidOperationException("Connection string 'DefaultConnection' not found. Set it in appsettings.json or user secrets.");
 builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseMySql(connectionString, ServerVersion.AutoDetect(connectionString)));
 
 builder.Services.AddIdentity<ApplicationUser, IdentityRole>(options =>
 {
     options.Password.RequireDigit = true;
-    options.Password.RequiredLength = 6;
-    options.Password.RequireNonAlphanumeric = false;
-    options.Password.RequireUppercase = false;
+    options.Password.RequiredLength = 8;
+    options.Password.RequireNonAlphanumeric = true;
+    options.Password.RequireUppercase = true;
     options.Lockout.MaxFailedAccessAttempts = 5;
 })
 .AddEntityFrameworkStores<AppDbContext>()
@@ -31,6 +45,8 @@ builder.Services.ConfigureApplicationCookie(options =>
 
 builder.Services.AddHttpContextAccessor();
 builder.Services.AddScoped<LibWiseApp.Services.AuditLogService>();
+builder.Services.AddScoped<LibWiseApp.Services.FineCalculationService>();
+builder.Services.AddScoped<LibWiseApp.Services.BorrowingService>();
 builder.Services.AddAuthorization(options =>
 {
     options.AddPolicy("AdminOnly", policy => policy.RequireRole("Admin"));
@@ -40,9 +56,10 @@ builder.Services.AddAuthorization(options =>
 
 var app = builder.Build();
 
+app.UseMiddleware<ExceptionMiddleware>();
+
 if (!app.Environment.IsDevelopment())
 {
-    app.UseExceptionHandler("/Home/Error");
     app.UseHsts();
 }
 
@@ -50,6 +67,7 @@ app.UseHttpsRedirection();
 app.UseRouting();
 app.UseAuthentication();
 app.UseAuthorization();
+app.UseStatusCodePagesWithReExecute("/Home/StatusCode", "?statusCode={0}");
 app.UseStaticFiles();
 
 app.MapControllerRoute(
@@ -80,7 +98,6 @@ using (var scope = app.Services.CreateScope())
             Email = "admin@libwise.com",
             FirstName = "System",
             LastName = "Admin",
-            Role = "Admin",
             EmailConfirmed = true
         };
         var result = await userManager.CreateAsync(admin, "Admin123!");
@@ -96,7 +113,6 @@ using (var scope = app.Services.CreateScope())
             Email = "librarian@libwise.com",
             FirstName = "Jane",
             LastName = "Librarian",
-            Role = "Librarian",
             EmailConfirmed = true
         };
         var result = await userManager.CreateAsync(librarian, "Lib123!");
@@ -112,7 +128,6 @@ using (var scope = app.Services.CreateScope())
             Email = "al@libwise.com",
             FirstName = "John",
             LastName = "Assistant",
-            Role = "AssistantLibrarian",
             EmailConfirmed = true
         };
         var result = await userManager.CreateAsync(al, "Al123!");
@@ -140,6 +155,17 @@ using (var scope = app.Services.CreateScope())
         db.FineRules.Add(new FineRule { DaysAllowed = 14, DailyFineRate = 5.00m, MaxFine = 500.00m });
         db.SaveChanges();
     }
+
+    await DatabaseSeeder.InitializeAsync(db);
 }
 
 app.Run();
+}
+catch (Exception ex)
+{
+    Log.Fatal(ex, "LibWiseApp terminated unexpectedly");
+}
+finally
+{
+    Log.CloseAndFlush();
+}

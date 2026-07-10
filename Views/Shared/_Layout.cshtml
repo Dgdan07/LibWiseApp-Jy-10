@@ -12,51 +12,57 @@
     @if (User.Identity?.IsAuthenticated == true)
     {
         <div class="d-flex" style="min-height: 100vh;">
-            <nav class="bg-dark text-white sidebar">
-                <div class="p-3 border-bottom border-secondary">
+            <nav class="bg-dark text-white sidebar d-flex flex-column">
+                <div class="p-3 border-bottom border-secondary text-center">
                     <a class="text-white text-decoration-none fw-bold fs-5" asp-area="" asp-controller="Home" asp-action="Index">
-                        <i class="bi bi-book"></i> LibWise
+                        <i class="bi bi-book fs-4"></i><span class="nav-text ms-2">LibWise</span>
                     </a>
                 </div>
-                <div class="p-3 small text-secondary">
-                    Logged in as <strong class="text-white">@User.Identity.Name</strong>
-                    <br /><span class="badge bg-info text-dark mt-1">@(User.IsInRole("Admin") ? "Admin" : User.IsInRole("Librarian") ? "Librarian" : "AL")</span>
+                <div class="p-3 small text-secondary text-center">
+                    <i class="bi bi-person-circle fs-5 d-block d-md-none"></i>
+                    <span class="nav-text">Logged in as <strong class="text-white d-block">@User.Identity.Name</strong></span>
+                    <span class="text-info-emphasis fw-semibold mt-1">@(User.IsInRole("Admin") ? "Admin" : User.IsInRole("Librarian") ? "Librarian" : "Assistant")</span>
                 </div>
-                <ul class="nav flex-column px-2">
+                <ul class="nav flex-column px-2 flex-grow-1 d-flex">
+                    @{
+                        var area = ViewContext.RouteData.Values["area"]?.ToString();
+                        var ctrl = ViewContext.RouteData.Values["controller"]?.ToString();
+                    }
                     @if (User.IsInRole("Admin"))
                     {
-                        <li class="nav-item"><a class="nav-link text-white" asp-area="Admin" asp-controller="Dashboard" asp-action="Index"><i class="bi bi-speedometer2 me-2"></i>Dashboard</a></li>
-                        <li class="nav-item"><a class="nav-link text-white" asp-area="Admin" asp-controller="Users" asp-action="Index"><i class="bi bi-people me-2"></i>Users</a></li>
-                        <li class="nav-item"><a class="nav-link text-white" asp-area="Admin" asp-controller="Books" asp-action="Index"><i class="bi bi-book me-2"></i>Book Catalog</a></li>
-                        <li class="nav-item"><a class="nav-link text-white" asp-area="Admin" asp-controller="Categories" asp-action="Index"><i class="bi bi-tags me-2"></i>Categories</a></li>
-                        <li class="nav-item"><a class="nav-link text-white" asp-area="Admin" asp-controller="Reports" asp-action="Index"><i class="bi bi-file-earmark-bar-graph me-2"></i>Reports</a></li>
-                        <li class="nav-item"><a class="nav-link text-white" asp-area="Admin" asp-controller="AuditLogs" asp-action="Index"><i class="bi bi-journal-text me-2"></i>Audit Logs</a></li>
-                        <li class="nav-item"><a class="nav-link text-white" asp-area="Admin" asp-controller="Config" asp-action="Index"><i class="bi bi-gear me-2"></i>Configuration</a></li>
+                        <li class="nav-item"><a class="nav-link text-white@(area=="Admin"&&ctrl=="Dashboard"?" active":"")" asp-area="Admin" asp-controller="Dashboard" asp-action="Index"><i class="bi bi-speedometer2"></i><span class="nav-text ms-2">Dashboard</span></a></li>
+                        <li class="nav-item"><a class="nav-link text-white@(area=="Admin"&&ctrl=="Users"?" active":"")" asp-area="Admin" asp-controller="Users" asp-action="Index"><i class="bi bi-people"></i><span class="nav-text ms-2">Users</span></a></li>
+                        <li class="nav-item"><a class="nav-link text-white@(area=="Admin"&&ctrl=="Books"?" active":"")" asp-area="Admin" asp-controller="Books" asp-action="Index"><i class="bi bi-book"></i><span class="nav-text ms-2">Book Catalog</span></a></li>
+                        <li class="nav-item"><a class="nav-link text-white@(area=="Admin"&&ctrl=="Categories"?" active":"")" asp-area="Admin" asp-controller="Categories" asp-action="Index"><i class="bi bi-tags"></i><span class="nav-text ms-2">Categories</span></a></li>
+                        <li class="nav-item"><a class="nav-link text-white@(area=="Admin"&&ctrl=="Reports"?" active":"")" asp-area="Admin" asp-controller="Reports" asp-action="Index"><i class="bi bi-file-earmark-bar-graph"></i><span class="nav-text ms-2">Reports</span></a></li>
+                        <li class="nav-item"><a class="nav-link text-white@(area=="Admin"&&ctrl=="AuditLogs"?" active":"")" asp-area="Admin" asp-controller="AuditLogs" asp-action="Index"><i class="bi bi-journal-text"></i><span class="nav-text ms-2">Audit Logs</span></a></li>
+                        <li class="nav-item"><a class="nav-link text-white@(area=="Admin"&&ctrl=="Config"?" active":"")" asp-area="Admin" asp-controller="Config" asp-action="Index"><i class="bi bi-gear"></i><span class="nav-text ms-2">Configuration</span></a></li>
                     }
                     @if (User.IsInRole("Librarian"))
                     {
-                        <li class="nav-item"><a class="nav-link text-white" asp-area="Librarian" asp-controller="Dashboard" asp-action="Index"><i class="bi bi-speedometer2 me-2"></i>Dashboard</a></li>
-                        <li class="nav-item"><a class="nav-link text-white" asp-area="Librarian" asp-controller="Books" asp-action="Index"><i class="bi bi-book me-2"></i>Books</a></li>
-                        <li class="nav-item"><a class="nav-link text-white" asp-area="Librarian" asp-controller="Borrowers" asp-action="Index"><i class="bi bi-person-badge me-2"></i>Borrowers</a></li>
-                        <li class="nav-item"><a class="nav-link text-white" asp-area="Librarian" asp-controller="Borrowing" asp-action="Index"><i class="bi bi-arrow-right-circle me-2"></i>Borrowing</a></li>
-                        <li class="nav-item"><a class="nav-link text-white" asp-area="Librarian" asp-controller="Returns" asp-action="Index"><i class="bi bi-arrow-left-circle me-2"></i>Returns</a></li>
-                        <li class="nav-item"><a class="nav-link text-white" asp-area="Librarian" asp-controller="Fines" asp-action="Index"><i class="bi bi-cash-coin me-2"></i>Fines</a></li>
-                        <li class="nav-item"><a class="nav-link text-white" asp-area="Librarian" asp-controller="Availability" asp-action="Index"><i class="bi bi-search me-2"></i>Availability</a></li>
-                        <li class="nav-item"><a class="nav-link text-white" asp-area="Librarian" asp-controller="Reports" asp-action="Index"><i class="bi bi-file-earmark-bar-graph me-2"></i>Reports</a></li>
+                        <li class="nav-item"><a class="nav-link text-white@(area=="Librarian"&&ctrl=="Dashboard"?" active":"")" asp-area="Librarian" asp-controller="Dashboard" asp-action="Index"><i class="bi bi-speedometer2"></i><span class="nav-text ms-2">Dashboard</span></a></li>
+                        <li class="nav-item"><a class="nav-link text-white@(area=="Librarian"&&ctrl=="Books"?" active":"")" asp-area="Librarian" asp-controller="Books" asp-action="Index"><i class="bi bi-book"></i><span class="nav-text ms-2">Books</span></a></li>
+                        <li class="nav-item"><a class="nav-link text-white@(area=="Librarian"&&ctrl=="Borrowers"?" active":"")" asp-area="Librarian" asp-controller="Borrowers" asp-action="Index"><i class="bi bi-person-badge"></i><span class="nav-text ms-2">Borrowers</span></a></li>
+                        <li class="nav-item"><a class="nav-link text-white@(area=="Librarian"&&ctrl=="Borrowing"?" active":"")" asp-area="Librarian" asp-controller="Borrowing" asp-action="Index"><i class="bi bi-arrow-right-circle"></i><span class="nav-text ms-2">Borrowing</span></a></li>
+                        <li class="nav-item"><a class="nav-link text-white@(area=="Librarian"&&ctrl=="Returns"?" active":"")" asp-area="Librarian" asp-controller="Returns" asp-action="Index"><i class="bi bi-arrow-left-circle"></i><span class="nav-text ms-2">Returns</span></a></li>
+                        <li class="nav-item"><a class="nav-link text-white@(area=="Librarian"&&ctrl=="Fines"?" active":"")" asp-area="Librarian" asp-controller="Fines" asp-action="Index"><i class="bi bi-cash-coin"></i><span class="nav-text ms-2">Fines</span></a></li>
+                        <li class="nav-item"><a class="nav-link text-white@(area=="Librarian"&&ctrl=="Availability"?" active":"")" asp-area="Librarian" asp-controller="Availability" asp-action="Index"><i class="bi bi-search"></i><span class="nav-text ms-2">Availability</span></a></li>
+                        <li class="nav-item"><a class="nav-link text-white@(area=="Librarian"&&ctrl=="Reports"?" active":"")" asp-area="Librarian" asp-controller="Reports" asp-action="Index"><i class="bi bi-file-earmark-bar-graph"></i><span class="nav-text ms-2">Reports</span></a></li>
                     }
                     @if (User.IsInRole("AssistantLibrarian"))
                     {
-                        <li class="nav-item"><a class="nav-link text-white" asp-area="AssistantLibrarian" asp-controller="Dashboard" asp-action="Index"><i class="bi bi-speedometer2 me-2"></i>Dashboard</a></li>
-                        <li class="nav-item"><a class="nav-link text-white" asp-area="AssistantLibrarian" asp-controller="Borrowing" asp-action="Index"><i class="bi bi-arrow-right-circle me-2"></i>Borrowing</a></li>
-                        <li class="nav-item"><a class="nav-link text-white" asp-area="AssistantLibrarian" asp-controller="Returns" asp-action="Index"><i class="bi bi-arrow-left-circle me-2"></i>Returns</a></li>
-                        <li class="nav-item"><a class="nav-link text-white" asp-area="AssistantLibrarian" asp-controller="Fines" asp-action="Index"><i class="bi bi-cash-coin me-2"></i>Fine Collection</a></li>
-                        <li class="nav-item"><a class="nav-link text-white" asp-area="AssistantLibrarian" asp-controller="Availability" asp-action="Index"><i class="bi bi-search me-2"></i>Availability</a></li>
-                        <li class="nav-item"><a class="nav-link text-white" asp-area="AssistantLibrarian" asp-controller="BorrowerInfo" asp-action="Index"><i class="bi bi-person me-2"></i>Borrower Info</a></li>
+                        <li class="nav-item"><a class="nav-link text-white@(area=="AssistantLibrarian"&&ctrl=="Dashboard"?" active":"")" asp-area="AssistantLibrarian" asp-controller="Dashboard" asp-action="Index"><i class="bi bi-speedometer2"></i><span class="nav-text ms-2">Dashboard</span></a></li>
+                        <li class="nav-item"><a class="nav-link text-white@(area=="AssistantLibrarian"&&ctrl=="Borrowing"?" active":"")" asp-area="AssistantLibrarian" asp-controller="Borrowing" asp-action="Index"><i class="bi bi-arrow-right-circle"></i><span class="nav-text ms-2">Borrowing</span></a></li>
+                        <li class="nav-item"><a class="nav-link text-white@(area=="AssistantLibrarian"&&ctrl=="Returns"?" active":"")" asp-area="AssistantLibrarian" asp-controller="Returns" asp-action="Index"><i class="bi bi-arrow-left-circle"></i><span class="nav-text ms-2">Returns</span></a></li>
+                        <li class="nav-item"><a class="nav-link text-white@(area=="AssistantLibrarian"&&ctrl=="Fines"?" active":"")" asp-area="AssistantLibrarian" asp-controller="Fines" asp-action="Index"><i class="bi bi-cash-coin"></i><span class="nav-text ms-2">Fine Collection</span></a></li>
+                        <li class="nav-item"><a class="nav-link text-white@(area=="AssistantLibrarian"&&ctrl=="Availability"?" active":"")" asp-area="AssistantLibrarian" asp-controller="Availability" asp-action="Index"><i class="bi bi-search"></i><span class="nav-text ms-2">Availability</span></a></li>
+                        <li class="nav-item"><a class="nav-link text-white@(area=="AssistantLibrarian"&&ctrl=="BorrowerInfo"?" active":"")" asp-area="AssistantLibrarian" asp-controller="BorrowerInfo" asp-action="Index"><i class="bi bi-person"></i><span class="nav-text ms-2">Borrower Info</span></a></li>
                     }
-                    <li class="nav-item mt-3 border-top border-secondary pt-2">
-                        <form asp-controller="Account" asp-action="Logout" method="post" class="px-2">
-                            <button type="submit" class="btn btn-outline-light btn-sm w-100">
-                                <i class="bi bi-box-arrow-left me-1"></i>Logout
+                    <li class="nav-item mt-auto">
+                        <form asp-area="" asp-controller="Account" asp-action="Logout" method="post" class="px-2 pt-3 border-top border-secondary">
+                            @Html.AntiForgeryToken()
+                            <button type="submit" class="btn btn-outline-light w-100 d-flex align-items-center justify-content-center py-2">
+                                <i class="bi bi-box-arrow-left"></i><span class="nav-text ms-2">Logout</span>
                             </button>
                         </form>
                     </li>
@@ -75,6 +81,10 @@
             </main>
         </div>
     }
+
+    <div aria-live="polite" aria-atomic="true" class="position-fixed bottom-0 end-0 p-3" style="z-index: 9999;">
+        <div id="toastContainer" class="toast-container"></div>
+    </div>
 
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>

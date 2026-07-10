@@ -8,7 +8,7 @@
 <div class="card mb-3">
     <div class="card-body">
         <label class="form-label fw-bold">Borrower Barcode</label>
-        <input type="text" id="barcodeInput" class="form-control form-control-lg" placeholder="Scan barcode..." autofocus />
+        <input type="text" id="barcodeInput" class="form-control form-control-lg" placeholder="Scan barcode..." autofocus autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" />
         <div id="borrowerInfo" class="mt-2 text-muted small">Awaiting scan...</div>
     </div>
 </div>
@@ -16,53 +16,23 @@
 <div id="finesList"></div>
 <div id="resultAlert" class="mt-2" style="display:none;"></div>
 
-@section Scripts {
-    <script>
-        let timeout;
-        $('#barcodeInput').on('input', function() {
-            clearTimeout(timeout);
-            const val = this.value.trim();
-            if (val.length > 3) {
-                timeout = setTimeout(() => {
-                    $.post('@Url.Action("Search")', { borrowerBarcode: val }, function(res) {
-                        if (res.success) {
-                            $('#borrowerInfo').html(`<span class="text-success"><i class="bi bi-person-check"></i> <strong>${res.borrowerName}</strong></span>`);
-                            if (res.fines.length === 0) {
-                                $('#finesList').html('<div class="alert alert-success">No unpaid fines.</div>');
-                                return;
-                            }
-                            let html = '<div class="list-group">';
-                            let total = 0;
-                            res.fines.forEach(f => {
-                                total += f.amount;
-                                html += `<div class="list-group-item d-flex justify-content-between align-items-center">
-                                    <div><strong>${f.bookTitle}</strong><br/><small>Fine: PHP ${f.amount.toFixed(2)}</small></div>
-                                    <button class="btn btn-primary" onclick="payFine(${f.id})">Collect PHP ${f.amount.toFixed(2)}</button>
-                                </div>`;
-                            });
-                            html += `<div class="list-group-item fw-bold">Total: PHP ${total.toFixed(2)}</div>`;
-                            html += '</div>';
-                            $('#finesList').html(html);
-                        } else {
-                            $('#borrowerInfo').html(`<span class="text-danger">${res.message}</span>`);
-                            $('#finesList').html('');
-                        }
-                    });
-                }, 400);
-            }
-        });
+<!-- Receipt Modal -->
+<div class="modal fade" id="receiptModal" tabindex="-1">
+    <div class="modal-dialog modal-sm">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title"><i class="bi bi-receipt me-1"></i>Payment Receipt</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body" id="receiptBody"></div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary" onclick="printReceipt()"><i class="bi bi-printer"></i> Print</button>
+            </div>
+        </div>
+    </div>
+</div>
 
-        function payFine(id) {
-            if (!confirm('Collect payment for this fine?')) return;
-            $.post('@Url.Action("Pay")', { fineId: id }, function(res) {
-                if (res.success) {
-                    $('#resultAlert').html(`<div class="alert alert-success">${res.message}</div>`).show();
-                    $('#barcodeInput').val('').focus();
-                    $('#finesList').html('');
-                    $('#borrowerInfo').html('<span class="text-muted small">Awaiting scan...</span>');
-                    setTimeout(() => $('#resultAlert').hide(), 5000);
-                } else { alert(res.message); }
-            });
-        }
-    </script>
+@section Scripts {
+    <script src="~/js/assistant-operations.js"></script>
 }

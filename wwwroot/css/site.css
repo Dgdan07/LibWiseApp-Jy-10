@@ -18,6 +18,11 @@ body {
   background-color: rgba(255,255,255,0.1);
 }
 
+.sidebar .nav-link.active {
+  background-color: rgba(255,255,255,0.2);
+  font-weight: 600;
+}
+
 .card {
   border: none;
   border-radius: 0.5rem;
@@ -28,6 +33,47 @@ body {
   font-weight: 600;
 }
 
+.dashboard-card {
+  transition: box-shadow 0.2s ease;
+}
+
+.dashboard-card:hover {
+  box-shadow: 0 0.25rem 1rem rgba(0, 0, 0, 0.1) !important;
+}
+
+.dashboard-card .card-body {
+  padding: 1rem 1.25rem;
+}
+
+.dashboard-card .fs-3 {
+  font-size: 1.75rem !important;
+  line-height: 1.2;
+}
+
 .btn:focus, .btn:active:focus, .btn-link.nav-link:focus, .form-control:focus, .form-check-input:focus {
   box-shadow: 0 0 0 0.1rem white, 0 0 0 0.25rem #258cfb;
+}
+
+@media (max-width: 768px) {
+  .sidebar {
+    width: 60px;
+  }
+  .sidebar .nav-text {
+    display: none;
+  }
+  .sidebar .nav-link {
+    text-align: center;
+    padding: 0.5rem;
+  }
+  .sidebar .nav-link i {
+    margin: 0;
+    font-size: 1.25rem;
+  }
+  .sidebar .p-3 {
+    padding: 0.5rem !important;
+    text-align: center;
+  }
+  .sidebar .badge {
+    display: none;
+  }
 }

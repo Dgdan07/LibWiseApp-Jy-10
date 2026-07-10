@@ -28,6 +28,7 @@ public class BorrowingRecord
 
     public DateTime BorrowedAt { get; set; } = DateTime.UtcNow;
 
+    [Required]
     public DateTime DueDate { get; set; }
 
     public DateTime? ReturnedAt { get; set; }
@@ -40,6 +41,8 @@ public class BorrowingRecord
 
     [MaxLength(20)]
     public string Status { get; set; } = "Active";
+
+    public bool WasExtended { get; set; } = false;
 
     public string? Remarks { get; set; }
 

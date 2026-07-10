@@ -23,7 +23,9 @@ public class FinesController : Controller
         _auditLog = auditLog;
     }
 
-    public async Task<IActionResult> Index(string status)
+    private const int PageSize = 20;
+
+    public async Task<IActionResult> Index(string status, int page = 1)
     {
         var fines = _db.Fines
             .Include(f => f.BorrowingRecord).ThenInclude(r => r.Book)
@@ -33,14 +35,27 @@ public class FinesController : Controller
         if (!string.IsNullOrWhiteSpace(status))
             fines = fines.Where(f => f.Status == status);
 
+        var total = await fines.CountAsync();
+        var items = await fines
+            .OrderByDescending(f => f.CalculatedAt)
+            .Skip((page - 1) * PageSize)
+            .Take(PageSize)
+            .ToListAsync();
+
         ViewBag.Status = status;
-        return View(await fines.OrderByDescending(f => f.CalculatedAt).ToListAsync());
+        ViewBag.Page = page;
+        ViewBag.TotalPages = (int)Math.Ceiling(total / (double)PageSize);
+        return View(items);
     }
 
     [HttpPost]
     public async Task<IActionResult> Pay(int id)
     {
-        var fine = await _db.Fines.FindAsync(id);
+        var fine = await _db.Fines
+            .Include(f => f.BorrowingRecord).ThenInclude(r => r.Book)
+            .Include(f => f.BorrowingRecord).ThenInclude(r => r.Borrower)
+            .FirstOrDefaultAsync(f => f.Id == id);
+
         if (fine == null) return NotFound();
 
         fine.Status = "Paid";
@@ -50,6 +65,7 @@ public class FinesController : Controller
         await _auditLog.LogAsync("PayFine", "Fine", id.ToString(), $"Collected PHP {fine.Amount:F2}");
 
         TempData["Success"] = $"Payment of PHP {fine.Amount:F2} recorded.";
-        return RedirectToAction("Index");
+        TempData["Receipt"] = $"Borrower: {fine.BorrowingRecord.Borrower.FirstName} {fine.BorrowingRecord.Borrower.LastName} | Book: {fine.BorrowingRecord.Book.Title} | Amount: PHP {fine.Amount:F2} | Date: {fine.PaidAt:MMM dd, yyyy h:mm tt}";
+        return RedirectToAction("Index", new { status = Request.Query["status"], page = Request.Query["page"] });
     }
 }

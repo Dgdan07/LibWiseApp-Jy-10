@@ -15,12 +15,16 @@ public class ReturnsController : Controller
     private readonly AppDbContext _db;
     private readonly UserManager<ApplicationUser> _userManager;
     private readonly AuditLogService _auditLog;
+    private readonly FineCalculationService _fineCalc;
+    private readonly BorrowingService _borrowingService;
 
-    public ReturnsController(AppDbContext db, UserManager<ApplicationUser> userManager, AuditLogService auditLog)
+    public ReturnsController(AppDbContext db, UserManager<ApplicationUser> userManager, AuditLogService auditLog, FineCalculationService fineCalc, BorrowingService borrowingService)
     {
         _db = db;
         _userManager = userManager;
         _auditLog = auditLog;
+        _fineCalc = fineCalc;
+        _borrowingService = borrowingService;
     }
 
     public IActionResult Index() => View();
@@ -35,7 +39,7 @@ public class ReturnsController : Controller
         var activeRecords = await _db.BorrowingRecords
             .Include(r => r.Book)
             .Where(r => r.BorrowerId == borrower.Id && r.Status == "Active")
-            .Select(r => new { r.Id, BookTitle = r.Book.Title, r.BookId, r.DueDate, r.BorrowedAt })
+            .Select(r => new { r.Id, BookTitle = r.Book.Title, r.BookId, r.DueDate, r.BorrowedAt, r.WasExtended })
             .ToListAsync();
 
         if (activeRecords.Count == 0)
@@ -60,19 +64,19 @@ public class ReturnsController : Controller
         record.ReturnedByUserId = _userManager.GetUserId(User);
         record.Book.AvailableCopies++;
 
-        var fineRule = await _db.FineRules.FirstOrDefaultAsync(r => r.IsActive);
-        string fineMsg = "";
-
-        if (record.ReturnedAt > record.DueDate)
-        {
-            var daysOverdue = (int)(record.ReturnedAt.Value - record.DueDate).TotalDays;
-            var amount = Math.Min(daysOverdue * (fineRule?.DailyFineRate ?? 5), fineRule?.MaxFine ?? 500);
-            _db.Fines.Add(new Fine { BorrowingRecordId = record.Id, Amount = amount, CalculatedAt = DateTime.UtcNow, Status = "Unpaid" });
-            fineMsg = $" Overdue {daysOverdue} day(s). Fine: PHP {amount:F2}";
-        }
+        var (_, fineMsg) = await _fineCalc.CalculateFineAsync(record);
 
         await _db.SaveChangesAsync();
         await _auditLog.LogAsync("Return", "BorrowingRecord", recordId.ToString(), $"Book \"{record.Book.Title}\" returned (AL).{fineMsg}");
         return Json(new { success = true, message = $"\"{record.Book.Title}\" returned.{fineMsg}" });
+    }
+
+    [HttpPost]
+    public async Task<IActionResult> Extend(int recordId)
+    {
+        var (success, message) = await _borrowingService.ExtendBorrowingAsync(
+            recordId, _userManager.GetUserId(User)!);
+
+        return Json(new { success, message });
     }
 }

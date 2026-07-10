@@ -44,7 +44,11 @@ public class FinesController : Controller
     [HttpPost]
     public async Task<IActionResult> Pay(int fineId)
     {
-        var fine = await _db.Fines.FindAsync(fineId);
+        var fine = await _db.Fines
+            .Include(f => f.BorrowingRecord).ThenInclude(r => r.Book)
+            .Include(f => f.BorrowingRecord).ThenInclude(r => r.Borrower)
+            .FirstOrDefaultAsync(f => f.Id == fineId);
+
         if (fine == null || fine.Status == "Paid")
             return Json(new { success = false, message = "Fine not found or already paid." });
 
@@ -54,6 +58,18 @@ public class FinesController : Controller
         await _db.SaveChangesAsync();
         await _auditLog.LogAsync("PayFine", "Fine", fineId.ToString(), $"Collected PHP {fine.Amount:F2} (AL)");
 
-        return Json(new { success = true, message = $"Payment of PHP {fine.Amount:F2} recorded." });
+        return Json(new
+        {
+            success = true,
+            message = $"Payment of PHP {fine.Amount:F2} recorded.",
+            receipt = new
+            {
+                borrower = $"{fine.BorrowingRecord.Borrower.FirstName} {fine.BorrowingRecord.Borrower.LastName}",
+                book = fine.BorrowingRecord.Book.Title,
+                amount = fine.Amount.ToString("F2"),
+                paidAt = fine.PaidAt.Value.ToString("MMM dd, yyyy h:mm tt"),
+                barcode = fine.BorrowingRecord.BorrowerBarcode
+            }
+        });
     }
 }

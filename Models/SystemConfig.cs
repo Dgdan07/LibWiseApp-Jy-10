@@ -9,5 +9,6 @@ public class SystemConfig
     [Required, MaxLength(100)]
     public string Key { get; set; } = string.Empty;
 
+    [Required]
     public string Value { get; set; } = string.Empty;
 }

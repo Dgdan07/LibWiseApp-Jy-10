@@ -13,7 +13,9 @@ public class AuditLogsController : Controller
 
     public AuditLogsController(AppDbContext db) => _db = db;
 
-    public async Task<IActionResult> Index(string search)
+    private const int PageSize = 50;
+
+    public async Task<IActionResult> Index(string search, string? actionType, int page = 1)
     {
         var logs = _db.AuditLogs
             .Include(l => l.User)
@@ -26,7 +28,21 @@ public class AuditLogsController : Controller
                 l.Details!.Contains(search) ||
                 l.User!.UserName!.Contains(search));
 
+        if (!string.IsNullOrWhiteSpace(actionType))
+            logs = logs.Where(l => l.Action == actionType);
+
+        var total = await logs.CountAsync();
+        var items = await logs
+            .OrderByDescending(l => l.Timestamp)
+            .Skip((page - 1) * PageSize)
+            .Take(PageSize)
+            .ToListAsync();
+
         ViewBag.Search = search;
-        return View(await logs.OrderByDescending(l => l.Timestamp).Take(200).ToListAsync());
+        ViewBag.ActionType = actionType;
+        ViewBag.ActionTypes = await _db.AuditLogs.Select(l => l.Action).Distinct().OrderBy(a => a).ToListAsync();
+        ViewBag.Page = page;
+        ViewBag.TotalPages = (int)Math.Ceiling(total / (double)PageSize);
+        return View(items);
     }
 }
