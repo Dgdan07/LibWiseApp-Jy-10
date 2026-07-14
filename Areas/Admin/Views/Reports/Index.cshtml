@@ -104,143 +104,149 @@
     }
 </form>
 
-<div class="card">
-    <div class="card-body p-0 table-responsive">
-        <table class="table table-striped mb-0">
-            <thead class="table-dark">
-                <tr>
-                    <th>Book</th>
-                    <th>Borrower</th>
-                    <th>Borrowed</th>
-                    <th>Due</th>
-                    <th>Status</th>
-                </tr>
-            </thead>
-            <tbody>
-                @foreach (var r in ViewBag.RecentBorrowings as List<BorrowingRecord> ?? new())
-                {
+<div id="borrowingRecordsContainer" data-ajax-page>
+    <div class="card">
+        <div class="card-body p-0 table-responsive">
+            <table class="table table-striped mb-0">
+                <thead class="table-dark">
                     <tr>
-                        <td>@r.Book.Title</td>
-                        <td>@r.Borrower.LastName, @r.Borrower.FirstName</td>
-                        <td>@r.BorrowedAt.ToString("MMM dd")</td>
-                        <td>@r.DueDate.ToString("MMM dd")</td>
-                        <td>
-                            @if (r.Status == "Active" && r.DueDate < DateTime.UtcNow)
-                            {
-                                <span style="color: red;">Overdue</span>
-                            }
-                            else if (r.Status == "Active")
-                            {
-                                <span style="color: #4361ee;">Active</span>
-                            }
-                            else
-                            {
-                                <span style="color: gray;">Returned</span>
-                            }
-                        </td>
+                        <th>Book</th>
+                        <th>Borrower</th>
+                        <th>Borrowed</th>
+                        <th>Due</th>
+                        <th>Status</th>
                     </tr>
-                }
-                @if ((ViewBag.RecentBorrowings as List<BorrowingRecord>)?.Count == 0)
-                {
-                    <tr><td colspan="5" class="text-center text-muted py-3">No borrowing records found.</td></tr>
-                }
-            </tbody>
-        </table>
+                </thead>
+                <tbody>
+                    @foreach (var r in ViewBag.RecentBorrowings as List<BorrowingRecord> ?? new())
+                    {
+                        <tr>
+                            <td>@r.Book.Title</td>
+                            <td>@r.Borrower.LastName, @r.Borrower.FirstName</td>
+                            <td>@r.BorrowedAt.ToString("MMM dd")</td>
+                            <td>@r.DueDate.ToString("MMM dd")</td>
+                            <td>
+                                @if (r.Status == "Active" && r.DueDate < DateTime.UtcNow)
+                                {
+                                    <span style="color: red;">Overdue</span>
+                                }
+                                else if (r.Status == "Active")
+                                {
+                                    <span style="color: #4361ee;">Active</span>
+                                }
+                                else
+                                {
+                                    <span style="color: gray;">Returned</span>
+                                }
+                            </td>
+                        </tr>
+                    }
+                    @if ((ViewBag.RecentBorrowings as List<BorrowingRecord>)?.Count == 0)
+                    {
+                        <tr><td colspan="5" class="text-center text-muted py-3">No borrowing records found.</td></tr>
+                    }
+                </tbody>
+            </table>
+        </div>
     </div>
-</div>
 
-<partial name="_Pagination" />
+    <partial name="_Pagination" />
+</div>
 
 <h4 class="mt-4">Fines by Borrower</h4>
-<div class="card mb-4">
-    <div class="card-body p-0 table-responsive">
-        <table class="table table-striped mb-0">
-            <thead class="table-dark">
-                <tr><th>Borrower</th><th>Barcode</th><th>Unpaid</th><th>Paid</th><th># Fines</th></tr>
-            </thead>
-            <tbody>
-                @{
-                    var adminFinesByBorrowerList = ViewBag.FinesByBorrower as IEnumerable<dynamic> ?? Enumerable.Empty<dynamic>();
-                }
-                @foreach (var item in adminFinesByBorrowerList)
-                {
-                    <tr>
-                        <td>@item.BorrowerName</td>
-                        <td>@item.Barcode</td>
-                        <td>PHP @item.TotalUnpaid.ToString("N2")</td>
-                        <td>PHP @item.TotalPaid.ToString("N2")</td>
-                        <td>@item.FineCount</td>
-                    </tr>
-                }
-                @if (!adminFinesByBorrowerList.Any())
-                {
-                    <tr><td colspan="5" class="text-center text-muted py-3">No fine records found.</td></tr>
-                }
-            </tbody>
-        </table>
+<div id="finesByBorrowerContainer" data-ajax-page>
+    <div class="card mb-4">
+        <div class="card-body p-0 table-responsive">
+            <table class="table table-striped mb-0">
+                <thead class="table-dark">
+                    <tr><th>Borrower</th><th>Barcode</th><th>Unpaid</th><th>Paid</th><th># Fines</th></tr>
+                </thead>
+                <tbody>
+                    @{
+                        var adminFinesByBorrowerList = ViewBag.FinesByBorrower as IEnumerable<dynamic> ?? Enumerable.Empty<dynamic>();
+                    }
+                    @foreach (var item in adminFinesByBorrowerList)
+                    {
+                        <tr>
+                            <td>@item.BorrowerName</td>
+                            <td>@item.Barcode</td>
+                            <td>PHP @item.TotalUnpaid.ToString("N2")</td>
+                            <td>PHP @item.TotalPaid.ToString("N2")</td>
+                            <td>@item.FineCount</td>
+                        </tr>
+                    }
+                    @if (!adminFinesByBorrowerList.Any())
+                    {
+                        <tr><td colspan="5" class="text-center text-muted py-3">No fine records found.</td></tr>
+                    }
+                </tbody>
+            </table>
+        </div>
     </div>
+    @{
+        int adminFinesByBorrowerTotalPages = Math.Max((int)ViewBag.FinesByBorrowerTotalPages, 1);
+    }
+    <nav class="mb-4">
+        <ul class="pagination pagination-sm justify-content-end">
+            <li class="page-item @((int)ViewBag.FinesByBorrowerPage <= 1 ? "disabled" : "")">
+                <a class="page-link" asp-action="Index" asp-route-finesByBorrowerPage="@((int)ViewBag.FinesByBorrowerPage - 1)" asp-route-page="@ViewBag.Page" asp-route-from="@ViewBag.FromDate" asp-route-to="@ViewBag.ToDate" asp-route-status="@ViewBag.Status" asp-route-repeatOverduePage="@ViewBag.RepeatOverduePage"><i class="bi bi-chevron-left"></i></a>
+            </li>
+            <li class="page-item disabled">
+                <span class="page-link">Page @ViewBag.FinesByBorrowerPage of @adminFinesByBorrowerTotalPages</span>
+            </li>
+            <li class="page-item @((int)ViewBag.FinesByBorrowerPage >= adminFinesByBorrowerTotalPages ? "disabled" : "")">
+                <a class="page-link" asp-action="Index" asp-route-finesByBorrowerPage="@((int)ViewBag.FinesByBorrowerPage + 1)" asp-route-page="@ViewBag.Page" asp-route-from="@ViewBag.FromDate" asp-route-to="@ViewBag.ToDate" asp-route-status="@ViewBag.Status" asp-route-repeatOverduePage="@ViewBag.RepeatOverduePage"><i class="bi bi-chevron-right"></i></a>
+            </li>
+        </ul>
+    </nav>
 </div>
-@{
-    int adminFinesByBorrowerTotalPages = Math.Max((int)ViewBag.FinesByBorrowerTotalPages, 1);
-}
-<nav class="mb-4">
-    <ul class="pagination justify-content-end">
-        <li class="page-item @((int)ViewBag.FinesByBorrowerPage <= 1 ? "disabled" : "")">
-            <a class="page-link" asp-action="Index" asp-route-finesByBorrowerPage="@((int)ViewBag.FinesByBorrowerPage - 1)" asp-route-page="@ViewBag.Page" asp-route-from="@ViewBag.FromDate" asp-route-to="@ViewBag.ToDate" asp-route-status="@ViewBag.Status" asp-route-repeatOverduePage="@ViewBag.RepeatOverduePage"><i class="bi bi-chevron-left"></i></a>
-        </li>
-        <li class="page-item disabled">
-            <span class="page-link">Page @ViewBag.FinesByBorrowerPage of @adminFinesByBorrowerTotalPages</span>
-        </li>
-        <li class="page-item @((int)ViewBag.FinesByBorrowerPage >= adminFinesByBorrowerTotalPages ? "disabled" : "")">
-            <a class="page-link" asp-action="Index" asp-route-finesByBorrowerPage="@((int)ViewBag.FinesByBorrowerPage + 1)" asp-route-page="@ViewBag.Page" asp-route-from="@ViewBag.FromDate" asp-route-to="@ViewBag.ToDate" asp-route-status="@ViewBag.Status" asp-route-repeatOverduePage="@ViewBag.RepeatOverduePage"><i class="bi bi-chevron-right"></i></a>
-        </li>
-    </ul>
-</nav>
 
 <h4 class="mt-4">Repeat Overdue Borrowers</h4>
-<div class="card mb-4">
-    <div class="card-body p-0 table-responsive">
-        <table class="table table-striped mb-0">
-            <thead class="table-dark">
-                <tr><th>Borrower</th><th>Barcode</th><th>Times Overdue</th><th>Currently Overdue</th></tr>
-            </thead>
-            <tbody>
-                @{
-                    var adminRepeatOverdueList = ViewBag.RepeatOverdueBorrowers as IEnumerable<dynamic> ?? Enumerable.Empty<dynamic>();
-                }
-                @foreach (var item in adminRepeatOverdueList)
-                {
-                    <tr>
-                        <td>@item.BorrowerName</td>
-                        <td>@item.Barcode</td>
-                        <td>@item.TotalOverdue</td>
-                        <td>@(item.CurrentlyOverdue ? "Yes" : "No")</td>
-                    </tr>
-                }
-                @if (!adminRepeatOverdueList.Any())
-                {
-                    <tr><td colspan="4" class="text-center text-muted py-3">No overdue records found.</td></tr>
-                }
-            </tbody>
-        </table>
+<div id="repeatOverdueContainer" data-ajax-page>
+    <div class="card mb-4">
+        <div class="card-body p-0 table-responsive">
+            <table class="table table-striped mb-0">
+                <thead class="table-dark">
+                    <tr><th>Borrower</th><th>Barcode</th><th>Times Overdue</th><th>Currently Overdue</th></tr>
+                </thead>
+                <tbody>
+                    @{
+                        var adminRepeatOverdueList = ViewBag.RepeatOverdueBorrowers as IEnumerable<dynamic> ?? Enumerable.Empty<dynamic>();
+                    }
+                    @foreach (var item in adminRepeatOverdueList)
+                    {
+                        <tr>
+                            <td>@item.BorrowerName</td>
+                            <td>@item.Barcode</td>
+                            <td>@item.TotalOverdue</td>
+                            <td>@(item.CurrentlyOverdue ? "Yes" : "No")</td>
+                        </tr>
+                    }
+                    @if (!adminRepeatOverdueList.Any())
+                    {
+                        <tr><td colspan="4" class="text-center text-muted py-3">No overdue records found.</td></tr>
+                    }
+                </tbody>
+            </table>
+        </div>
     </div>
+    @{
+        int adminRepeatOverdueTotalPages = Math.Max((int)ViewBag.RepeatOverdueTotalPages, 1);
+    }
+    <nav class="mb-4">
+        <ul class="pagination pagination-sm justify-content-end">
+            <li class="page-item @((int)ViewBag.RepeatOverduePage <= 1 ? "disabled" : "")">
+                <a class="page-link" asp-action="Index" asp-route-repeatOverduePage="@((int)ViewBag.RepeatOverduePage - 1)" asp-route-page="@ViewBag.Page" asp-route-from="@ViewBag.FromDate" asp-route-to="@ViewBag.ToDate" asp-route-status="@ViewBag.Status" asp-route-finesByBorrowerPage="@ViewBag.FinesByBorrowerPage"><i class="bi bi-chevron-left"></i></a>
+            </li>
+            <li class="page-item disabled">
+                <span class="page-link">Page @ViewBag.RepeatOverduePage of @adminRepeatOverdueTotalPages</span>
+            </li>
+            <li class="page-item @((int)ViewBag.RepeatOverduePage >= adminRepeatOverdueTotalPages ? "disabled" : "")">
+                <a class="page-link" asp-action="Index" asp-route-repeatOverduePage="@((int)ViewBag.RepeatOverduePage + 1)" asp-route-page="@ViewBag.Page" asp-route-from="@ViewBag.FromDate" asp-route-to="@ViewBag.ToDate" asp-route-status="@ViewBag.Status" asp-route-finesByBorrowerPage="@ViewBag.FinesByBorrowerPage"><i class="bi bi-chevron-right"></i></a>
+            </li>
+        </ul>
+    </nav>
 </div>
-@{
-    int adminRepeatOverdueTotalPages = Math.Max((int)ViewBag.RepeatOverdueTotalPages, 1);
-}
-<nav class="mb-4">
-    <ul class="pagination justify-content-end">
-        <li class="page-item @((int)ViewBag.RepeatOverduePage <= 1 ? "disabled" : "")">
-            <a class="page-link" asp-action="Index" asp-route-repeatOverduePage="@((int)ViewBag.RepeatOverduePage - 1)" asp-route-page="@ViewBag.Page" asp-route-from="@ViewBag.FromDate" asp-route-to="@ViewBag.ToDate" asp-route-status="@ViewBag.Status" asp-route-finesByBorrowerPage="@ViewBag.FinesByBorrowerPage"><i class="bi bi-chevron-left"></i></a>
-        </li>
-        <li class="page-item disabled">
-            <span class="page-link">Page @ViewBag.RepeatOverduePage of @adminRepeatOverdueTotalPages</span>
-        </li>
-        <li class="page-item @((int)ViewBag.RepeatOverduePage >= adminRepeatOverdueTotalPages ? "disabled" : "")">
-            <a class="page-link" asp-action="Index" asp-route-repeatOverduePage="@((int)ViewBag.RepeatOverduePage + 1)" asp-route-page="@ViewBag.Page" asp-route-from="@ViewBag.FromDate" asp-route-to="@ViewBag.ToDate" asp-route-status="@ViewBag.Status" asp-route-finesByBorrowerPage="@ViewBag.FinesByBorrowerPage"><i class="bi bi-chevron-right"></i></a>
-        </li>
-    </ul>
-</nav>
 
 <!-- Unpaid Fines Modal -->
 <div class="modal fade" id="unpaidFinesModal" tabindex="-1">

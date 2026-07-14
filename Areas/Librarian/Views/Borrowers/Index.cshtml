@@ -20,55 +20,57 @@
     </div>
 </form>
 
-<div class="card">
-    <div class="card-body p-0 table-responsive">
-        <table class="table table-striped mb-0">
-            <thead class="table-dark">
-                <tr>
-                    <th>Barcode</th>
-                    <th>Name</th>
-                    <th>Grade</th>
-                    <th>ID Number</th>
-                    <th>Contact</th>
-                    <th>Active</th>
-                    <th class="text-end">Actions</th>
-                </tr>
-            </thead>
-            <tbody>
-                @if (Model.Count == 0)
-                {
-                    <tr><td colspan="7" class="text-center text-muted py-4">No borrowers found.</td></tr>
-                }
-                @foreach (var b in Model)
-                {
+<div id="borrowersContainer" data-ajax-page>
+    <div class="card">
+        <div class="card-body p-0 table-responsive">
+            <table class="table table-striped mb-0">
+                <thead class="table-dark">
                     <tr>
-                        <td><code>@b.Barcode</code></td>
-                        <td>@b.LastName, @b.FirstName</td>
-                        <td>@(b.Grade ?? "-")</td>
-                        <td>@(b.IDNumber ?? "-")</td>
-                        <td>@(b.Email ?? b.Phone ?? "-")</td>
-                        <td>
-                            @if (b.IsActive)
-                            {
-                                <span style="color: green;">Yes</span>
-                            }
-                            else
-                            {
-                                <span style="color: red;">No</span>
-                            }
-                        </td>
-                        <td class="text-end">
-                            <button class="btn btn-sm btn-outline-primary" onclick="editBorrower(@b.Id)"><i class="bi bi-pencil"></i></button>
-                            <button class="btn btn-sm btn-outline-danger" onclick="confirmDeleteBorrower(@b.Id, '@b.FirstName @b.LastName')"><i class="bi bi-trash"></i></button>
-                        </td>
+                        <th>Barcode</th>
+                        <th>Name</th>
+                        <th>Grade</th>
+                        <th>ID Number</th>
+                        <th>Contact</th>
+                        <th>Active</th>
+                        <th class="text-end">Actions</th>
                     </tr>
-                }
-            </tbody>
-        </table>
+                </thead>
+                <tbody>
+                    @if (Model.Count == 0)
+                    {
+                        <tr><td colspan="7" class="text-center text-muted py-4">No borrowers found.</td></tr>
+                    }
+                    @foreach (var b in Model)
+                    {
+                        <tr>
+                            <td><code>@b.Barcode</code></td>
+                            <td>@b.LastName, @b.FirstName</td>
+                            <td>@(b.Grade ?? "-")</td>
+                            <td>@(b.IDNumber ?? "-")</td>
+                            <td>@(b.Email ?? b.Phone ?? "-")</td>
+                            <td>
+                                @if (b.IsActive)
+                                {
+                                    <span style="color: green;">Yes</span>
+                                }
+                                else
+                                {
+                                    <span style="color: red;">No</span>
+                                }
+                            </td>
+                            <td class="text-end">
+                                <button class="btn btn-sm btn-outline-primary" onclick="editBorrower(@b.Id)"><i class="bi bi-pencil"></i></button>
+                                <button class="btn btn-sm btn-outline-danger" onclick="confirmDeleteBorrower(@b.Id, '@b.FirstName @b.LastName')"><i class="bi bi-trash"></i></button>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
     </div>
-</div>
 
-<partial name="_Pagination" />
+    <partial name="_Pagination" />
+</div>
 
 <!-- Borrower Create/Edit Modal -->
 <div class="modal fade" id="borrowerModal" tabindex="-1">

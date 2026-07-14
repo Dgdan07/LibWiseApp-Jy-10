@@ -9,41 +9,43 @@
 
 <div id="alertPlaceholder"></div>
 
-<div class="card">
-    <div class="card-body p-0 table-responsive">
-        <table class="table table-striped mb-0">
-            <thead class="table-dark">
-                <tr>
-                    <th>Name</th>
-                    <th>Email</th>
-                    <th>Username</th>
-                    <th>Role</th>
-                    <th class="text-end">Actions</th>
-                </tr>
-            </thead>
-            <tbody>
-                @foreach (var user in Model)
-                {
+<div id="usersContainer" data-ajax-page>
+    <div class="card">
+        <div class="card-body p-0 table-responsive">
+            <table class="table table-striped mb-0">
+                <thead class="table-dark">
                     <tr>
-                        <td>@user.FirstName @user.LastName</td>
-                        <td>@user.Email</td>
-                        <td>@user.UserName</td>
-                        <td class="fw-semibold">@user.Role</td>
-                        <td class="text-end">
-                            <button class="btn btn-sm btn-outline-primary" onclick="editUser('@user.Id')"><i class="bi bi-pencil"></i></button>
-                            @if (user.UserName != "admin")
-                            {
-                                <button class="btn btn-sm btn-outline-danger" onclick="confirmDelete('@user.Id', '@user.UserName')"><i class="bi bi-trash"></i></button>
-                            }
-                        </td>
+                        <th>Name</th>
+                        <th>Email</th>
+                        <th>Username</th>
+                        <th>Role</th>
+                        <th class="text-end">Actions</th>
                     </tr>
-                }
-            </tbody>
-        </table>
+                </thead>
+                <tbody>
+                    @foreach (var user in Model)
+                    {
+                        <tr>
+                            <td>@user.FirstName @user.LastName</td>
+                            <td>@user.Email</td>
+                            <td>@user.UserName</td>
+                            <td class="fw-semibold">@user.Role</td>
+                            <td class="text-end">
+                                <button class="btn btn-sm btn-outline-primary" onclick="editUser('@user.Id')"><i class="bi bi-pencil"></i></button>
+                                @if (user.UserName != "admin")
+                                {
+                                    <button class="btn btn-sm btn-outline-danger" onclick="confirmDelete('@user.Id', '@user.UserName')"><i class="bi bi-trash"></i></button>
+                                }
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
     </div>
-</div>
 
-<partial name="_Pagination" />
+    <partial name="_Pagination" />
+</div>
 
 <!-- Create/Edit Modal -->
 <div class="modal fade" id="userModal" tabindex="-1">

@@ -14,6 +14,46 @@ function printReceipt() {
     win.print();
 }
 
+// AJAX pagination: clicking a page-link inside a [data-ajax-page] container
+// swaps only that container's HTML instead of doing a full page navigation.
+(function () {
+    function swapContainer(html, id) {
+        var doc = new DOMParser().parseFromString(html, 'text/html');
+        var next = doc.getElementById(id);
+        var current = document.getElementById(id);
+        if (next && current) {
+            current.replaceWith(next);
+        }
+    }
+
+    function loadInto(url, id) {
+        fetch(url, { headers: { 'X-Requested-With': 'XMLHttpRequest' } })
+            .then(function (r) { return r.text(); })
+            .then(function (html) { swapContainer(html, id); })
+            .catch(function () { window.location.href = url; });
+    }
+
+    document.addEventListener('click', function (e) {
+        var link = e.target.closest('[data-ajax-page] a.page-link');
+        if (!link) return;
+        var item = link.closest('.page-item');
+        if (item && item.classList.contains('disabled')) return;
+        var container = link.closest('[data-ajax-page]');
+        if (!container || !container.id) return;
+
+        e.preventDefault();
+        var url = link.getAttribute('href');
+        history.pushState({ ajaxPage: true }, '', url);
+        loadInto(url, container.id);
+    });
+
+    window.addEventListener('popstate', function () {
+        document.querySelectorAll('[data-ajax-page]').forEach(function (container) {
+            if (container.id) loadInto(location.href, container.id);
+        });
+    });
+})();
+
 function showToast(message, type) {
     type = type || 'info';
     var icons = { success: 'bi-check-circle-fill', danger: 'bi-x-circle-fill', warning: 'bi-exclamation-circle-fill', info: 'bi-info-circle-fill' };

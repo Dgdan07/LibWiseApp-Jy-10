@@ -27,36 +27,38 @@
         </div>
     }
 </form>
-<div class="card">
-    <div class="card-body p-0 table-responsive">
-        <table class="table table-striped mb-0">
-            <thead class="table-dark">
-                <tr>
-                    <th>Time</th>
-                    <th>User</th>
-                    <th>Action</th>
-                    <th>Entity</th>
-                    <th>Details</th>
-                </tr>
-            </thead>
-            <tbody>
-                @if (Model.Count == 0)
-                {
-                    <tr><td colspan="5" class="text-center text-muted py-4">No logs found.</td></tr>
-                }
-                @foreach (var log in Model)
-                {
+<div id="auditLogsContainer" data-ajax-page>
+    <div class="card">
+        <div class="card-body p-0 table-responsive">
+            <table class="table table-striped mb-0">
+                <thead class="table-dark">
                     <tr>
-                        <td class="text-nowrap">@log.Timestamp.ToString("MMM dd HH:mm")</td>
-                        <td>@(log.User?.UserName ?? "-")</td>
-                        <td class="fw-semibold">@log.Action</td>
-                        <td>@log.EntityType @(log.EntityId != null ? $"#{log.EntityId}" : "")</td>
-                        <td class="text-muted small">@log.Details</td>
+                        <th>Time</th>
+                        <th>User</th>
+                        <th>Action</th>
+                        <th>Entity</th>
+                        <th>Details</th>
                     </tr>
-                }
-            </tbody>
-        </table>
+                </thead>
+                <tbody>
+                    @if (Model.Count == 0)
+                    {
+                        <tr><td colspan="5" class="text-center text-muted py-4">No logs found.</td></tr>
+                    }
+                    @foreach (var log in Model)
+                    {
+                        <tr>
+                            <td class="text-nowrap">@log.Timestamp.ToString("MMM dd HH:mm")</td>
+                            <td>@(log.User?.UserName ?? "-")</td>
+                            <td class="fw-semibold">@log.Action</td>
+                            <td>@log.EntityType @(log.EntityId != null ? $"#{log.EntityId}" : "")</td>
+                            <td class="text-muted small">@log.Details</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
     </div>
-</div>
 
-<partial name="_Pagination" />
+    <partial name="_Pagination" />
+</div>
