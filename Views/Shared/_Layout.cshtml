@@ -11,7 +11,7 @@
 <body>
     @if (User.Identity?.IsAuthenticated == true)
     {
-        <div class="d-flex" style="min-height: 100vh;">
+        <div class="d-flex" style="height: 100vh;">
             <nav class="bg-dark text-white sidebar d-flex flex-column">
                 <div class="p-3 border-bottom border-secondary text-center">
                     <a class="text-white text-decoration-none fw-bold fs-5" asp-area="" asp-controller="Home" asp-action="Index">
@@ -23,7 +23,7 @@
                     <span class="nav-text">Logged in as <strong class="text-white d-block">@User.Identity.Name</strong></span>
                     <span class="text-info-emphasis fw-semibold mt-1">@(User.IsInRole("Admin") ? "Admin" : User.IsInRole("Librarian") ? "Librarian" : "Assistant")</span>
                 </div>
-                <ul class="nav flex-column px-2 flex-grow-1 d-flex">
+                <ul class="nav flex-column px-2 flex-grow-1" style="overflow-y: auto; min-height: 0;">
                     @{
                         var area = ViewContext.RouteData.Values["area"]?.ToString();
                         var ctrl = ViewContext.RouteData.Values["controller"]?.ToString();
@@ -58,15 +58,15 @@
                         <li class="nav-item"><a class="nav-link text-white@(area=="AssistantLibrarian"&&ctrl=="Availability"?" active":"")" asp-area="AssistantLibrarian" asp-controller="Availability" asp-action="Index"><i class="bi bi-search"></i><span class="nav-text ms-2">Availability</span></a></li>
                         <li class="nav-item"><a class="nav-link text-white@(area=="AssistantLibrarian"&&ctrl=="BorrowerInfo"?" active":"")" asp-area="AssistantLibrarian" asp-controller="BorrowerInfo" asp-action="Index"><i class="bi bi-person"></i><span class="nav-text ms-2">Borrower Info</span></a></li>
                     }
-                    <li class="nav-item mt-auto">
-                        <form asp-area="" asp-controller="Account" asp-action="Logout" method="post" class="px-2 pt-3 border-top border-secondary">
-                            @Html.AntiForgeryToken()
-                            <button type="submit" class="btn btn-outline-light w-100 d-flex align-items-center justify-content-center py-2">
-                                <i class="bi bi-box-arrow-left"></i><span class="nav-text ms-2">Logout</span>
-                            </button>
-                        </form>
-                    </li>
                 </ul>
+                <div class="px-2 pt-3 pb-2 border-top border-secondary">
+                    <form asp-area="" asp-controller="Account" asp-action="Logout" method="post">
+                        @Html.AntiForgeryToken()
+                        <button type="submit" class="btn btn-outline-light w-100 d-flex align-items-center justify-content-center py-2">
+                            <i class="bi bi-box-arrow-left"></i><span class="nav-text ms-2">Logout</span>
+                        </button>
+                    </form>
+                </div>
             </nav>
             <main class="flex-grow-1 p-4 bg-light" style="overflow-y: auto;">
                 @RenderBody()
