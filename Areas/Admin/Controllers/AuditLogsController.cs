@@ -13,7 +13,7 @@ public class AuditLogsController : Controller
 
     public AuditLogsController(AppDbContext db) => _db = db;
 
-    private const int PageSize = 50;
+    private const int PageSize = 10;
 
     public async Task<IActionResult> Index(string search, string? actionType, int page = 1)
     {

@@ -13,7 +13,7 @@ public class BooksController : Controller
 {
     private readonly AppDbContext _db;
     private readonly AuditLogService _auditLog;
-    private const int PageSize = 15;
+    private const int PageSize = 10;
 
     public BooksController(AppDbContext db, AuditLogService auditLog)
     {

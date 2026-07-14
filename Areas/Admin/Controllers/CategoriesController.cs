@@ -20,7 +20,7 @@ public class CategoriesController : Controller
         _auditLog = auditLog;
     }
 
-    private const int PageSize = 20;
+    private const int PageSize = 10;
 
     public async Task<IActionResult> Index(int page = 1)
     {

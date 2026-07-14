@@ -14,7 +14,7 @@ public class ReportsController : Controller
 
     public ReportsController(AppDbContext db) => _db = db;
 
-    private const int PageSize = 15;
+    private const int PageSize = 10;
 
     public async Task<IActionResult> ExportCsv()
     {

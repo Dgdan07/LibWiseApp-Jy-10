@@ -20,7 +20,7 @@ public class BooksController : Controller
         _auditLog = auditLog;
     }
 
-    private const int PageSize = 20;
+    private const int PageSize = 10;
 
     public async Task<IActionResult> Index(string search, int page = 1)
     {
