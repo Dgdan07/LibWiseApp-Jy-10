@@ -180,25 +180,22 @@
         </table>
     </div>
 </div>
-@if ((int)ViewBag.FinesByBorrowerTotalPages > 1)
-{
-    <nav class="mb-4">
-        <ul class="pagination justify-content-center">
-            <li class="page-item @((int)ViewBag.FinesByBorrowerPage <= 1 ? "disabled" : "")">
-                <a class="page-link" asp-action="Index" asp-route-finesByBorrowerPage="@((int)ViewBag.FinesByBorrowerPage - 1)" asp-route-page="@ViewBag.Page" asp-route-from="@ViewBag.FromDate" asp-route-to="@ViewBag.ToDate" asp-route-status="@ViewBag.Status" asp-route-repeatOverduePage="@ViewBag.RepeatOverduePage"><i class="bi bi-chevron-left"></i></a>
-            </li>
-            @for (int i = 1; i <= (int)ViewBag.FinesByBorrowerTotalPages; i++)
-            {
-                <li class="page-item @((int)ViewBag.FinesByBorrowerPage == i ? "active" : "")">
-                    <a class="page-link" asp-action="Index" asp-route-finesByBorrowerPage="@i" asp-route-page="@ViewBag.Page" asp-route-from="@ViewBag.FromDate" asp-route-to="@ViewBag.ToDate" asp-route-status="@ViewBag.Status" asp-route-repeatOverduePage="@ViewBag.RepeatOverduePage">@i</a>
-                </li>
-            }
-            <li class="page-item @((int)ViewBag.FinesByBorrowerPage >= (int)ViewBag.FinesByBorrowerTotalPages ? "disabled" : "")">
-                <a class="page-link" asp-action="Index" asp-route-finesByBorrowerPage="@((int)ViewBag.FinesByBorrowerPage + 1)" asp-route-page="@ViewBag.Page" asp-route-from="@ViewBag.FromDate" asp-route-to="@ViewBag.ToDate" asp-route-status="@ViewBag.Status" asp-route-repeatOverduePage="@ViewBag.RepeatOverduePage"><i class="bi bi-chevron-right"></i></a>
-            </li>
-        </ul>
-    </nav>
+@{
+    int adminFinesByBorrowerTotalPages = Math.Max((int)ViewBag.FinesByBorrowerTotalPages, 1);
 }
+<nav class="mb-4">
+    <ul class="pagination justify-content-end">
+        <li class="page-item @((int)ViewBag.FinesByBorrowerPage <= 1 ? "disabled" : "")">
+            <a class="page-link" asp-action="Index" asp-route-finesByBorrowerPage="@((int)ViewBag.FinesByBorrowerPage - 1)" asp-route-page="@ViewBag.Page" asp-route-from="@ViewBag.FromDate" asp-route-to="@ViewBag.ToDate" asp-route-status="@ViewBag.Status" asp-route-repeatOverduePage="@ViewBag.RepeatOverduePage"><i class="bi bi-chevron-left"></i></a>
+        </li>
+        <li class="page-item disabled">
+            <span class="page-link">Page @ViewBag.FinesByBorrowerPage of @adminFinesByBorrowerTotalPages</span>
+        </li>
+        <li class="page-item @((int)ViewBag.FinesByBorrowerPage >= adminFinesByBorrowerTotalPages ? "disabled" : "")">
+            <a class="page-link" asp-action="Index" asp-route-finesByBorrowerPage="@((int)ViewBag.FinesByBorrowerPage + 1)" asp-route-page="@ViewBag.Page" asp-route-from="@ViewBag.FromDate" asp-route-to="@ViewBag.ToDate" asp-route-status="@ViewBag.Status" asp-route-repeatOverduePage="@ViewBag.RepeatOverduePage"><i class="bi bi-chevron-right"></i></a>
+        </li>
+    </ul>
+</nav>
 
 <h4 class="mt-4">Repeat Overdue Borrowers</h4>
 <div class="card mb-4">
@@ -228,25 +225,22 @@
         </table>
     </div>
 </div>
-@if ((int)ViewBag.RepeatOverdueTotalPages > 1)
-{
-    <nav class="mb-4">
-        <ul class="pagination justify-content-center">
-            <li class="page-item @((int)ViewBag.RepeatOverduePage <= 1 ? "disabled" : "")">
-                <a class="page-link" asp-action="Index" asp-route-repeatOverduePage="@((int)ViewBag.RepeatOverduePage - 1)" asp-route-page="@ViewBag.Page" asp-route-from="@ViewBag.FromDate" asp-route-to="@ViewBag.ToDate" asp-route-status="@ViewBag.Status" asp-route-finesByBorrowerPage="@ViewBag.FinesByBorrowerPage"><i class="bi bi-chevron-left"></i></a>
-            </li>
-            @for (int i = 1; i <= (int)ViewBag.RepeatOverdueTotalPages; i++)
-            {
-                <li class="page-item @((int)ViewBag.RepeatOverduePage == i ? "active" : "")">
-                    <a class="page-link" asp-action="Index" asp-route-repeatOverduePage="@i" asp-route-page="@ViewBag.Page" asp-route-from="@ViewBag.FromDate" asp-route-to="@ViewBag.ToDate" asp-route-status="@ViewBag.Status" asp-route-finesByBorrowerPage="@ViewBag.FinesByBorrowerPage">@i</a>
-                </li>
-            }
-            <li class="page-item @((int)ViewBag.RepeatOverduePage >= (int)ViewBag.RepeatOverdueTotalPages ? "disabled" : "")">
-                <a class="page-link" asp-action="Index" asp-route-repeatOverduePage="@((int)ViewBag.RepeatOverduePage + 1)" asp-route-page="@ViewBag.Page" asp-route-from="@ViewBag.FromDate" asp-route-to="@ViewBag.ToDate" asp-route-status="@ViewBag.Status" asp-route-finesByBorrowerPage="@ViewBag.FinesByBorrowerPage"><i class="bi bi-chevron-right"></i></a>
-            </li>
-        </ul>
-    </nav>
+@{
+    int adminRepeatOverdueTotalPages = Math.Max((int)ViewBag.RepeatOverdueTotalPages, 1);
 }
+<nav class="mb-4">
+    <ul class="pagination justify-content-end">
+        <li class="page-item @((int)ViewBag.RepeatOverduePage <= 1 ? "disabled" : "")">
+            <a class="page-link" asp-action="Index" asp-route-repeatOverduePage="@((int)ViewBag.RepeatOverduePage - 1)" asp-route-page="@ViewBag.Page" asp-route-from="@ViewBag.FromDate" asp-route-to="@ViewBag.ToDate" asp-route-status="@ViewBag.Status" asp-route-finesByBorrowerPage="@ViewBag.FinesByBorrowerPage"><i class="bi bi-chevron-left"></i></a>
+        </li>
+        <li class="page-item disabled">
+            <span class="page-link">Page @ViewBag.RepeatOverduePage of @adminRepeatOverdueTotalPages</span>
+        </li>
+        <li class="page-item @((int)ViewBag.RepeatOverduePage >= adminRepeatOverdueTotalPages ? "disabled" : "")">
+            <a class="page-link" asp-action="Index" asp-route-repeatOverduePage="@((int)ViewBag.RepeatOverduePage + 1)" asp-route-page="@ViewBag.Page" asp-route-from="@ViewBag.FromDate" asp-route-to="@ViewBag.ToDate" asp-route-status="@ViewBag.Status" asp-route-finesByBorrowerPage="@ViewBag.FinesByBorrowerPage"><i class="bi bi-chevron-right"></i></a>
+        </li>
+    </ul>
+</nav>
 
 <!-- Unpaid Fines Modal -->
 <div class="modal fade" id="unpaidFinesModal" tabindex="-1">
