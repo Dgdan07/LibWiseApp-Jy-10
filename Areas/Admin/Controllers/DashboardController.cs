@@ -36,6 +36,45 @@ public class DashboardController : Controller
         ViewBag.ChartBorrowed = System.Text.Json.JsonSerializer.Serialize(borrowedData);
         ViewBag.ChartReturned = System.Text.Json.JsonSerializer.Serialize(returnedData);
 
+        var overdueRaw = await _db.BorrowingRecords
+            .Where(r => r.Status == "Active" && r.DueDate < now)
+            .OrderBy(r => r.DueDate)
+            .Take(8)
+            .Select(r => new
+            {
+                BorrowerName = r.Borrower.FirstName + " " + r.Borrower.LastName,
+                r.Borrower.Barcode,
+                BookTitle = r.Book.Title,
+                r.DueDate
+            })
+            .ToListAsync();
+        ViewBag.OverdueItems = overdueRaw
+            .Select(x => new { x.BorrowerName, x.Barcode, x.BookTitle, x.DueDate, DaysOverdue = (now.Date - x.DueDate.Date).Days })
+            .ToList();
+
+        ViewBag.TopBooks = await _db.BorrowingRecords
+            .GroupBy(r => r.BookId)
+            .Select(g => new { BookId = g.Key, Count = g.Count() })
+            .OrderByDescending(x => x.Count)
+            .Take(5)
+            .Join(_db.Books, x => x.BookId, b => b.Id, (x, b) => new { b.Title, b.Author, x.Count })
+            .ToListAsync();
+
+        ViewBag.TopCategories = await _db.BorrowingRecords
+            .Where(r => r.Book.CategoryId != null)
+            .GroupBy(r => r.Book.CategoryId)
+            .Select(g => new { CategoryId = g.Key, Count = g.Count() })
+            .OrderByDescending(x => x.Count)
+            .Take(5)
+            .Join(_db.Categories, x => x.CategoryId, c => c.Id, (x, c) => new { c.Name, x.Count })
+            .ToListAsync();
+
+        ViewBag.RecentActivity = await _db.AuditLogs
+            .OrderByDescending(a => a.Timestamp)
+            .Take(8)
+            .Select(a => new { a.Action, a.EntityType, a.Details, a.Timestamp })
+            .ToListAsync();
+
         return View();
     }
 
