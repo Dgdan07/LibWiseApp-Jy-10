@@ -144,6 +144,8 @@ using (var scope = app.Services.CreateScope())
         var result = await userManager.CreateAsync(admin, "Admin123!");
         if (result.Succeeded)
             await userManager.AddToRoleAsync(admin, "Admin");
+        else
+            Log.Warning("Failed to seed admin user: {Errors}", string.Join("; ", result.Errors.Select(e => e.Description)));
     }
 
     if (await userManager.FindByEmailAsync("librarian@libwise.com") == null)
@@ -156,9 +158,11 @@ using (var scope = app.Services.CreateScope())
             LastName = "Librarian",
             EmailConfirmed = true
         };
-        var result = await userManager.CreateAsync(librarian, "Lib123!");
+        var result = await userManager.CreateAsync(librarian, "Librarian123!");
         if (result.Succeeded)
             await userManager.AddToRoleAsync(librarian, "Librarian");
+        else
+            Log.Warning("Failed to seed librarian user: {Errors}", string.Join("; ", result.Errors.Select(e => e.Description)));
     }
 
     if (await userManager.FindByEmailAsync("al@libwise.com") == null)
@@ -171,9 +175,11 @@ using (var scope = app.Services.CreateScope())
             LastName = "Assistant",
             EmailConfirmed = true
         };
-        var result = await userManager.CreateAsync(al, "Al123!");
+        var result = await userManager.CreateAsync(al, "Assistant123!");
         if (result.Succeeded)
             await userManager.AddToRoleAsync(al, "AssistantLibrarian");
+        else
+            Log.Warning("Failed to seed assistant librarian user: {Errors}", string.Join("; ", result.Errors.Select(e => e.Description)));
     }
 
     if (!db.Categories.Any())
