@@ -11,7 +11,7 @@ services:
       - key: ConnectionStrings__DefaultConnection
         fromDatabase:
           name: libwise-db
-          property: DATABASE_URL
+          property: connectionString
 
 databases:
   - name: libwise-db

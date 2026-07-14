@@ -1,10 +1,33 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.HttpOverrides;
 using Microsoft.EntityFrameworkCore;
+using Npgsql;
 using Serilog;
 using LibWiseApp.Data;
 using LibWiseApp.Middleware;
 using LibWiseApp.Models;
+
+static string ToNpgsqlConnectionString(string raw)
+{
+    if (!raw.StartsWith("postgres://", StringComparison.OrdinalIgnoreCase) &&
+        !raw.StartsWith("postgresql://", StringComparison.OrdinalIgnoreCase))
+    {
+        return raw;
+    }
+
+    var uri = new Uri(raw);
+    var userInfo = uri.UserInfo.Split(':', 2);
+    var npgsqlBuilder = new NpgsqlConnectionStringBuilder
+    {
+        Host = uri.Host,
+        Port = uri.Port > 0 ? uri.Port : 5432,
+        Database = uri.AbsolutePath.TrimStart('/'),
+        Username = Uri.UnescapeDataString(userInfo[0]),
+        Password = userInfo.Length > 1 ? Uri.UnescapeDataString(userInfo[1]) : "",
+        SslMode = SslMode.Require
+    };
+    return npgsqlBuilder.ConnectionString;
+}
 
 Log.Logger = new LoggerConfiguration()
     .WriteTo.Console()
@@ -22,9 +45,13 @@ builder.Host.UseSerilog((context, services, configuration) =>
 builder.Services.AddControllersWithViews(options =>
     options.SuppressImplicitRequiredAttributeForNonNullableReferenceTypes = true);
 
-var connectionString = builder.Configuration.GetConnectionString("DefaultConnection")
-    ?? Environment.GetEnvironmentVariable("DATABASE_URL")
-    ?? throw new InvalidOperationException("No connection string found. Set ConnectionStrings:DefaultConnection or DATABASE_URL.");
+var rawConnectionString = builder.Configuration.GetConnectionString("DefaultConnection");
+if (string.IsNullOrWhiteSpace(rawConnectionString))
+    rawConnectionString = Environment.GetEnvironmentVariable("DATABASE_URL");
+if (string.IsNullOrWhiteSpace(rawConnectionString))
+    throw new InvalidOperationException("No connection string found. Set ConnectionStrings:DefaultConnection or DATABASE_URL.");
+
+var connectionString = ToNpgsqlConnectionString(rawConnectionString);
 builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseNpgsql(connectionString));
 
