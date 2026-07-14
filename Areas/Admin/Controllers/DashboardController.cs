@@ -112,14 +112,14 @@ public class DashboardController : Controller
             .ToListAsync();
     }
 
-    private class TopBookDto
+    public class TopBookDto
     {
         public string Title { get; set; } = string.Empty;
         public string Author { get; set; } = string.Empty;
         public int Count { get; set; }
     }
 
-    private class TopCategoryDto
+    public class TopCategoryDto
     {
         public string Name { get; set; } = string.Empty;
         public int Count { get; set; }
