@@ -288,13 +288,17 @@
 
     function loadChartData(from, to) {
         fetch('/Admin/Dashboard/ChartData?from=' + encodeURIComponent(from) + '&to=' + encodeURIComponent(to))
-            .then(r => r.json())
+            .then(r => {
+                if (!r.ok) throw new Error('ChartData request failed: ' + r.status);
+                return r.json();
+            })
             .then(data => {
                 chart.data.labels = data.labels;
                 chart.data.datasets[0].data = data.borrowed;
                 chart.data.datasets[1].data = data.returned;
                 chart.update();
-            });
+            })
+            .catch(err => console.error('Failed to load chart data:', err));
     }
 
     document.querySelectorAll('.chart-preset').forEach(btn => {

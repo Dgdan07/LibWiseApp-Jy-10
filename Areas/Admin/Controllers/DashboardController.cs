@@ -81,12 +81,13 @@ public class DashboardController : Controller
     [HttpGet]
     public async Task<IActionResult> ChartData(DateTime from, DateTime to)
     {
-        to = to.Date.AddDays(1);
+        var start = DateTime.SpecifyKind(from.Date, DateTimeKind.Utc);
+        var end = DateTime.SpecifyKind(to.Date, DateTimeKind.Utc).AddDays(1);
         var labels = new List<string>();
         var borrowedData = new List<int>();
         var returnedData = new List<int>();
 
-        for (var day = from.Date; day < to; day = day.AddDays(1))
+        for (var day = start; day < end; day = day.AddDays(1))
         {
             labels.Add(day.ToString("MMM dd"));
             borrowedData.Add(await _db.BorrowingRecords.CountAsync(r => r.BorrowedAt >= day && r.BorrowedAt < day.AddDays(1)));
