@@ -118,6 +118,9 @@ app.MapControllerRoute(
 
 using (var scope = app.Services.CreateScope())
 {
+    var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+    await db.Database.EnsureCreatedAsync();
+
     var roleManager = scope.ServiceProvider.GetRequiredService<RoleManager<IdentityRole>>();
     var userManager = scope.ServiceProvider.GetRequiredService<UserManager<ApplicationUser>>();
 
@@ -173,8 +176,6 @@ using (var scope = app.Services.CreateScope())
             await userManager.AddToRoleAsync(al, "AssistantLibrarian");
     }
 
-    var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
-    await db.Database.EnsureCreatedAsync();
     if (!db.Categories.Any())
     {
         db.Categories.AddRange(
