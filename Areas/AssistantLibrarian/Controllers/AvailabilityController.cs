@@ -13,7 +13,9 @@ public class AvailabilityController : Controller
 
     public AvailabilityController(AppDbContext db) => _db = db;
 
-    public async Task<IActionResult> Index(string search)
+    private const int PageSize = 10;
+
+    public async Task<IActionResult> Index(string search, int page = 1)
     {
         var books = _db.Books.Include(b => b.Category).AsQueryable();
 
@@ -23,7 +25,15 @@ public class AvailabilityController : Controller
                 b.Author.Contains(search) ||
                 b.ISBN!.Contains(search));
 
+        var total = await books.CountAsync();
+        var items = await books.OrderBy(b => b.Title)
+            .Skip((page - 1) * PageSize)
+            .Take(PageSize)
+            .ToListAsync();
+
         ViewBag.Search = search;
-        return View(await books.OrderBy(b => b.Title).ToListAsync());
+        ViewBag.Page = page;
+        ViewBag.TotalPages = (int)Math.Ceiling(total / (double)PageSize);
+        return View(items);
     }
 }
