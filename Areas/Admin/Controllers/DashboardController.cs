@@ -52,22 +52,10 @@ public class DashboardController : Controller
             .Select(x => new { x.BorrowerName, x.Barcode, x.BookTitle, x.DueDate, DaysOverdue = (now.Date - x.DueDate.Date).Days })
             .ToList();
 
-        ViewBag.TopBooks = await _db.BorrowingRecords
-            .GroupBy(r => r.BookId)
-            .Select(g => new { BookId = g.Key, Count = g.Count() })
-            .OrderByDescending(x => x.Count)
-            .Take(5)
-            .Join(_db.Books, x => x.BookId, b => b.Id, (x, b) => new { b.Title, b.Author, x.Count })
-            .ToListAsync();
-
-        ViewBag.TopCategories = await _db.BorrowingRecords
-            .Where(r => r.Book.CategoryId != null)
-            .GroupBy(r => r.Book.CategoryId)
-            .Select(g => new { CategoryId = g.Key, Count = g.Count() })
-            .OrderByDescending(x => x.Count)
-            .Take(5)
-            .Join(_db.Categories, x => x.CategoryId, c => c.Id, (x, c) => new { c.Name, x.Count })
-            .ToListAsync();
+        var defaultStart = now.Date.AddDays(-6);
+        var defaultEnd = now.Date.AddDays(1);
+        ViewBag.TopBooks = await GetTopBooksAsync(defaultStart, defaultEnd);
+        ViewBag.TopCategories = await GetTopCategoriesAsync(defaultStart, defaultEnd);
 
         ViewBag.RecentActivity = await _db.AuditLogs
             .OrderByDescending(a => a.Timestamp)
@@ -94,6 +82,46 @@ public class DashboardController : Controller
             returnedData.Add(await _db.BorrowingRecords.CountAsync(r => r.ReturnedAt >= day && r.ReturnedAt < day.AddDays(1)));
         }
 
-        return Json(new { labels, borrowed = borrowedData, returned = returnedData });
+        var topBooks = await GetTopBooksAsync(start, end);
+        var topCategories = await GetTopCategoriesAsync(start, end);
+
+        return Json(new { labels, borrowed = borrowedData, returned = returnedData, topBooks, topCategories });
+    }
+
+    private async Task<List<TopBookDto>> GetTopBooksAsync(DateTime start, DateTime end)
+    {
+        return await _db.BorrowingRecords
+            .Where(r => r.BorrowedAt >= start && r.BorrowedAt < end)
+            .GroupBy(r => r.BookId)
+            .Select(g => new { BookId = g.Key, Count = g.Count() })
+            .OrderByDescending(x => x.Count)
+            .Take(5)
+            .Join(_db.Books, x => x.BookId, b => b.Id, (x, b) => new TopBookDto { Title = b.Title, Author = b.Author, Count = x.Count })
+            .ToListAsync();
+    }
+
+    private async Task<List<TopCategoryDto>> GetTopCategoriesAsync(DateTime start, DateTime end)
+    {
+        return await _db.BorrowingRecords
+            .Where(r => r.BorrowedAt >= start && r.BorrowedAt < end && r.Book.CategoryId != null)
+            .GroupBy(r => r.Book.CategoryId)
+            .Select(g => new { CategoryId = g.Key, Count = g.Count() })
+            .OrderByDescending(x => x.Count)
+            .Take(5)
+            .Join(_db.Categories, x => x.CategoryId, c => c.Id, (x, c) => new TopCategoryDto { Name = c.Name, Count = x.Count })
+            .ToListAsync();
+    }
+
+    private class TopBookDto
+    {
+        public string Title { get; set; } = string.Empty;
+        public string Author { get; set; } = string.Empty;
+        public int Count { get; set; }
+    }
+
+    private class TopCategoryDto
+    {
+        public string Name { get; set; } = string.Empty;
+        public int Count { get; set; }
     }
 }

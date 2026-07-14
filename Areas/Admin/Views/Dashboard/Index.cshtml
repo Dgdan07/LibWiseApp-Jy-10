@@ -80,6 +80,79 @@
 </div>
 
 <div class="row">
+    <div class="col-md-6 mb-3">
+        <div class="card border-0 shadow-sm h-100">
+            <div class="card-header bg-white fw-bold border-bottom"><i class="bi bi-star me-1"></i>Most Borrowed Books</div>
+            <div class="card-body p-0 table-responsive">
+                <table class="table table-striped mb-0">
+                    <thead class="table-dark">
+                        <tr>
+                            <th>Title</th>
+                            <th>Author</th>
+                            <th class="text-end">Times Borrowed</th>
+                        </tr>
+                    </thead>
+                    <tbody id="topBooksBody">
+                        @{
+                            var topBooks = ViewBag.TopBooks as dynamic;
+                        }
+                        @if (topBooks != null && topBooks.Count > 0)
+                        {
+                            foreach (var b in topBooks)
+                            {
+                                <tr>
+                                    <td>@b.Title</td>
+                                    <td>@b.Author</td>
+                                    <td class="text-end">@b.Count</td>
+                                </tr>
+                            }
+                        }
+                        else
+                        {
+                            <tr><td colspan="3" class="text-center text-muted py-4">No borrowing history in this range.</td></tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-6 mb-3">
+        <div class="card border-0 shadow-sm h-100">
+            <div class="card-header bg-white fw-bold border-bottom"><i class="bi bi-tags me-1"></i>Most Borrowed Categories</div>
+            <div class="card-body p-0 table-responsive">
+                <table class="table table-striped mb-0">
+                    <thead class="table-dark">
+                        <tr>
+                            <th>Category</th>
+                            <th class="text-end">Times Borrowed</th>
+                        </tr>
+                    </thead>
+                    <tbody id="topCategoriesBody">
+                        @{
+                            var topCategories = ViewBag.TopCategories as dynamic;
+                        }
+                        @if (topCategories != null && topCategories.Count > 0)
+                        {
+                            foreach (var c in topCategories)
+                            {
+                                <tr>
+                                    <td>@c.Name</td>
+                                    <td class="text-end">@c.Count</td>
+                                </tr>
+                            }
+                        }
+                        else
+                        {
+                            <tr><td colspan="2" class="text-center text-muted py-4">No borrowing history in this range.</td></tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row">
     <div class="col-12 mb-3">
         <div class="card border-0 shadow-sm">
             <div class="card-header bg-white fw-bold border-bottom"><i class="bi bi-exclamation-triangle me-1 text-danger"></i>Most Overdue</div>
@@ -112,79 +185,6 @@
                         else
                         {
                             <tr><td colspan="4" class="text-center text-muted py-4">No overdue borrowings.</td></tr>
-                        }
-                    </tbody>
-                </table>
-            </div>
-        </div>
-    </div>
-</div>
-
-<div class="row">
-    <div class="col-md-6 mb-3">
-        <div class="card border-0 shadow-sm h-100">
-            <div class="card-header bg-white fw-bold border-bottom"><i class="bi bi-star me-1"></i>Most Borrowed Books</div>
-            <div class="card-body p-0 table-responsive">
-                <table class="table table-striped mb-0">
-                    <thead class="table-dark">
-                        <tr>
-                            <th>Title</th>
-                            <th>Author</th>
-                            <th class="text-end">Times Borrowed</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @{
-                            var topBooks = ViewBag.TopBooks as dynamic;
-                        }
-                        @if (topBooks != null && topBooks.Count > 0)
-                        {
-                            foreach (var b in topBooks)
-                            {
-                                <tr>
-                                    <td>@b.Title</td>
-                                    <td>@b.Author</td>
-                                    <td class="text-end">@b.Count</td>
-                                </tr>
-                            }
-                        }
-                        else
-                        {
-                            <tr><td colspan="3" class="text-center text-muted py-4">No borrowing history yet.</td></tr>
-                        }
-                    </tbody>
-                </table>
-            </div>
-        </div>
-    </div>
-    <div class="col-md-6 mb-3">
-        <div class="card border-0 shadow-sm h-100">
-            <div class="card-header bg-white fw-bold border-bottom"><i class="bi bi-tags me-1"></i>Most Borrowed Categories</div>
-            <div class="card-body p-0 table-responsive">
-                <table class="table table-striped mb-0">
-                    <thead class="table-dark">
-                        <tr>
-                            <th>Category</th>
-                            <th class="text-end">Times Borrowed</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @{
-                            var topCategories = ViewBag.TopCategories as dynamic;
-                        }
-                        @if (topCategories != null && topCategories.Count > 0)
-                        {
-                            foreach (var c in topCategories)
-                            {
-                                <tr>
-                                    <td>@c.Name</td>
-                                    <td class="text-end">@c.Count</td>
-                                </tr>
-                            }
-                        }
-                        else
-                        {
-                            <tr><td colspan="2" class="text-center text-muted py-4">No borrowing history yet.</td></tr>
                         }
                     </tbody>
                 </table>
@@ -286,6 +286,32 @@
         }
     });
 
+    function escapeHtml(str) {
+        return String(str).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+    }
+
+    function renderTopBooks(topBooks) {
+        const body = document.getElementById('topBooksBody');
+        if (!topBooks || topBooks.length === 0) {
+            body.innerHTML = '<tr><td colspan="3" class="text-center text-muted py-4">No borrowing history in this range.</td></tr>';
+            return;
+        }
+        body.innerHTML = topBooks.map(b =>
+            `<tr><td>${escapeHtml(b.title)}</td><td>${escapeHtml(b.author)}</td><td class="text-end">${b.count}</td></tr>`
+        ).join('');
+    }
+
+    function renderTopCategories(topCategories) {
+        const body = document.getElementById('topCategoriesBody');
+        if (!topCategories || topCategories.length === 0) {
+            body.innerHTML = '<tr><td colspan="2" class="text-center text-muted py-4">No borrowing history in this range.</td></tr>';
+            return;
+        }
+        body.innerHTML = topCategories.map(c =>
+            `<tr><td>${escapeHtml(c.name)}</td><td class="text-end">${c.count}</td></tr>`
+        ).join('');
+    }
+
     function loadChartData(from, to) {
         fetch('/Admin/Dashboard/ChartData?from=' + encodeURIComponent(from) + '&to=' + encodeURIComponent(to))
             .then(r => {
@@ -297,6 +323,8 @@
                 chart.data.datasets[0].data = data.borrowed;
                 chart.data.datasets[1].data = data.returned;
                 chart.update();
+                renderTopBooks(data.topBooks);
+                renderTopCategories(data.topCategories);
             })
             .catch(err => console.error('Failed to load chart data:', err));
     }
