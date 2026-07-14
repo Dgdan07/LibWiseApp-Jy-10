@@ -11,5 +11,8 @@ RUN dotnet publish -c Release -o /app/publish /p:UseAppHost=false
 
 FROM base AS final
 WORKDIR /app
+ENV ASPNETCORE_ENVIRONMENT=Production
+ENV DOTNET_USE_POLLING_FILE_WATCHER=true
+ENV ASPNETCORE_URLS=http://+:8080
 COPY --from=build /app/publish .
 ENTRYPOINT ["dotnet", "LibWiseApp.dll"]
