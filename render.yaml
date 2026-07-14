@@ -1,0 +1,20 @@
+services:
+  - type: web
+    name: libwise
+    runtime: docker
+    plan: free
+    dockerfilePath: ./Dockerfile
+    autoDeploy: true
+    envVars:
+      - key: ASPNETCORE_ENVIRONMENT
+        value: Production
+      - key: ConnectionStrings__DefaultConnection
+        fromDatabase:
+          name: libwise-db
+          property: DATABASE_URL
+
+databases:
+  - name: libwise-db
+    databaseName: libwise
+    user: libwise
+    plan: free
