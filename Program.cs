@@ -80,6 +80,8 @@ builder.Services.AddScoped<LibWiseApp.Services.AuditLogService>();
 builder.Services.AddScoped<LibWiseApp.Services.FineCalculationService>();
 builder.Services.AddScoped<LibWiseApp.Services.BorrowingService>();
 builder.Services.AddScoped<LibWiseApp.Services.DashboardStatsService>();
+builder.Services.AddScoped<LibWiseApp.Services.BookCatalogService>();
+builder.Services.AddScoped<LibWiseApp.Services.ReportQueryService>();
 builder.Services.AddSingleton<LibWiseApp.Services.BookCoverService>();
 builder.Services.AddAuthorization(options =>
 {

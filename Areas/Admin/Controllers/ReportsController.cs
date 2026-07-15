@@ -2,7 +2,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using LibWiseApp.Data;
-using LibWiseApp.Models;
+using LibWiseApp.Services;
 
 namespace LibWiseApp.Areas.Admin.Controllers;
 
@@ -11,8 +11,13 @@ namespace LibWiseApp.Areas.Admin.Controllers;
 public class ReportsController : Controller
 {
     private readonly AppDbContext _db;
+    private readonly ReportQueryService _reportQuery;
 
-    public ReportsController(AppDbContext db) => _db = db;
+    public ReportsController(AppDbContext db, ReportQueryService reportQuery)
+    {
+        _db = db;
+        _reportQuery = reportQuery;
+    }
 
     private const int PageSize = 10;
 
@@ -46,8 +51,8 @@ public class ReportsController : Controller
 
         ViewBag.TotalBooks = await _db.Books.CountAsync();
         ViewBag.TotalBorrowers = await _db.Borrowers.CountAsync();
-        ViewBag.ActiveBorrowings = await _db.BorrowingRecords.CountAsync(r => r.Status == "Active");
-        ViewBag.OverdueCount = await _db.BorrowingRecords.CountAsync(r => r.Status == "Active" && r.DueDate < now);
+        ViewBag.ActiveBorrowings = await _reportQuery.ActiveBorrowings().CountAsync();
+        ViewBag.OverdueCount = await _reportQuery.OverdueBorrowings(now).CountAsync();
         ViewBag.UnpaidFinesCount = await _db.Fines.CountAsync(f => f.Status == "Unpaid");
 
         var borrowingsQuery = _db.BorrowingRecords
@@ -82,19 +87,7 @@ public class ReportsController : Controller
         ViewBag.ToDate = to;
         ViewBag.Status = status;
 
-        var finesByBorrowerQuery = _db.Fines
-            .Include(f => f.BorrowingRecord).ThenInclude(r => r.Borrower)
-            .GroupBy(f => new { f.BorrowingRecord.BorrowerId, Name = f.BorrowingRecord.Borrower.LastName + ", " + f.BorrowingRecord.Borrower.FirstName, Barcode = f.BorrowingRecord.Borrower.Barcode })
-            .Select(g => new
-            {
-                BorrowerName = g.Key.Name,
-                Barcode = g.Key.Barcode,
-                TotalUnpaid = g.Where(f => f.Status == "Unpaid").Sum(f => f.Amount),
-                TotalPaid = g.Where(f => f.Status == "Paid").Sum(f => f.Amount),
-                FineCount = g.Count()
-            })
-            .OrderByDescending(x => x.TotalUnpaid);
-
+        var finesByBorrowerQuery = _reportQuery.FinesByBorrower();
         var finesByBorrowerTotal = await finesByBorrowerQuery.CountAsync();
         var finesByBorrowerItems = await finesByBorrowerQuery
             .Skip((fbp - 1) * PageSize)
@@ -104,19 +97,7 @@ public class ReportsController : Controller
         ViewBag.FinesByBorrowerPage = fbp;
         ViewBag.FinesByBorrowerTotalPages = (int)Math.Ceiling(finesByBorrowerTotal / (double)PageSize);
 
-        var repeatOverdueQuery = _db.BorrowingRecords
-            .Include(r => r.Borrower)
-            .Where(r => (r.ReturnedAt.HasValue && r.DueDate < r.ReturnedAt) || (r.Status == "Active" && r.DueDate < now))
-            .GroupBy(r => new { r.BorrowerId, Name = r.Borrower.LastName + ", " + r.Borrower.FirstName, Barcode = r.Borrower.Barcode })
-            .Select(g => new
-            {
-                BorrowerName = g.Key.Name,
-                Barcode = g.Key.Barcode,
-                TotalOverdue = g.Count(),
-                CurrentlyOverdue = g.Any(r => r.Status == "Active" && r.DueDate < now)
-            })
-            .OrderByDescending(x => x.TotalOverdue);
-
+        var repeatOverdueQuery = _reportQuery.RepeatOverdueBorrowers(now);
         var repeatOverdueTotal = await repeatOverdueQuery.CountAsync();
         var repeatOverdueItems = await repeatOverdueQuery
             .Skip((rop - 1) * PageSize)
@@ -158,11 +139,7 @@ public class ReportsController : Controller
     [HttpGet]
     public async Task<IActionResult> GetActiveBorrowings(int page = 1)
     {
-        var query = _db.BorrowingRecords
-            .Where(r => r.Status == "Active")
-            .Include(r => r.Book)
-            .Include(r => r.Borrower)
-            .OrderByDescending(r => r.BorrowedAt);
+        var query = _reportQuery.ActiveBorrowings().OrderByDescending(r => r.BorrowedAt);
 
         var total = await query.CountAsync();
         var records = await query.Skip((page - 1) * PageSize).Take(PageSize).ToListAsync();
@@ -181,11 +158,8 @@ public class ReportsController : Controller
     [HttpGet]
     public async Task<IActionResult> GetOverdueBorrowings(int page = 1)
     {
-        var query = _db.BorrowingRecords
-            .Where(r => r.Status == "Active" && r.DueDate < DateTime.UtcNow)
-            .Include(r => r.Book)
-            .Include(r => r.Borrower)
-            .OrderBy(r => r.DueDate);
+        var now = DateTime.UtcNow;
+        var query = _reportQuery.OverdueBorrowings(now);
 
         var total = await query.CountAsync();
         var records = await query.Skip((page - 1) * PageSize).Take(PageSize).ToListAsync();
@@ -196,7 +170,7 @@ public class ReportsController : Controller
             book = r.Book.Title,
             borrowedAt = r.BorrowedAt.ToString("MMM dd, yyyy"),
             dueDate = r.DueDate.ToString("MMM dd, yyyy"),
-            daysOverdue = (DateTime.UtcNow - r.DueDate).Days
+            daysOverdue = (now - r.DueDate).Days
         });
 
         return Json(new { items = data, page, totalPages = (int)Math.Ceiling(total / (double)PageSize) });
