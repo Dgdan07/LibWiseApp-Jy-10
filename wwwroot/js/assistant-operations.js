@@ -223,11 +223,19 @@ function alSearchBooks(term) {
 function alSelectBook(b) {
     if (!$('#borrowerId').val()) return;
     $('#bookId').val(b.id);
-    $('#bookResult').html(`<div class="alert alert-success py-2 mb-0">
+    $('#bookResult').html(`<div class="alert alert-success py-2 mb-0" style="cursor:pointer;" onclick="alDeselectBook()" title="Click to choose a different book">
         <i class="bi bi-check-circle"></i> <strong>${b.title}</strong> by ${b.author}</div>`);
     $('#availableBooksList').html('');
     $('#searchBook').val('');
     alUpdateConfirm();
+}
+
+function alDeselectBook() {
+    $('#bookId').val('');
+    $('#bookResult').html('');
+    $('#borrowBtn').prop('disabled', true);
+    $('#confirmInfo').html('<span class="text-muted">Select a borrower and a book to continue.</span>');
+    alLoadAvailableBooks();
 }
 
 function alUpdateConfirm() {
