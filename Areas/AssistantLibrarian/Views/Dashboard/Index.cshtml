@@ -8,12 +8,12 @@
     <div class="col-md-4 mb-3">
         <div class="card border-0 shadow-sm dashboard-card" style="border-left: 4px solid #4361ee;">
             <div class="card-body">
-                <div class="d-flex justify-content-between align-items-start">
-                    <div class="flex-grow-1">
-                        <p class="text-muted small mb-1">Today's Borrowings</p>
-                        <p class="fs-3 fw-semibold mb-0 text-end">@ViewBag.TodayBorrowings</p>
+                <div class="d-flex justify-content-between align-items-center">
+                    <div class="d-flex align-items-center gap-2">
+                        <i class="bi bi-arrow-right-circle fs-2" style="color: #4361ee;"></i>
+                        <span class="text-muted small">Today's Borrowings</span>
                     </div>
-                    <i class="bi bi-arrow-right-circle fs-3 ms-3" style="color: #4361ee;"></i>
+                    <p class="fs-3 fw-semibold mb-0 text-end">@ViewBag.TodayBorrowings</p>
                 </div>
             </div>
         </div>
@@ -21,12 +21,12 @@
     <div class="col-md-4 mb-3">
         <div class="card border-0 shadow-sm dashboard-card" style="border-left: 4px solid #10b981;">
             <div class="card-body">
-                <div class="d-flex justify-content-between align-items-start">
-                    <div class="flex-grow-1">
-                        <p class="text-muted small mb-1">Today's Returns</p>
-                        <p class="fs-3 fw-semibold mb-0 text-end">@ViewBag.TodayReturns</p>
+                <div class="d-flex justify-content-between align-items-center">
+                    <div class="d-flex align-items-center gap-2">
+                        <i class="bi bi-arrow-left-circle fs-2" style="color: #10b981;"></i>
+                        <span class="text-muted small">Today's Returns</span>
                     </div>
-                    <i class="bi bi-arrow-left-circle fs-3 ms-3" style="color: #10b981;"></i>
+                    <p class="fs-3 fw-semibold mb-0 text-end">@ViewBag.TodayReturns</p>
                 </div>
             </div>
         </div>
@@ -34,13 +34,141 @@
     <div class="col-md-4 mb-3">
         <div class="card border-0 shadow-sm dashboard-card" style="border-left: 4px solid #0891b2;">
             <div class="card-body">
-                <div class="d-flex justify-content-between align-items-start">
-                    <div class="flex-grow-1">
-                        <p class="text-muted small mb-1">Fines Collected</p>
-                        <p class="fs-3 fw-semibold mb-0 text-end">₱ @ViewBag.TodayFinesCollected.ToString("N2")</p>
+                <div class="d-flex justify-content-between align-items-center">
+                    <div class="d-flex align-items-center gap-2">
+                        <i class="bi bi-cash-coin fs-2" style="color: #0891b2;"></i>
+                        <span class="text-muted small">Fines Collected</span>
                     </div>
-                    <i class="bi bi-cash-coin fs-3 ms-3" style="color: #0891b2;"></i>
+                    <p class="fs-3 fw-semibold mb-0 text-end">₱ @ViewBag.TodayFinesCollected.ToString("N2")</p>
                 </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-4 mb-3">
+        <div class="card border-0 shadow-sm dashboard-card" style="border-left: 4px solid #ef4444;">
+            <div class="card-body">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div class="d-flex align-items-center gap-2">
+                        <i class="bi bi-exclamation-triangle fs-2" style="color: #ef4444;"></i>
+                        <span class="text-muted small">Overdue</span>
+                    </div>
+                    <p class="fs-3 fw-semibold mb-0 text-end">@ViewBag.OverdueCount</p>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4 mb-3">
+        <div class="card border-0 shadow-sm dashboard-card" style="border-left: 4px solid #f59e0b;">
+            <div class="card-body">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div class="d-flex align-items-center gap-2">
+                        <i class="bi bi-calendar-check fs-2" style="color: #f59e0b;"></i>
+                        <span class="text-muted small">Due Today</span>
+                    </div>
+                    <p class="fs-3 fw-semibold mb-0 text-end">@ViewBag.DueTodayCount</p>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4 mb-3">
+        <div class="card border-0 shadow-sm dashboard-card" style="border-left: 4px solid #8b5cf6;">
+            <div class="card-body">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div class="d-flex align-items-center gap-2">
+                        <i class="bi bi-wallet2 fs-2" style="color: #8b5cf6;"></i>
+                        <span class="text-muted small">Unpaid Fines</span>
+                    </div>
+                    <p class="fs-3 fw-semibold mb-0 text-end">@ViewBag.UnpaidFinesCount</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-12 mb-3">
+        <div class="card border-0 shadow-sm">
+            <div class="card-header bg-white fw-bold border-bottom"><i class="bi bi-exclamation-triangle me-1 text-danger"></i>Most Overdue</div>
+            <div class="card-body p-0 table-responsive">
+                <table class="table table-striped mb-0">
+                    <thead class="table-dark">
+                        <tr>
+                            <th>Borrower</th>
+                            <th>Book</th>
+                            <th>Due Date</th>
+                            <th class="text-end">Days Overdue</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @{
+                            var overdueItems = ViewBag.OverdueItems as dynamic;
+                        }
+                        @if (overdueItems != null && overdueItems.Count > 0)
+                        {
+                            foreach (var o in overdueItems)
+                            {
+                                <tr>
+                                    <td>@o.BorrowerName <span class="text-muted small">(@o.Barcode)</span></td>
+                                    <td>@o.BookTitle</td>
+                                    <td>@(((DateTime)o.DueDate).ToString("MMM dd, yyyy"))</td>
+                                    <td class="text-end"><span class="badge bg-danger">@o.DaysOverdue d</span></td>
+                                </tr>
+                            }
+                        }
+                        else
+                        {
+                            <tr><td colspan="4" class="text-center text-muted py-4">No overdue borrowings.</td></tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-12 mb-3">
+        <div class="card border-0 shadow-sm">
+            <div class="card-header bg-white fw-bold border-bottom"><i class="bi bi-clock-history me-1"></i>Recent Activity</div>
+            <div class="card-body p-0 table-responsive">
+                <table class="table table-striped mb-0">
+                    <thead class="table-dark">
+                        <tr>
+                            <th>Action</th>
+                            <th>Type</th>
+                            <th>Details</th>
+                            <th class="text-end">Time</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @{
+                            var recentActivity = ViewBag.RecentActivity as dynamic;
+                        }
+                        @if (recentActivity != null && recentActivity.Count > 0)
+                        {
+                            foreach (var a in recentActivity)
+                            {
+                                string actionColor = a.Action == "Delete" ? "color: red;" :
+                                                     a.Action == "Create" ? "color: green;" :
+                                                     a.Action == "Return" ? "color: #0891b2;" :
+                                                     "";
+                                <tr>
+                                    <td><span style="@actionColor" class="fw-semibold">@a.Action</span></td>
+                                    <td>@a.EntityType</td>
+                                    <td>@(a.Details ?? "-")</td>
+                                    <td class="text-end text-nowrap">@(((DateTime)a.Timestamp).ToString("MMM dd, yyyy HH:mm"))</td>
+                                </tr>
+                            }
+                        }
+                        else
+                        {
+                            <tr><td colspan="4" class="text-center text-muted py-4">No recent activity.</td></tr>
+                        }
+                    </tbody>
+                </table>
             </div>
         </div>
     </div>
