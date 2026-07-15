@@ -130,16 +130,18 @@ public class ReportsController : Controller
     }
 
     [HttpGet]
-    public async Task<IActionResult> GetUnpaidFines()
+    public async Task<IActionResult> GetUnpaidFines(int page = 1)
     {
-        var fines = await _db.Fines
+        var query = _db.Fines
             .Where(f => f.Status == "Unpaid")
             .Include(f => f.BorrowingRecord)
                 .ThenInclude(r => r.Book)
             .Include(f => f.BorrowingRecord)
                 .ThenInclude(r => r.Borrower)
-            .OrderByDescending(f => f.CalculatedAt)
-            .ToListAsync();
+            .OrderByDescending(f => f.CalculatedAt);
+
+        var total = await query.CountAsync();
+        var fines = await query.Skip((page - 1) * PageSize).Take(PageSize).ToListAsync();
 
         var data = fines.Select(f => new
         {
@@ -150,18 +152,20 @@ public class ReportsController : Controller
             calculatedAt = f.CalculatedAt.ToString("MMM dd, yyyy")
         });
 
-        return Json(data);
+        return Json(new { items = data, page, totalPages = (int)Math.Ceiling(total / (double)PageSize) });
     }
 
     [HttpGet]
-    public async Task<IActionResult> GetActiveBorrowings()
+    public async Task<IActionResult> GetActiveBorrowings(int page = 1)
     {
-        var records = await _db.BorrowingRecords
+        var query = _db.BorrowingRecords
             .Where(r => r.Status == "Active")
             .Include(r => r.Book)
             .Include(r => r.Borrower)
-            .OrderByDescending(r => r.BorrowedAt)
-            .ToListAsync();
+            .OrderByDescending(r => r.BorrowedAt);
+
+        var total = await query.CountAsync();
+        var records = await query.Skip((page - 1) * PageSize).Take(PageSize).ToListAsync();
 
         var data = records.Select(r => new
         {
@@ -171,18 +175,20 @@ public class ReportsController : Controller
             dueDate = r.DueDate.ToString("MMM dd, yyyy")
         });
 
-        return Json(data);
+        return Json(new { items = data, page, totalPages = (int)Math.Ceiling(total / (double)PageSize) });
     }
 
     [HttpGet]
-    public async Task<IActionResult> GetOverdueBorrowings()
+    public async Task<IActionResult> GetOverdueBorrowings(int page = 1)
     {
-        var records = await _db.BorrowingRecords
+        var query = _db.BorrowingRecords
             .Where(r => r.Status == "Active" && r.DueDate < DateTime.UtcNow)
             .Include(r => r.Book)
             .Include(r => r.Borrower)
-            .OrderBy(r => r.DueDate)
-            .ToListAsync();
+            .OrderBy(r => r.DueDate);
+
+        var total = await query.CountAsync();
+        var records = await query.Skip((page - 1) * PageSize).Take(PageSize).ToListAsync();
 
         var data = records.Select(r => new
         {
@@ -193,6 +199,6 @@ public class ReportsController : Controller
             daysOverdue = (DateTime.UtcNow - r.DueDate).Days
         });
 
-        return Json(data);
+        return Json(new { items = data, page, totalPages = (int)Math.Ceiling(total / (double)PageSize) });
     }
 }
