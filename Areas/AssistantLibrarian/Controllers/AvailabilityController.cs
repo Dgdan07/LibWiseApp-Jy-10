@@ -13,7 +13,7 @@ public class AvailabilityController : Controller
 
     public AvailabilityController(AppDbContext db) => _db = db;
 
-    private const int PageSize = 10;
+    private const int PageSize = 12;
 
     public async Task<IActionResult> Index(string search, int page = 1)
     {
