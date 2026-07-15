@@ -2,38 +2,69 @@
     ViewData["Title"] = "Borrowing";
 }
 <h2><i class="bi bi-arrow-right-circle me-2"></i>Borrowing</h2>
-<p class="text-muted">Scan borrower barcode then select book to process borrowing.</p>
+<p class="text-muted">Scan borrower barcode or search to process borrowing.</p>
 <hr />
 
 <div class="row">
-    <div class="col-md-6 mb-3">
-        <div class="card h-100">
-            <div class="card-header fw-bold">Step 1: Borrower</div>
+    <div class="col-md-5">
+        <div class="card mb-3">
+            <div class="card-header fw-bold">Step 1: Find Borrower</div>
             <div class="card-body">
-                <label class="form-label">Scan borrower barcode</label>
-                <input type="text" id="barcodeInput" class="form-control form-control-lg" placeholder="Scan barcode..." autofocus autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" />
+                <div class="mb-2">
+                    <label class="form-label">Scan or type barcode</label>
+                    <input type="text" id="barcodeInput" class="form-control form-control-lg" placeholder="Scan barcode..." autofocus autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" />
+                </div>
+                <div class="mb-2">
+                    <label class="form-label">Or search by name</label>
+                    <input type="text" id="searchBorrower" class="form-control" placeholder="Type name..." />
+                </div>
                 <div id="borrowerResult" class="mt-2"></div>
-                <input type="hidden" id="borrowerId" />
-                <input type="hidden" id="borrowerBarcode" />
+                <input type="hidden" id="borrowerId" value="" />
+                <input type="hidden" id="borrowerBarcode" value="" />
+            </div>
+        </div>
+
+        <div class="card mb-3">
+            <div class="card-header fw-bold">Step 2: Select Book</div>
+            <div class="card-body">
+                <div id="bookLockedNotice" class="text-muted small">
+                    <i class="bi bi-lock"></i> Select a borrower first.
+                </div>
+                <div id="bookSearchSection" style="display: none;">
+                    <input type="text" id="searchBook" class="form-control form-control-sm mb-2" placeholder="Filter books by title, author, or ISBN..." />
+                </div>
+                <div id="bookResult"></div>
+                <input type="hidden" id="bookId" value="" />
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="card-body">
+                <h5 class="card-title">Step 3: Confirm</h5>
+                <div id="confirmInfo" class="text-muted mb-3">Select a borrower and a book to continue.</div>
+                <button id="borrowBtn" class="btn btn-primary btn-lg w-100" disabled>
+                    <i class="bi bi-check-circle me-1"></i>Confirm Borrowing
+                </button>
             </div>
         </div>
     </div>
-    <div class="col-md-6 mb-3">
-        <div class="card h-100">
-            <div class="card-header fw-bold">Step 2: Book</div>
-            <div class="card-body">
-                <label class="form-label">Search book</label>
-                <input type="text" id="searchBook" class="form-control" placeholder="Type title..." disabled />
-                <div id="bookResult" class="mt-2"></div>
-                <input type="hidden" id="bookId" />
+
+    <div class="col-md-7">
+        <div class="card" style="min-height: 500px;">
+            <div class="card-header fw-bold d-flex justify-content-between align-items-center">
+                <span><i class="bi bi-book me-1"></i>Available Books</span>
+                <span id="bookCount" class="badge bg-secondary"></span>
+            </div>
+            <div class="card-body p-0" id="availableBooksContainer">
+                <div id="booksLockedOverlay" class="text-center text-muted py-5">
+                    <i class="bi bi-lock fs-1 d-block mb-2"></i>
+                    Verify a borrower to view available books
+                </div>
+                <div id="availableBooksList" style="display: none; max-height: 600px; overflow-y: auto;"></div>
             </div>
         </div>
     </div>
 </div>
-
-<button id="borrowBtn" class="btn btn-primary btn-lg w-100" disabled>
-    <i class="bi bi-check-circle me-1"></i>Confirm Borrowing
-</button>
 
 @section Scripts {
     <script src="~/js/assistant-operations.js"></script>

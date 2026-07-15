@@ -36,7 +36,14 @@ public class BorrowingController : Controller
         if (!success)
             return Json(new { success = false, message });
 
-        return Json(new { success = true, message = $"\"{record!.Book.Title}\" borrowed. Due: {record.DueDate:MMM dd, yyyy}" });
+        return Json(new
+        {
+            success = true,
+            message,
+            borrowerName = $"{record!.Borrower.FirstName} {record.Borrower.LastName}",
+            bookTitle = record.Book.Title,
+            dueDate = record.DueDate.ToString("MMM dd, yyyy")
+        });
     }
 
     [HttpPost]
@@ -66,7 +73,18 @@ public class BorrowingController : Controller
             .Where(b => b.IsActive && b.AvailableCopies > 0 &&
                 (b.Title.Contains(term) || b.Author.Contains(term) || b.ISBN!.Contains(term)))
             .Take(10)
-            .Select(b => new { b.Id, b.Title, b.Author, b.AvailableCopies })
+            .Select(b => new { b.Id, b.Title, b.Author, b.ISBN, b.AvailableCopies, Status = "Available" })
+            .ToListAsync();
+        return Json(books);
+    }
+
+    [HttpGet]
+    public async Task<IActionResult> GetAvailableBooks()
+    {
+        var books = await _db.Books
+            .Where(b => b.IsActive && b.AvailableCopies > 0)
+            .OrderBy(b => b.Title)
+            .Select(b => new { b.Id, b.Title, b.Author, b.ISBN, b.AvailableCopies })
             .ToListAsync();
         return Json(books);
     }

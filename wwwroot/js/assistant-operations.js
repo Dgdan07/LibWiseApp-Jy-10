@@ -72,26 +72,22 @@ function resetALReturns() {
 }
 
 // === Borrowing Module (AL) ===
-let alBorrowTimeout, alBookTimeout;
+let alBorrowerTimeout, alBookTimeout;
 
 function initALBorrowing() {
     $('#barcodeInput').on('input', function() {
-        clearTimeout(alBorrowTimeout);
+        clearTimeout(alBorrowerTimeout);
         const val = this.value.trim();
         if (val.length > 3) {
-            alBorrowTimeout = setTimeout(() => {
-                $.getJSON('/AssistantLibrarian/Borrowing/SearchBorrower', { term: val }, function(data) {
-                    if (data.length === 1 && data[0].barcode === val) {
-                        alSelectBorrower(data[0]);
-                    } else if (data.length > 0) {
-                        let html = '<ul class="list-group">';
-                        data.forEach(b => { html += `<li class="list-group-item list-group-item-action" onclick="alSelectBorrower(${JSON.stringify(b).replace(/"/g, "'")})"><strong>${b.name}</strong> <code>${b.barcode}</code></li>`; });
-                        $('#borrowerResult').html(html + '</ul>');
-                    } else {
-                        $('#borrowerResult').html('<div class="text-danger">Not found.</div>');
-                    }
-                });
-            }, 400);
+            alBorrowerTimeout = setTimeout(() => alLookupBorrower(val), 400);
+        }
+    });
+
+    $('#searchBorrower').on('input', function() {
+        clearTimeout(alBorrowerTimeout);
+        const val = this.value.trim();
+        if (val.length > 2) {
+            alBorrowerTimeout = setTimeout(() => alSearchBorrower(val), 400);
         }
     });
 
@@ -99,39 +95,148 @@ function initALBorrowing() {
         clearTimeout(alBookTimeout);
         const val = this.value.trim();
         if (val.length > 2) {
-            alBookTimeout = setTimeout(() => {
-                $.getJSON('/AssistantLibrarian/Borrowing/SearchBook', { term: val }, function(data) {
-                    if (data.length === 0) { $('#bookResult').html('<div class="text-muted">No matches.</div>'); return; }
-                    let html = '<ul class="list-group">';
-                    data.forEach(b => { html += `<li class="list-group-item list-group-item-action" onclick="alSelectBook(${JSON.stringify(b).replace(/"/g, "'")})"><strong>${b.title}</strong> by ${b.author}<br/><small>Available: ${b.availableCopies}</small></li>`; });
-                    $('#bookResult').html(html + '</ul>');
-                });
-            }, 400);
+            alBookTimeout = setTimeout(() => alSearchBooks(val), 400);
+        } else {
+            alLoadAvailableBooks();
         }
     });
 
     $('#borrowBtn').click(function() {
-        const bc = $('#borrowerBarcode').val(), bk = $('#bookId').val();
-        if (!bc || !bk) return;
-        $(this).prop('disabled', true).html('Processing...');
-        $.post('/AssistantLibrarian/Borrowing/Process', { borrowerBarcode: bc, bookId: bk }, function(res) {
-            if (res.success) { showToast(res.message, 'success'); location.reload(); }
-            else { showToast('Error: ' + res.message, 'danger'); $('#borrowBtn').prop('disabled', false).html('<i class="bi bi-check-circle me-1"></i>Confirm Borrowing'); }
-        }).fail(function() { showToast('Failed.', 'danger'); location.reload(); });
+        const borrowerBarcode = $('#borrowerBarcode').val();
+        const bookId = $('#bookId').val();
+        if (!borrowerBarcode || !bookId) return;
+
+        $(this).prop('disabled', true).html('<span class="spinner-border spinner-border-sm me-1"></span>Processing...');
+
+        $.post('/AssistantLibrarian/Borrowing/Process', { borrowerBarcode: borrowerBarcode, bookId: bookId }, function(res) {
+            if (res.success) {
+                showToast(res.message, 'success');
+                location.reload();
+            } else {
+                showToast('Error: ' + res.message, 'danger');
+                $('#borrowBtn').prop('disabled', false).html('<i class="bi bi-check-circle me-1"></i>Confirm Borrowing');
+            }
+        }).fail(function() {
+            showToast('Request failed.', 'danger');
+            $('#borrowBtn').prop('disabled', false).html('<i class="bi bi-check-circle me-1"></i>Confirm Borrowing');
+        });
+    });
+}
+
+function alLookupBorrower(barcode) {
+    $.getJSON('/AssistantLibrarian/Borrowing/SearchBorrower', { term: barcode }, function(data) {
+        if (data.length === 1 && data[0].barcode === barcode) {
+            alSelectBorrower(data[0]);
+        } else if (data.length > 0) {
+            let html = '<ul class="list-group">';
+            data.forEach(b => {
+                html += `<li class="list-group-item list-group-item-action" onclick="alSelectBorrower(${JSON.stringify(b).replace(/"/g, "'")})">
+                    <strong>${b.name}</strong> <code>${b.barcode}</code> ${b.grade ? '-' + b.grade : ''}</li>`;
+            });
+            html += '</ul>';
+            $('#borrowerResult').html(html);
+        } else {
+            $('#borrowerResult').html('<div class="text-danger">Borrower not found.</div>');
+        }
+    });
+}
+
+function alSearchBorrower(term) {
+    $.getJSON('/AssistantLibrarian/Borrowing/SearchBorrower', { term: term }, function(data) {
+        if (data.length === 0) {
+            $('#borrowerResult').html('<div class="text-muted">No matches.</div>');
+        } else {
+            let html = '<ul class="list-group">';
+            data.forEach(b => {
+                html += `<li class="list-group-item list-group-item-action" onclick="alSelectBorrower(${JSON.stringify(b).replace(/"/g, "'")})">
+                    <strong>${b.name}</strong> <code>${b.barcode}</code> ${b.grade ? '-' + b.grade : ''}</li>`;
+            });
+            html += '</ul>';
+            $('#borrowerResult').html(html);
+        }
     });
 }
 
 function alSelectBorrower(b) {
     $('#borrowerId').val(b.id);
     $('#borrowerBarcode').val(b.barcode);
-    $('#borrowerResult').html(`<div class="alert alert-success py-2 mb-0"><i class="bi bi-check-circle"></i> <strong>${b.name}</strong></div>`);
-    $('#searchBook').prop('disabled', false).focus();
+    $('#borrowerResult').html(`<div class="alert alert-success py-2 mb-0">
+        <i class="bi bi-check-circle"></i> <strong>${b.name}</strong> (${b.barcode})</div>`);
+    $('#bookLockedNotice').hide();
+    $('#bookSearchSection').show();
+    alUnlockAvailableBooks();
+}
+
+function alUnlockAvailableBooks() {
+    $('#booksLockedOverlay').hide();
+    $('#availableBooksList').show();
+    alLoadAvailableBooks();
+}
+
+function alLoadAvailableBooks() {
+    $.getJSON('/AssistantLibrarian/Borrowing/GetAvailableBooks', function(data) {
+        $('#bookCount').text(data.length + ' books');
+        if (data.length === 0) {
+            $('#availableBooksList').html('<div class="text-center text-muted py-4">No available books.</div>');
+        } else {
+            let html = '<ul class="list-group list-group-flush">';
+            data.forEach(b => {
+                html += `<li class="list-group-item list-group-item-action py-2" onclick="alSelectBook(${JSON.stringify(b).replace(/"/g, "'")})">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <strong>${b.title}</strong><br/>
+                            <small class="text-muted">${b.author} ${b.isbn ? '| ISBN: ' + b.isbn : ''}</small>
+                        </div>
+                        <span class="badge bg-success">${b.availableCopies}</span>
+                    </div>
+                </li>`;
+            });
+            html += '</ul>';
+            $('#availableBooksList').html(html);
+        }
+    });
+}
+
+function alSearchBooks(term) {
+    $.getJSON('/AssistantLibrarian/Borrowing/SearchBook', { term: term }, function(data) {
+        if (data.length === 0) {
+            $('#availableBooksList').html('<div class="text-center text-muted py-4">No available books found.</div>');
+        } else {
+            let html = '<ul class="list-group list-group-flush">';
+            data.forEach(b => {
+                html += `<li class="list-group-item list-group-item-action py-2" onclick="alSelectBook(${JSON.stringify(b).replace(/"/g, "'")})">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <strong>${b.title}</strong><br/>
+                            <small class="text-muted">${b.author} ${b.isbn ? '| ISBN: ' + b.isbn : ''}</small>
+                        </div>
+                        <span class="badge bg-success">${b.availableCopies}</span>
+                    </div>
+                </li>`;
+            });
+            html += '</ul>';
+            $('#availableBooksList').html(html);
+        }
+    });
 }
 
 function alSelectBook(b) {
+    if (!$('#borrowerId').val()) return;
     $('#bookId').val(b.id);
-    $('#bookResult').html(`<div class="alert alert-success py-2 mb-0"><i class="bi bi-check-circle"></i> <strong>${b.title}</strong></div>`);
-    $('#borrowBtn').prop('disabled', false);
+    $('#bookResult').html(`<div class="alert alert-success py-2 mb-0">
+        <i class="bi bi-check-circle"></i> <strong>${b.title}</strong> by ${b.author}</div>`);
+    $('#availableBooksList').html('');
+    $('#searchBook').val('');
+    alUpdateConfirm();
+}
+
+function alUpdateConfirm() {
+    const bid = $('#borrowerId').val();
+    const bookId = $('#bookId').val();
+    if (bid && bookId) {
+        $('#borrowBtn').prop('disabled', false);
+        $('#confirmInfo').html('<span class="text-success">Ready to process borrowing.</span>');
+    }
 }
 
 // === Fines Module (AL) ===
