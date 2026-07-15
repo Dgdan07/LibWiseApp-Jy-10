@@ -62,6 +62,8 @@ builder.Services.AddIdentity<ApplicationUser, IdentityRole>(options =>
     options.Password.RequireNonAlphanumeric = true;
     options.Password.RequireUppercase = true;
     options.Lockout.MaxFailedAccessAttempts = 5;
+    options.User.AllowedUserNameCharacters =
+        "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789-._@+ ";
 })
 .AddEntityFrameworkStores<AppDbContext>()
 .AddDefaultTokenProviders();
@@ -144,7 +146,7 @@ using (var scope = app.Services.CreateScope())
     {
         var admin = new ApplicationUser
         {
-            UserName = "admin",
+            UserName = "John Admin",
             Email = "admin@libwise.com",
             FirstName = "John",
             LastName = "Admin",
@@ -161,7 +163,7 @@ using (var scope = app.Services.CreateScope())
     {
         var librarian = new ApplicationUser
         {
-            UserName = "librarian",
+            UserName = "Doe Librarian",
             Email = "librarian@libwise.com",
             FirstName = "Doe",
             LastName = "Librarian",
@@ -178,7 +180,7 @@ using (var scope = app.Services.CreateScope())
     {
         var al = new ApplicationUser
         {
-            UserName = "al",
+            UserName = "Dan Assit",
             Email = "al@libwise.com",
             FirstName = "Dan",
             LastName = "Assit",
@@ -207,6 +209,17 @@ using (var scope = app.Services.CreateScope())
     await UpdateSeededNameAsync("admin@libwise.com", "John", "Admin");
     await UpdateSeededNameAsync("librarian@libwise.com", "Doe", "Librarian");
     await UpdateSeededNameAsync("al@libwise.com", "Dan", "Assit");
+
+    async Task UpdateSeededUserNameAsync(string email, string userName)
+    {
+        var user = await userManager.FindByEmailAsync(email);
+        if (user != null && user.UserName != userName)
+            await userManager.SetUserNameAsync(user, userName);
+    }
+
+    await UpdateSeededUserNameAsync("admin@libwise.com", "John Admin");
+    await UpdateSeededUserNameAsync("librarian@libwise.com", "Doe Librarian");
+    await UpdateSeededUserNameAsync("al@libwise.com", "Dan Assit");
 
     if (!db.Categories.Any())
     {

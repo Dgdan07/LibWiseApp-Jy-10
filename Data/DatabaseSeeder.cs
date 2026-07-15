@@ -10,8 +10,8 @@ public static class DatabaseSeeder
         if (await db.Books.CountAsync() >= 35) return;
 
         var users = await db.Users.ToListAsync();
-        var adminId = users.First(u => u.UserName == "admin").Id;
-        var librarianId = users.First(u => u.UserName == "librarian").Id;
+        var adminId = users.First(u => u.Email == "admin@libwise.com").Id;
+        var librarianId = users.First(u => u.Email == "librarian@libwise.com").Id;
 
         var categories = await db.Categories.ToListAsync();
         var fiction = categories.First(c => c.Name == "Fiction");

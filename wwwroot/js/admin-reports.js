@@ -31,8 +31,7 @@ function renderModalPagination(containerId, page, totalPages, loader) {
     });
 }
 
-function showUnpaidFines(page) {
-    page = page || 1;
+function loadUnpaidFines(page, onDone) {
     showFetchSpinner();
     fetch('/Admin/Reports/GetUnpaidFines?page=' + page)
         .then(r => r.json())
@@ -44,13 +43,18 @@ function showUnpaidFines(page) {
             } else {
                 tbody.innerHTML = res.items.map(f => '<tr><td>' + f.borrower + '</td><td>' + f.book + '</td><td>PHP ' + f.amount + '</td><td>' + f.dueDate + '</td><td>' + f.calculatedAt + '</td></tr>').join('');
             }
-            renderModalPagination('unpaidFinesPagination', res.page, res.totalPages, showUnpaidFines);
-            new bootstrap.Modal(document.getElementById('unpaidFinesModal')).show();
+            renderModalPagination('unpaidFinesPagination', res.page, res.totalPages, p => loadUnpaidFines(p));
+            if (onDone) onDone();
         });
 }
 
-function showActiveBorrowings(page) {
-    page = page || 1;
+function showUnpaidFines() {
+    loadUnpaidFines(1, () => {
+        bootstrap.Modal.getOrCreateInstance(document.getElementById('unpaidFinesModal')).show();
+    });
+}
+
+function loadActiveBorrowings(page, onDone) {
     showFetchSpinner();
     fetch('/Admin/Reports/GetActiveBorrowings?page=' + page)
         .then(r => r.json())
@@ -62,13 +66,18 @@ function showActiveBorrowings(page) {
             } else {
                 tbody.innerHTML = res.items.map(r => '<tr><td>' + r.borrower + '</td><td>' + r.book + '</td><td>' + r.borrowedAt + '</td><td>' + r.dueDate + '</td></tr>').join('');
             }
-            renderModalPagination('activeBorrowingsPagination', res.page, res.totalPages, showActiveBorrowings);
-            new bootstrap.Modal(document.getElementById('activeBorrowingsModal')).show();
+            renderModalPagination('activeBorrowingsPagination', res.page, res.totalPages, p => loadActiveBorrowings(p));
+            if (onDone) onDone();
         });
 }
 
-function showOverdueBorrowings(page) {
-    page = page || 1;
+function showActiveBorrowings() {
+    loadActiveBorrowings(1, () => {
+        bootstrap.Modal.getOrCreateInstance(document.getElementById('activeBorrowingsModal')).show();
+    });
+}
+
+function loadOverdueBorrowings(page, onDone) {
     showFetchSpinner();
     fetch('/Admin/Reports/GetOverdueBorrowings?page=' + page)
         .then(r => r.json())
@@ -80,7 +89,13 @@ function showOverdueBorrowings(page) {
             } else {
                 tbody.innerHTML = res.items.map(r => '<tr><td>' + r.borrower + '</td><td>' + r.book + '</td><td>' + r.borrowedAt + '</td><td>' + r.dueDate + '</td><td>' + r.daysOverdue + '</td></tr>').join('');
             }
-            renderModalPagination('overdueBorrowingsPagination', res.page, res.totalPages, showOverdueBorrowings);
-            new bootstrap.Modal(document.getElementById('overdueBorrowingsModal')).show();
+            renderModalPagination('overdueBorrowingsPagination', res.page, res.totalPages, p => loadOverdueBorrowings(p));
+            if (onDone) onDone();
         });
+}
+
+function showOverdueBorrowings() {
+    loadOverdueBorrowings(1, () => {
+        bootstrap.Modal.getOrCreateInstance(document.getElementById('overdueBorrowingsModal')).show();
+    });
 }

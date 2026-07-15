@@ -149,7 +149,7 @@ public class UsersController : Controller
         if (user == null)
             return Json(new { success = false, message = "User not found." });
 
-        if (user.UserName == "admin")
+        if (user.Email == "admin@libwise.com")
             return Json(new { success = false, message = "Cannot delete the admin account." });
 
         var result = await _userManager.DeleteAsync(user);
