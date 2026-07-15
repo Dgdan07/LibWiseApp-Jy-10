@@ -9,6 +9,39 @@ function initReturns() {
             returnsTimeout = setTimeout(() => returnsLookupBorrower(val), 400);
         }
     });
+
+    $('#searchBorrower').on('input', function() {
+        clearTimeout(returnsTimeout);
+        const val = this.value.trim();
+        if (val.length > 2) {
+            returnsTimeout = setTimeout(() => returnsSearchBorrowerByName(val), 400);
+        } else {
+            $('#borrowerResult').html('');
+        }
+    });
+}
+
+function returnsSearchBorrowerByName(term) {
+    $.getJSON('/Librarian/Returns/SearchBorrower', { term: term }, function(data) {
+        if (data.length === 0) {
+            $('#borrowerResult').html('<div class="text-muted">No matches.</div>');
+        } else {
+            let html = '<ul class="list-group">';
+            data.forEach(b => {
+                html += `<li class="list-group-item list-group-item-action" onclick="returnsSelectBorrower('${b.barcode}')">
+                    <strong>${b.name}</strong> <code>${b.barcode}</code> ${b.grade ? '-' + b.grade : ''}</li>`;
+            });
+            html += '</ul>';
+            $('#borrowerResult').html(html);
+        }
+    });
+}
+
+function returnsSelectBorrower(barcode) {
+    $('#borrowerResult').html('');
+    $('#searchBorrower').val('');
+    $('#barcodeInput').val(barcode);
+    returnsLookupBorrower(barcode);
 }
 
 function returnsLookupBorrower(barcode) {
@@ -88,6 +121,8 @@ function showResultAlert(type, message) {
 
 function resetReturnsView() {
     $('#barcodeInput').val('').focus();
+    $('#searchBorrower').val('');
+    $('#borrowerResult').html('');
     $('#booksList').html('<p class="text-muted mb-0">Scan a borrower to see their borrowed books.</p>');
     $('#borrowerInfo').html('<span class="text-muted small">Awaiting scan...</span>');
 }

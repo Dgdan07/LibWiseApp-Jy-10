@@ -9,6 +9,39 @@ function initALReturns() {
             alReturnsTimeout = setTimeout(() => processALBarcode(val), 400);
         }
     });
+
+    $('#searchBorrower').on('input', function() {
+        clearTimeout(alReturnsTimeout);
+        const val = this.value.trim();
+        if (val.length > 2) {
+            alReturnsTimeout = setTimeout(() => alReturnsSearchBorrowerByName(val), 400);
+        } else {
+            $('#borrowerResult').html('');
+        }
+    });
+}
+
+function alReturnsSearchBorrowerByName(term) {
+    $.getJSON('/AssistantLibrarian/Returns/SearchBorrower', { term: term }, function(data) {
+        if (data.length === 0) {
+            $('#borrowerResult').html('<div class="text-muted">No matches.</div>');
+        } else {
+            let html = '<ul class="list-group">';
+            data.forEach(b => {
+                html += `<li class="list-group-item list-group-item-action" onclick="alReturnsSelectBorrower('${b.barcode}')">
+                    <strong>${b.name}</strong> <code>${b.barcode}</code> ${b.grade ? '-' + b.grade : ''}</li>`;
+            });
+            html += '</ul>';
+            $('#borrowerResult').html(html);
+        }
+    });
+}
+
+function alReturnsSelectBorrower(barcode) {
+    $('#borrowerResult').html('');
+    $('#searchBorrower').val('');
+    $('#barcodeInput').val(barcode);
+    processALBarcode(barcode);
 }
 
 function processALBarcode(barcode) {
@@ -67,6 +100,8 @@ function alReturnBook(id) {
 
 function resetALReturns() {
     $('#barcodeInput').val('').focus();
+    $('#searchBorrower').val('');
+    $('#borrowerResult').html('');
     $('#booksList').html('');
     $('#borrowerInfo').html('<span class="text-muted small">Awaiting scan...</span>');
 }
@@ -255,34 +290,69 @@ function initALFines() {
         clearTimeout(alFinesTimeout);
         const val = this.value.trim();
         if (val.length > 3) {
-            alFinesTimeout = setTimeout(() => {
-                $.post('/AssistantLibrarian/Fines/Search', { borrowerBarcode: val }, function(res) {
-                    if (res.success) {
-                        $('#borrowerInfo').html(`<span class="text-success"><i class="bi bi-person-check"></i> <strong>${res.borrowerName}</strong></span>`);
-                        if (res.fines.length === 0) {
-                            $('#finesList').html('<div class="alert alert-success">No unpaid fines.</div>');
-                            return;
-                        }
-                        let html = '<div class="list-group">';
-                        let total = 0;
-                        res.fines.forEach(f => {
-                            total += f.amount;
-                            html += `<div class="list-group-item d-flex justify-content-between align-items-center">
-                                <div><strong>${f.bookTitle}</strong><br/><small>Fine: PHP ${f.amount.toFixed(2)}</small></div>
-                                <button class="btn btn-primary" onclick="alPayFine(${f.id})">Collect PHP ${f.amount.toFixed(2)}</button>
-                            </div>`;
-                        });
-                        html += `<div class="list-group-item fw-bold">Total: PHP ${total.toFixed(2)}</div>`;
-                        html += '</div>';
-                        $('#finesList').html(html);
-                    } else {
-                        $('#borrowerInfo').html(`<span class="text-danger">${res.message}</span>`);
-                        $('#finesList').html('');
-                    }
-                });
-            }, 400);
+            alFinesTimeout = setTimeout(() => alFinesLookupBorrower(val), 400);
         }
     });
+
+    $('#searchBorrower').on('input', function() {
+        clearTimeout(alFinesTimeout);
+        const val = this.value.trim();
+        if (val.length > 2) {
+            alFinesTimeout = setTimeout(() => alFinesSearchBorrowerByName(val), 400);
+        } else {
+            $('#borrowerResult').html('');
+        }
+    });
+}
+
+function alFinesLookupBorrower(barcode) {
+    $.post('/AssistantLibrarian/Fines/Search', { borrowerBarcode: barcode }, function(res) {
+        if (res.success) {
+            $('#borrowerInfo').html(`<span class="text-success"><i class="bi bi-person-check"></i> <strong>${res.borrowerName}</strong></span>`);
+            if (res.fines.length === 0) {
+                $('#finesList').html('<div class="alert alert-success">No unpaid fines.</div>');
+                return;
+            }
+            let html = '<div class="list-group">';
+            let total = 0;
+            res.fines.forEach(f => {
+                total += f.amount;
+                html += `<div class="list-group-item d-flex justify-content-between align-items-center">
+                    <div><strong>${f.bookTitle}</strong><br/><small>Fine: PHP ${f.amount.toFixed(2)}</small></div>
+                    <button class="btn btn-primary" onclick="alPayFine(${f.id})">Collect PHP ${f.amount.toFixed(2)}</button>
+                </div>`;
+            });
+            html += `<div class="list-group-item fw-bold">Total: PHP ${total.toFixed(2)}</div>`;
+            html += '</div>';
+            $('#finesList').html(html);
+        } else {
+            $('#borrowerInfo').html(`<span class="text-danger">${res.message}</span>`);
+            $('#finesList').html('');
+        }
+    });
+}
+
+function alFinesSearchBorrowerByName(term) {
+    $.getJSON('/AssistantLibrarian/Fines/SearchBorrower', { term: term }, function(data) {
+        if (data.length === 0) {
+            $('#borrowerResult').html('<div class="text-muted">No matches.</div>');
+        } else {
+            let html = '<ul class="list-group">';
+            data.forEach(b => {
+                html += `<li class="list-group-item list-group-item-action" onclick="alFinesSelectBorrower('${b.barcode}')">
+                    <strong>${b.name}</strong> <code>${b.barcode}</code> ${b.grade ? '-' + b.grade : ''}</li>`;
+            });
+            html += '</ul>';
+            $('#borrowerResult').html(html);
+        }
+    });
+}
+
+function alFinesSelectBorrower(barcode) {
+    $('#borrowerResult').html('');
+    $('#searchBorrower').val('');
+    $('#barcodeInput').val(barcode);
+    alFinesLookupBorrower(barcode);
 }
 
 function alPayFine(id) {
@@ -304,6 +374,8 @@ function alPayFine(id) {
                 new bootstrap.Modal(document.getElementById('receiptModal')).show();
             }
             $('#barcodeInput').val('').focus();
+            $('#searchBorrower').val('');
+            $('#borrowerResult').html('');
             $('#finesList').html('');
             $('#borrowerInfo').html('<span class="text-muted small">Awaiting scan...</span>');
         } else { showToast(res.message, 'danger'); }

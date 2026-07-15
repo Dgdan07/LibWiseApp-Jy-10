@@ -7,8 +7,11 @@
 
 <div class="card mb-3">
     <div class="card-body">
-        <label class="form-label fw-bold">Borrower Barcode</label>
-        <input type="text" id="barcodeInput" class="form-control form-control-lg" placeholder="Scan barcode..." autofocus autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" />
+        <label class="form-label fw-bold">Scan or type barcode</label>
+        <input type="text" id="barcodeInput" class="form-control form-control-lg mb-2" placeholder="Scan barcode..." autofocus autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" />
+        <label class="form-label fw-bold">Or search by name</label>
+        <input type="text" id="searchBorrower" class="form-control" placeholder="Type name..." />
+        <div id="borrowerResult" class="mt-2"></div>
         <div id="borrowerInfo" class="mt-2 text-muted small">Awaiting scan...</div>
     </div>
 </div>

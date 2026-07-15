@@ -79,4 +79,15 @@ public class ReturnsController : Controller
 
         return Json(new { success, message });
     }
+
+    [HttpGet]
+    public async Task<IActionResult> SearchBorrower(string term)
+    {
+        var borrowers = await _db.Borrowers
+            .Where(b => b.IsActive && (b.Barcode.Contains(term) || b.FirstName.Contains(term) || b.LastName.Contains(term)))
+            .Take(10)
+            .Select(b => new { b.Id, b.Barcode, Name = b.FirstName + " " + b.LastName, b.Grade })
+            .ToListAsync();
+        return Json(borrowers);
+    }
 }
