@@ -244,6 +244,10 @@ using (var scope = app.Services.CreateScope())
     }
 
     await DatabaseSeeder.InitializeAsync(db);
+
+    // Runs every startup (not just on first seed) so a database seeded before this
+    // consistency logic existed gets patched too, instead of only new databases.
+    await DatabaseSeeder.PatchDataConsistencyAsync(db);
 }
 
 app.Run();

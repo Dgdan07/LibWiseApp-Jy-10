@@ -134,7 +134,7 @@ public class ReportsController : Controller
             book = r.Book.Title,
             borrowedAt = r.BorrowedAt.ToString("MMM dd, yyyy"),
             dueDate = r.DueDate.ToString("MMM dd, yyyy"),
-            daysOverdue = (now - r.DueDate).Days
+            daysOverdue = (now.Date - r.DueDate.Date).Days
         });
 
         return Json(data);
