@@ -11,22 +11,22 @@
 <nav aria-label="Page navigation" class="mb-3">
     <ul class="pagination pagination-numbered justify-content-end mb-0">
         <li class="page-item @(page <= 1 ? "disabled" : "")">
-            <a class="page-link" asp-action="@action" asp-route-search="@ViewBag.Search" asp-route-page="1" aria-label="First"><i class="bi bi-chevron-double-left"></i></a>
+            <a class="page-link" asp-action="@action" asp-route-search="@ViewBag.Search" asp-route-categoryId="@ViewBag.CategoryId" asp-route-page="1" aria-label="First"><i class="bi bi-chevron-double-left"></i></a>
         </li>
         <li class="page-item @(page <= 1 ? "disabled" : "")">
-            <a class="page-link" asp-action="@action" asp-route-search="@ViewBag.Search" asp-route-page="@(page - 1)" aria-label="Previous"><i class="bi bi-chevron-left"></i></a>
+            <a class="page-link" asp-action="@action" asp-route-search="@ViewBag.Search" asp-route-categoryId="@ViewBag.CategoryId" asp-route-page="@(page - 1)" aria-label="Previous"><i class="bi bi-chevron-left"></i></a>
         </li>
         @for (int i = startPage; i <= endPage; i++)
         {
             <li class="page-item @(i == page ? "active" : "")">
-                <a class="page-link" asp-action="@action" asp-route-search="@ViewBag.Search" asp-route-page="@i">@i</a>
+                <a class="page-link" asp-action="@action" asp-route-search="@ViewBag.Search" asp-route-categoryId="@ViewBag.CategoryId" asp-route-page="@i">@i</a>
             </li>
         }
         <li class="page-item @(page >= totalPages ? "disabled" : "")">
-            <a class="page-link" asp-action="@action" asp-route-search="@ViewBag.Search" asp-route-page="@(page + 1)" aria-label="Next"><i class="bi bi-chevron-right"></i></a>
+            <a class="page-link" asp-action="@action" asp-route-search="@ViewBag.Search" asp-route-categoryId="@ViewBag.CategoryId" asp-route-page="@(page + 1)" aria-label="Next"><i class="bi bi-chevron-right"></i></a>
         </li>
         <li class="page-item @(page >= totalPages ? "disabled" : "")">
-            <a class="page-link" asp-action="@action" asp-route-search="@ViewBag.Search" asp-route-page="@totalPages" aria-label="Last"><i class="bi bi-chevron-double-right"></i></a>
+            <a class="page-link" asp-action="@action" asp-route-search="@ViewBag.Search" asp-route-categoryId="@ViewBag.CategoryId" asp-route-page="@totalPages" aria-label="Last"><i class="bi bi-chevron-double-right"></i></a>
         </li>
     </ul>
 </nav>

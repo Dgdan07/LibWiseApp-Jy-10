@@ -15,7 +15,7 @@ public class AvailabilityController : Controller
 
     private const int PageSize = 12;
 
-    public async Task<IActionResult> Index(string search, int page = 1)
+    public async Task<IActionResult> Index(string search, int? categoryId, int page = 1)
     {
         var books = _db.Books.Include(b => b.Category).AsQueryable();
 
@@ -25,6 +25,9 @@ public class AvailabilityController : Controller
                 b.Author.Contains(search) ||
                 b.ISBN!.Contains(search));
 
+        if (categoryId.HasValue)
+            books = books.Where(b => b.CategoryId == categoryId.Value);
+
         var total = await books.CountAsync();
         var items = await books.OrderBy(b => b.Title)
             .Skip((page - 1) * PageSize)
@@ -32,6 +35,8 @@ public class AvailabilityController : Controller
             .ToListAsync();
 
         ViewBag.Search = search;
+        ViewBag.CategoryId = categoryId;
+        ViewBag.Categories = await _db.Categories.OrderBy(c => c.Name).ToListAsync();
         ViewBag.Page = page;
         ViewBag.TotalPages = (int)Math.Ceiling(total / (double)PageSize);
         return View(items);
