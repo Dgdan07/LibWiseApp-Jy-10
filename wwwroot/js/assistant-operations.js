@@ -58,22 +58,26 @@ function processALBarcode(barcode) {
                 return now.toDateString() === oneDayBefore.toDateString();
             }
 
-            let html = '<div class="list-group">';
+            let html = '<ul class="list-group">';
             res.books.forEach(b => {
+                const due = new Date(b.dueDate).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
                 const showExtend = canExtend(b.wasExtended, b.dueDate);
-                html += `<div class="list-group-item d-flex justify-content-between align-items-center">
-                    <div><strong>${b.bookTitle}</strong><br/><small class="text-muted">Due: ${new Date(b.dueDate).toLocaleDateString()}</small></div>
+                html += `<li class="list-group-item d-flex justify-content-between align-items-center">
+                    <div><strong>${b.bookTitle}</strong><br/>
+                    <small class="text-muted">Borrowed: ${new Date(b.borrowedAt).toLocaleDateString()} | Due: ${due}</small></div>
                     <div class="d-flex gap-1">
                         ${showExtend ? `<button class="btn btn-warning btn-sm" onclick="alExtendBorrow(${b.id})"><i class="bi bi-clock"></i> Extend</button>` : ''}
-                        <button class="btn btn-success" onclick="alReturnBook(${b.id})">Return</button>
+                        <button class="btn btn-success btn-sm" onclick="alReturnBook(${b.id}, '${b.bookTitle.replace(/'/g, "\\'")}')">
+                            <i class="bi bi-arrow-return-left"></i> Return
+                        </button>
                     </div>
-                </div>`;
+                </li>`;
             });
-            html += '</div>';
+            html += '</ul>';
             $('#booksList').html(html);
         } else {
             $('#borrowerInfo').html(`<span class="text-danger">${res.message}</span>`);
-            $('#booksList').html('');
+            $('#booksList').html('<p class="text-muted mb-0">No active borrowings.</p>');
         }
     });
 }
@@ -89,12 +93,16 @@ function alExtendBorrow(recordId) {
     });
 }
 
-function alReturnBook(id) {
+function alReturnBook(id, title) {
+    if (!confirm(`Return "${title}"?`)) return;
+
     $.post('/AssistantLibrarian/Returns/ReturnBook', { recordId: id }, function(res) {
         if (res.success) {
             showToast(res.message, 'success');
             resetALReturns();
-        } else { showToast(res.message, 'danger'); }
+        } else { showToast('Error: ' + res.message, 'danger'); }
+    }).fail(function() {
+        showToast('Request failed.', 'danger');
     });
 }
 
@@ -102,7 +110,7 @@ function resetALReturns() {
     $('#barcodeInput').val('').focus();
     $('#searchBorrower').val('');
     $('#borrowerResult').html('');
-    $('#booksList').html('');
+    $('#booksList').html('<p class="text-muted mb-0">Scan a borrower to see their borrowed books.</p>');
     $('#borrowerInfo').html('<span class="text-muted small">Awaiting scan...</span>');
 }
 
