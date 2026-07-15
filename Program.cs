@@ -78,6 +78,7 @@ builder.Services.AddScoped<LibWiseApp.Services.AuditLogService>();
 builder.Services.AddScoped<LibWiseApp.Services.FineCalculationService>();
 builder.Services.AddScoped<LibWiseApp.Services.BorrowingService>();
 builder.Services.AddScoped<LibWiseApp.Services.DashboardStatsService>();
+builder.Services.AddSingleton<LibWiseApp.Services.BookCoverService>();
 builder.Services.AddAuthorization(options =>
 {
     options.AddPolicy("AdminOnly", policy => policy.RequireRole("Admin"));
@@ -122,6 +123,13 @@ using (var scope = app.Services.CreateScope())
     var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
     await db.Database.EnsureCreatedAsync();
 
+    // EnsureCreatedAsync is a no-op on a database that already has tables, so it never applies
+    // migrations added after the first deploy. Patch newly-added columns here idempotently instead.
+    await db.Database.ExecuteSqlRawAsync(
+        "ALTER TABLE \"Books\" ADD COLUMN IF NOT EXISTS \"CoverImage\" bytea");
+    await db.Database.ExecuteSqlRawAsync(
+        "ALTER TABLE \"Books\" ADD COLUMN IF NOT EXISTS \"CoverImageContentType\" character varying(100)");
+
     var roleManager = scope.ServiceProvider.GetRequiredService<RoleManager<IdentityRole>>();
     var userManager = scope.ServiceProvider.GetRequiredService<UserManager<ApplicationUser>>();
 
@@ -138,7 +146,7 @@ using (var scope = app.Services.CreateScope())
         {
             UserName = "admin",
             Email = "admin@libwise.com",
-            FirstName = "System",
+            FirstName = "John",
             LastName = "Admin",
             EmailConfirmed = true
         };
@@ -155,7 +163,7 @@ using (var scope = app.Services.CreateScope())
         {
             UserName = "librarian",
             Email = "librarian@libwise.com",
-            FirstName = "Jane",
+            FirstName = "Doe",
             LastName = "Librarian",
             EmailConfirmed = true
         };
@@ -172,8 +180,8 @@ using (var scope = app.Services.CreateScope())
         {
             UserName = "al",
             Email = "al@libwise.com",
-            FirstName = "John",
-            LastName = "Assistant",
+            FirstName = "Dan",
+            LastName = "Assit",
             EmailConfirmed = true
         };
         var result = await userManager.CreateAsync(al, "Assistant123!");
@@ -182,6 +190,23 @@ using (var scope = app.Services.CreateScope())
         else
             Log.Warning("Failed to seed assistant librarian user: {Errors}", string.Join("; ", result.Errors.Select(e => e.Description)));
     }
+
+    // The blocks above only run for users that don't exist yet, so on an already-seeded
+    // database (e.g. Render) they never update names. Patch existing accounts idempotently.
+    async Task UpdateSeededNameAsync(string email, string firstName, string lastName)
+    {
+        var user = await userManager.FindByEmailAsync(email);
+        if (user != null && (user.FirstName != firstName || user.LastName != lastName))
+        {
+            user.FirstName = firstName;
+            user.LastName = lastName;
+            await userManager.UpdateAsync(user);
+        }
+    }
+
+    await UpdateSeededNameAsync("admin@libwise.com", "John", "Admin");
+    await UpdateSeededNameAsync("librarian@libwise.com", "Doe", "Librarian");
+    await UpdateSeededNameAsync("al@libwise.com", "Dan", "Assit");
 
     if (!db.Categories.Any())
     {

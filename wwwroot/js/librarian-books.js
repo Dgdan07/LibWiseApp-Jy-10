@@ -7,6 +7,8 @@ function resetBookForm() {
     document.getElementById('bookModalTitle').textContent = 'Add Book';
     document.getElementById('bookFormErrors').textContent = '';
     document.getElementById('bookIsActive').checked = true;
+    document.getElementById('bookCoverPreview').removeAttribute('src');
+    document.getElementById('bookCoverPreview').classList.add('d-none');
 }
 
 function editBook(id) {
@@ -28,9 +30,18 @@ function editBook(id) {
             document.getElementById('bookDescription').value = b.description || '';
             document.getElementById('bookIsActive').checked = b.isActive;
             document.getElementById('bookModalTitle').textContent = 'Edit Book';
+            document.getElementById('bookCoverPreview').src = '/Books/Cover/' + b.id;
             new bootstrap.Modal(document.getElementById('bookModal')).show();
         });
 }
+
+document.getElementById('bookCoverImage').addEventListener('change', function () {
+    let file = this.files && this.files[0];
+    if (!file) return;
+    let reader = new FileReader();
+    reader.onload = e => { document.getElementById('bookCoverPreview').src = e.target.result; };
+    reader.readAsDataURL(file);
+});
 
 document.getElementById('bookForm').addEventListener('submit', function (e) {
     e.preventDefault();

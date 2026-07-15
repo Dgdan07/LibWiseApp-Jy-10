@@ -28,6 +28,12 @@
     {
         <div class="col-md-3 mb-3">
             <div class="card h-100">
+                <div class="cover-wrap cover-wrap-card">
+                    <i class="bi bi-book cover-placeholder-icon"></i>
+                    <img src="/Books/Cover/@book.Id" alt="@book.Title" class="cover-img d-none"
+                         onload="this.classList.remove('d-none'); this.previousElementSibling.classList.add('d-none');"
+                         onerror="this.classList.add('d-none');" />
+                </div>
                 <div class="card-body py-2 px-3">
                     <h6 class="card-title mb-1">@book.Title</h6>
                     <small class="text-muted">@book.Author</small>

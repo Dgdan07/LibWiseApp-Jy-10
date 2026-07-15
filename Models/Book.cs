@@ -40,6 +40,11 @@ public class Book
 
     public bool IsActive { get; set; } = true;
 
+    public byte[]? CoverImage { get; set; }
+
+    [MaxLength(100)]
+    public string? CoverImageContentType { get; set; }
+
     public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
 
     public ICollection<BorrowingRecord> BorrowingRecords { get; set; } = new List<BorrowingRecord>();

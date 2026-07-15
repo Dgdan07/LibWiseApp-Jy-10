@@ -13,12 +13,14 @@ public class BooksController : Controller
 {
     private readonly AppDbContext _db;
     private readonly AuditLogService _auditLog;
+    private readonly BookCoverService _coverService;
     private const int PageSize = 10;
 
-    public BooksController(AppDbContext db, AuditLogService auditLog)
+    public BooksController(AppDbContext db, AuditLogService auditLog, BookCoverService coverService)
     {
         _db = db;
         _auditLog = auditLog;
+        _coverService = coverService;
     }
 
     public async Task<IActionResult> Index(string search, int page = 1)
@@ -69,10 +71,14 @@ public class BooksController : Controller
     }
 
     [HttpPost]
-    public async Task<IActionResult> Create([FromForm] Book model)
+    public async Task<IActionResult> Create([FromForm] Book model, IFormFile? coverImage)
     {
         if (string.IsNullOrWhiteSpace(model.Title) || string.IsNullOrWhiteSpace(model.Author))
             return Json(new { success = false, error = "Title and Author are required." });
+
+        var coverError = await TryApplyCoverAsync(model, coverImage);
+        if (coverError != null)
+            return Json(new { success = false, error = coverError });
 
         model.CreatedAt = DateTime.UtcNow;
         _db.Books.Add(model);
@@ -82,11 +88,15 @@ public class BooksController : Controller
     }
 
     [HttpPost]
-    public async Task<IActionResult> Edit([FromForm] Book model)
+    public async Task<IActionResult> Edit([FromForm] Book model, IFormFile? coverImage)
     {
         var book = await _db.Books.FindAsync(model.Id);
         if (book == null)
             return Json(new { success = false, error = "Book not found." });
+
+        var coverError = await TryApplyCoverAsync(book, coverImage);
+        if (coverError != null)
+            return Json(new { success = false, error = coverError });
 
         book.ISBN = model.ISBN;
         book.Title = model.Title;
@@ -103,6 +113,28 @@ public class BooksController : Controller
         await _db.SaveChangesAsync();
         await _auditLog.LogAsync("Update", "Book", book.Id.ToString(), $"Updated book \"{book.Title}\"");
         return Json(new { success = true, message = $"Book \"{book.Title}\" updated." });
+    }
+
+    private async Task<string?> TryApplyCoverAsync(Book book, IFormFile? coverImage)
+    {
+        if (coverImage == null || coverImage.Length == 0)
+            return null;
+
+        if (coverImage.Length > BookCoverService.MaxUploadBytes)
+            return "Cover image must be 15 MB or smaller.";
+
+        try
+        {
+            using var stream = coverImage.OpenReadStream();
+            var (bytes, contentType) = await _coverService.ProcessAsync(stream);
+            book.CoverImage = bytes;
+            book.CoverImageContentType = contentType;
+            return null;
+        }
+        catch (SixLabors.ImageSharp.UnknownImageFormatException)
+        {
+            return "Cover image file isn't a recognized image format.";
+        }
     }
 
     [HttpPost]

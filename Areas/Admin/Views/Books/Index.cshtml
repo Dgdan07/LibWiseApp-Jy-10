@@ -89,6 +89,19 @@
                     <input type="hidden" id="bookId" name="Id" />
                     <input type="hidden" id="bookCreatedAt" name="CreatedAt" />
                     <div id="bookFormErrors" class="text-danger mb-2"></div>
+                    <div class="d-flex align-items-center gap-3 mb-3">
+                        <div class="cover-wrap" id="bookCoverPreviewWrap" style="width:100px;height:63px;">
+                            <i class="bi bi-book cover-placeholder-icon"></i>
+                            <img id="bookCoverPreview" class="cover-img d-none" alt="Cover preview"
+                                 onload="this.classList.remove('d-none'); this.previousElementSibling.classList.add('d-none');"
+                                 onerror="this.classList.add('d-none'); this.previousElementSibling.classList.remove('d-none');" />
+                        </div>
+                        <div class="flex-grow-1">
+                            <label for="bookCoverImage" class="form-label mb-1">Cover Image</label>
+                            <input type="file" id="bookCoverImage" name="coverImage" accept="image/*" class="form-control form-control-sm" />
+                            <div class="form-text">Cropped to 2,560 &times; 1,600 (1.6:1) after upload.</div>
+                        </div>
+                    </div>
                     <div class="row g-3">
                         <div class="col-md-6">
                             <label for="bookISBN" class="form-label">ISBN</label>
