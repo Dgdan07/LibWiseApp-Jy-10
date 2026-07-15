@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using LibWiseApp.Data;
+using LibWiseApp.Services;
 
 namespace LibWiseApp.Areas.Librarian.Controllers;
 
@@ -10,8 +11,13 @@ namespace LibWiseApp.Areas.Librarian.Controllers;
 public class DashboardController : Controller
 {
     private readonly AppDbContext _db;
+    private readonly DashboardStatsService _stats;
 
-    public DashboardController(AppDbContext db) => _db = db;
+    public DashboardController(AppDbContext db, DashboardStatsService stats)
+    {
+        _db = db;
+        _stats = stats;
+    }
 
     public async Task<IActionResult> Index(int? days)
     {
@@ -67,6 +73,24 @@ public class DashboardController : Controller
 
         ViewBag.RecentActivity = recentActivity;
 
+        var defaultStart = now.Date.AddDays(-6);
+        var defaultEnd = now.Date.AddDays(1);
+        var (labels, borrowedData, returnedData) = await _stats.GetActivityAsync(defaultStart, defaultEnd);
+        ViewBag.ChartLabels = System.Text.Json.JsonSerializer.Serialize(labels);
+        ViewBag.ChartBorrowed = System.Text.Json.JsonSerializer.Serialize(borrowedData);
+        ViewBag.ChartReturned = System.Text.Json.JsonSerializer.Serialize(returnedData);
+
         return View();
+    }
+
+    [HttpGet]
+    public async Task<IActionResult> ChartData(DateTime from, DateTime to)
+    {
+        var start = DashboardStatsService.ToUtcDate(from);
+        var end = DashboardStatsService.ToUtcDate(to).AddDays(1);
+
+        var (labels, borrowedData, returnedData) = await _stats.GetActivityAsync(start, end);
+
+        return Json(new { labels, borrowed = borrowedData, returned = returnedData });
     }
 }

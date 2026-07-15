@@ -77,6 +77,7 @@ builder.Services.AddHttpContextAccessor();
 builder.Services.AddScoped<LibWiseApp.Services.AuditLogService>();
 builder.Services.AddScoped<LibWiseApp.Services.FineCalculationService>();
 builder.Services.AddScoped<LibWiseApp.Services.BorrowingService>();
+builder.Services.AddScoped<LibWiseApp.Services.DashboardStatsService>();
 builder.Services.AddAuthorization(options =>
 {
     options.AddPolicy("AdminOnly", policy => policy.RequireRole("Admin"));

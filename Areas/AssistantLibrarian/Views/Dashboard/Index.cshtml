@@ -88,6 +88,99 @@
     </div>
 </div>
 
+<div class="card border-0 shadow-sm mb-4">
+    <div class="card-header bg-white fw-bold border-bottom d-flex justify-content-between align-items-center flex-wrap gap-2">
+        <span><i class="bi bi-bar-chart me-1"></i>Activity</span>
+        <div class="d-flex align-items-center gap-2">
+            <button class="btn btn-sm btn-outline-primary chart-preset" data-days="7">7 Days</button>
+            <button class="btn btn-sm btn-outline-primary chart-preset" data-days="30">30 Days</button>
+            <button class="btn btn-sm btn-outline-primary chart-preset" data-days="90">90 Days</button>
+            <div class="d-flex align-items-center gap-1">
+                <input type="date" id="chartFrom" class="form-control form-control-sm" style="width:140px" />
+                <span class="text-muted small">to</span>
+                <input type="date" id="chartTo" class="form-control form-control-sm" style="width:140px" />
+                <button id="chartApplyRange" class="btn btn-sm btn-primary">Apply</button>
+            </div>
+        </div>
+    </div>
+    <div class="card-body">
+        <canvas id="activityChart" height="100"></canvas>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-6 mb-3">
+        <div class="card border-0 shadow-sm h-100">
+            <div class="card-header bg-white fw-bold border-bottom"><i class="bi bi-star me-1"></i>Most Borrowed Books</div>
+            <div class="card-body p-0 table-responsive">
+                <table class="table table-striped mb-0">
+                    <thead class="table-dark">
+                        <tr>
+                            <th>Title</th>
+                            <th>Author</th>
+                            <th class="text-end">Times Borrowed</th>
+                        </tr>
+                    </thead>
+                    <tbody id="topBooksBody">
+                        @{
+                            var topBooks = ViewBag.TopBooks as dynamic;
+                        }
+                        @if (topBooks != null && topBooks.Count > 0)
+                        {
+                            foreach (var b in topBooks)
+                            {
+                                <tr>
+                                    <td>@b.Title</td>
+                                    <td>@b.Author</td>
+                                    <td class="text-end">@b.Count</td>
+                                </tr>
+                            }
+                        }
+                        else
+                        {
+                            <tr><td colspan="3" class="text-center text-muted py-4">No borrowing history in this range.</td></tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-6 mb-3">
+        <div class="card border-0 shadow-sm h-100">
+            <div class="card-header bg-white fw-bold border-bottom"><i class="bi bi-tags me-1"></i>Most Borrowed Categories</div>
+            <div class="card-body p-0 table-responsive">
+                <table class="table table-striped mb-0">
+                    <thead class="table-dark">
+                        <tr>
+                            <th>Category</th>
+                            <th class="text-end">Times Borrowed</th>
+                        </tr>
+                    </thead>
+                    <tbody id="topCategoriesBody">
+                        @{
+                            var topCategories = ViewBag.TopCategories as dynamic;
+                        }
+                        @if (topCategories != null && topCategories.Count > 0)
+                        {
+                            foreach (var c in topCategories)
+                            {
+                                <tr>
+                                    <td>@c.Name</td>
+                                    <td class="text-end">@c.Count</td>
+                                </tr>
+                            }
+                        }
+                        else
+                        {
+                            <tr><td colspan="2" class="text-center text-muted py-4">No borrowing history in this range.</td></tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
 <div class="row">
     <div class="col-12 mb-3">
         <div class="card border-0 shadow-sm">
@@ -173,3 +266,108 @@
         </div>
     </div>
 </div>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.7/dist/chart.umd.min.js"></script>
+<script>
+    let activityChart = new Chart(document.getElementById('activityChart'), {
+        type: 'line',
+        data: {
+            labels: @Html.Raw(ViewBag.ChartLabels),
+            datasets: [
+                {
+                    label: 'Borrowed',
+                    data: @Html.Raw(ViewBag.ChartBorrowed),
+                    borderColor: '#4361ee',
+                    backgroundColor: 'rgba(67, 97, 238, 0.1)',
+                    borderWidth: 2,
+                    pointRadius: 4,
+                    pointBackgroundColor: '#4361ee',
+                    pointBorderColor: '#fff',
+                    pointBorderWidth: 2,
+                    tension: 0.3,
+                    fill: true
+                },
+                {
+                    label: 'Returned',
+                    data: @Html.Raw(ViewBag.ChartReturned),
+                    borderColor: '#10b981',
+                    backgroundColor: 'rgba(16, 185, 129, 0.1)',
+                    borderWidth: 2,
+                    pointRadius: 4,
+                    pointBackgroundColor: '#10b981',
+                    pointBorderColor: '#fff',
+                    pointBorderWidth: 2,
+                    tension: 0.3,
+                    fill: true
+                }
+            ]
+        },
+        options: {
+            responsive: true,
+            scales: {
+                y: { beginAtZero: true, ticks: { stepSize: 1 } }
+            },
+            plugins: { legend: { position: 'top' } },
+            interaction: { intersect: false, mode: 'index' }
+        }
+    });
+
+    function escapeHtml(str) {
+        return String(str).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+    }
+
+    function renderTopBooks(topBooks) {
+        const body = document.getElementById('topBooksBody');
+        if (!topBooks || topBooks.length === 0) {
+            body.innerHTML = '<tr><td colspan="3" class="text-center text-muted py-4">No borrowing history in this range.</td></tr>';
+            return;
+        }
+        body.innerHTML = topBooks.map(b =>
+            `<tr><td>${escapeHtml(b.title)}</td><td>${escapeHtml(b.author)}</td><td class="text-end">${b.count}</td></tr>`
+        ).join('');
+    }
+
+    function renderTopCategories(topCategories) {
+        const body = document.getElementById('topCategoriesBody');
+        if (!topCategories || topCategories.length === 0) {
+            body.innerHTML = '<tr><td colspan="2" class="text-center text-muted py-4">No borrowing history in this range.</td></tr>';
+            return;
+        }
+        body.innerHTML = topCategories.map(c =>
+            `<tr><td>${escapeHtml(c.name)}</td><td class="text-end">${c.count}</td></tr>`
+        ).join('');
+    }
+
+    function loadChartData(from, to) {
+        fetch('/AssistantLibrarian/Dashboard/ChartData?from=' + encodeURIComponent(from) + '&to=' + encodeURIComponent(to))
+            .then(r => {
+                if (!r.ok) throw new Error('ChartData request failed: ' + r.status);
+                return r.json();
+            })
+            .then(data => {
+                activityChart.data.labels = data.labels;
+                activityChart.data.datasets[0].data = data.borrowed;
+                activityChart.data.datasets[1].data = data.returned;
+                activityChart.update();
+                renderTopBooks(data.topBooks);
+                renderTopCategories(data.topCategories);
+            })
+            .catch(err => console.error('Failed to load chart data:', err));
+    }
+
+    document.querySelectorAll('.chart-preset').forEach(btn => {
+        btn.addEventListener('click', function () {
+            let days = parseInt(this.dataset.days);
+            let to = new Date();
+            let from = new Date();
+            from.setDate(from.getDate() - days);
+            loadChartData(from.toISOString().split('T')[0], to.toISOString().split('T')[0]);
+        });
+    });
+
+    document.getElementById('chartApplyRange').addEventListener('click', function () {
+        let from = document.getElementById('chartFrom').value;
+        let to = document.getElementById('chartTo').value;
+        if (from && to) loadChartData(from, to);
+    });
+</script>
