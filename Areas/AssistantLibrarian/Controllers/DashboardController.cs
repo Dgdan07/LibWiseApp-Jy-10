@@ -31,9 +31,6 @@ public class DashboardController : Controller
             .CountAsync(r => r.BorrowedByUserId == userId && r.BorrowedAt >= today);
         ViewBag.TodayReturns = await _db.BorrowingRecords
             .CountAsync(r => r.ReturnedByUserId == userId && r.ReturnedAt >= today);
-        ViewBag.TodayFinesCollected = await _db.Fines
-            .Where(f => f.PaidByUserId == userId && f.PaidAt >= today && f.Status == "Paid")
-            .SumAsync(f => f.Amount);
 
         ViewBag.OverdueCount = await _db.BorrowingRecords
             .CountAsync(r => r.Status == "Active" && r.DueDate < today);
